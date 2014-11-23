@@ -1,4 +1,4 @@
-package de.kp.spark.outlier.redis
+package de.kp.spark.core.redis
 /* Copyright (c) 2014 Dr. Krusche & Partner PartG
 * 
 * This file is part of the Spark-Core project
