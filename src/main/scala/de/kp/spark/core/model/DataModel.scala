@@ -46,3 +46,11 @@ case class ServiceResponse(
   service:String,task:String,data:Map[String,String],status:String
 )
 
+/**
+ * Service requests are mapped onto status descriptions 
+ * and are stored in a Redis instance
+ */
+case class Status(
+  service:String,task:String,status:String
+)
+
