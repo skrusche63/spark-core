@@ -55,5 +55,8 @@ class BaseMessages {
 
   def TASK_IS_UNKNOWN(uid:String,task:String):String = 
     String.format("""[UID: %s] The task '%s' is unknown.""", uid, task)
-
+ 
+  def TRACKED_DATA_RECEIVED(uid:String):String = 
+    String.format("""[UID: %s] Tracked data received.""", uid)
+ 
 }
