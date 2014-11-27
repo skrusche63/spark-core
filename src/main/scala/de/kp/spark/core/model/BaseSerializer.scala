@@ -33,6 +33,7 @@ class BaseSerializer {
   def serializeStatus(status:Status):String = write(Status)
   def deserializeStatus(status:String):Status = read[Status](status)
 
+  def deserializeResponse(response:String):ServiceResponse = read[ServiceResponse](response)
   def serializeResponse(response:ServiceResponse):String = write(response)
   
   def deserializeRequest(request:String):ServiceRequest = read[ServiceRequest](request)
