@@ -21,7 +21,7 @@ package de.kp.spark.core.model
 class BaseStatus {
 
   val BUILDING_STARTED:String  = "predictive-works:building:started"
-  val BUILDING_FINSIHED:String = "predictive-works:building:finsihed"
+  val BUILDING_FINISHED:String = "predictive-works:building:finsihed"
 
   val MINING_STARTED:String  = "predictive-works:mining:started"
   val MINING_FINISHED:String = "predictive-works:mining:finished"
@@ -30,7 +30,7 @@ class BaseStatus {
   val TRACKING_FINISHED:String = "predictive-works:tracking:finsihed"
 
   val TRAINING_STARTED:String  = "predictive-works:training:started"
-  val TRAINING_FINSIHED:String = "predictive-works:training:finsihed"
+  val TRAINING_FINISHED:String = "predictive-works:training:finsihed"
   
   val FAILURE:String = "predictive-works:failure"
   val SUCCESS:String = "predictive-works:success"

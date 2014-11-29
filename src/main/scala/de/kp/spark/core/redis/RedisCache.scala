@@ -24,9 +24,9 @@ import scala.collection.JavaConversions._
 import de.kp.spark.core.model._
 import de.kp.spark.core.model.BaseSerializer
 
-class RedisCache {
+class RedisCache(host:String,port:Int) {
 
-  val client  = RedisClient()
+  val client  = RedisClient(host,port)
   val serializer = new BaseSerializer()
 
   def addFields(req:ServiceRequest,fields:Fields) {

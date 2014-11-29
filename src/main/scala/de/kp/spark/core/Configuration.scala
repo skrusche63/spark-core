@@ -78,21 +78,6 @@ object Configuration {
    
   }
   /**
-   * This method retrieves the basic configuration
-   * data for a REDIS server that is internally used
-   * as a distributed data structure server
-   */
-  def redis():(String,String) = {
-  
-    val cfg = config.getConfig("redis")
-    
-    val host = cfg.getString("host")
-    val port = cfg.getString("port")
-    
-    (host,port)
-    
-  }
-  /**
    * This method retrieves Typesafe Spray configuration
    * data for the REST API from the configuration file
    */
