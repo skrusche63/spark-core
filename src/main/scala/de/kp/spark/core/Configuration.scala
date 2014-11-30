@@ -36,7 +36,7 @@ trait Configuration {
    * This method retrieves the path from the configuration
    * where to access a file source from the HDFS
    */ 
-  def file:String
+  def file:List[String]
    /**
     * This method retrieves the access parameter for a MySQL
     * data source, comprising url, db, user, password
