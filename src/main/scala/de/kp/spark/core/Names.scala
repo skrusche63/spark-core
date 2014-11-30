@@ -35,6 +35,8 @@ object Names {
   val GROUP_FIELD:String = "group"
 
   val ITEM_FIELD:String  = "item"
+  val PRICE_FIELD:String = "price"
+    
   val SITE_FIELD:String = "site"
   
   val USER_FIELD:String = "user"
