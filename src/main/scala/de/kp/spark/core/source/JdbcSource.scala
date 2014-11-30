@@ -21,7 +21,9 @@ package de.kp.spark.core.source
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 
-import de.kp.spark.core.Names
+import de.kp.spark.core.model._
+
+import de.kp.spark.core.{Configuration,Names}
 import de.kp.spark.core.io.JdbcReader
 
 /**
@@ -31,12 +33,12 @@ import de.kp.spark.core.io.JdbcReader
  */
 class JdbcSource(@transient sc:SparkContext) {
   
-  def connect(params:Map[String,Any],fields:List[String]):RDD[Map[String,Any]] = {
+  def connect(config:Configuration,req:ServiceRequest,fields:List[String]):RDD[Map[String,Any]] = {
     
-    val site  = params(Names.REQ_SITE).asInstanceOf[Int]
-    val query = params(Names.REQ_QUERY).asInstanceOf[String]
+    val site  = req.data(Names.REQ_SITE).asInstanceOf[Int]
+    val query = req.data(Names.REQ_QUERY).asInstanceOf[String]
 
-    new JdbcReader(sc,site,query).read(fields)
+    new JdbcReader(sc,config,site,query).read(fields)
 
   }
 

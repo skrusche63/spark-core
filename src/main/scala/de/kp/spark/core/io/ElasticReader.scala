@@ -23,21 +23,21 @@ import org.apache.spark.rdd.RDD
 
 import org.apache.hadoop.io.{ArrayWritable,MapWritable,NullWritable,Text}
 
-import de.kp.spark.core.{Configuration => CFG}
+import de.kp.spark.core.{Configuration,Names}
 
 import org.elasticsearch.hadoop.mr.EsInputFormat
 import scala.collection.JavaConversions._
 
-class ElasticReader(@transient sc:SparkContext,index:String,mapping:String,query:String) {
+class ElasticReader(@transient sc:SparkContext,config:Configuration,index:String,mapping:String,query:String) {
           
-  private val conf = CFG.elastic
+  private val conf = config.elastic
   /**
    * Append dynamic request specific data to Elasticsearch configuration;
    * this comprises the search query to be used and the index (and mapping)
    * to be accessed
    */
-  conf.set(CFG.ES_QUERY,query)
-  conf.set(CFG.ES_RESOURCE,(index + "/" + mapping))
+  conf.set(Names.ES_QUERY,query)
+  conf.set(Names.ES_RESOURCE,(index + "/" + mapping))
   
   def read():RDD[Map[String,String]] = {
 

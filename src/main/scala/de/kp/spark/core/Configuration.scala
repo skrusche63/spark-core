@@ -17,93 +17,43 @@ package de.kp.spark.core
  * 
  * If not, see <http://www.gnu.org/licenses/>.
  */
-
-import com.typesafe.config.ConfigFactory
 import org.apache.hadoop.conf.{Configuration => HConf}
 
-object Configuration {
+trait Configuration {
 
-  val ES_QUERY:String = "es.query"
-  val ES_RESOURCE:String = "es.resource"
+  /**
+   * This method retrieves the basic actor configuration
+   * parameters, comprising duration, retries and timeout
+   */
+  def actor:(Int,Int,Int)
   
-    /* Load configuration for router */
-  val path = "application.conf"
-  val config = ConfigFactory.load(path)
-
-  def actor():(Int,Int,Int) = {
-  
-    val cfg = config.getConfig("actor")
-
-    val duration = cfg.getInt("duration")
-    val retries = cfg.getInt("retries")  
-    val timeout = cfg.getInt("timeout")
-    
-    (duration,retries,timeout)
-    
-  }
   /**
    * This method retrieves a Hadoop configuration
    * th access Elasticsearch
    */
-  def elastic():HConf = {
-  
-    val cfg = config.getConfig("elastic")
-    val conf = new HConf()                          
-
-    conf.set("es.nodes",cfg.getString("es.nodes"))
-    conf.set("es.port",cfg.getString("es.port"))
-
-    conf
-    
-  }
-   
-  def file():String = {
-  
-    val cfg = config.getConfig("file")
-    cfg.getString("path")   
-    
-  }
- 
-  def mysql():(String,String,String,String) = {
-
-   val cfg = config.getConfig("mysql")
-  
-   val url = cfg.getString("url")
-   val db  = cfg.getString("database")
-  
-   val user = cfg.getString("user")
-   val password = cfg.getString("password")
-    
-   (url,db,user,password)
-   
-  }
+  def elastic:HConf
+  /** 
+   * This method retrieves the path from the configuration
+   * where to access a file source from the HDFS
+   */ 
+  def file:String
+   /**
+    * This method retrieves the access parameter for a MySQL
+    * data source, comprising url, db, user, password
+    */
+  def mysql:(String,String,String,String)
   /**
-   * This method retrieves Typesafe Spray configuration
-   * data for the REST API from the configuration file
+   * This method retrieves the access parameter for the
+   * internally used Redis Instance: (host,port)
    */
-  def rest():(String,Int) = {
-      
-    val cfg = config.getConfig("rest")
-      
-    val host = cfg.getString("host")
-    val port = cfg.getInt("port")
-
-    (host,port)
-    
-  }
+  def redis:(String,String)
+  /**
+   * This method retrieves (host, port) for the REST API
+   */
+  def rest:(String,Int)
   /**
    * This method retrieves Apache Spark configuration
-   * data from the configuration file
    */
-  def spark():Map[String,String] = {
-  
-    val cfg = config.getConfig("spark")
-    
-    Map(
-      "spark.executor.memory"          -> cfg.getString("spark.executor.memory"),
-	  "spark.kryoserializer.buffer.mb" -> cfg.getString("spark.kryoserializer.buffer.mb")
-    )
-
-  }
+  def spark:Map[String,String]
   
 }

@@ -21,7 +21,9 @@ package de.kp.spark.core.source
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 
-import de.kp.spark.core.Names
+import de.kp.spark.core.model._
+
+import de.kp.spark.core.{Configuration,Names}
 import de.kp.spark.core.io.ElasticReader
 
 /**
@@ -30,17 +32,17 @@ import de.kp.spark.core.io.ElasticReader
  */
 class ElasticSource(@transient sc:SparkContext) {
  
-  def connect(params:Map[String,Any]):RDD[Map[String,String]] = {
+  def connect(config:Configuration,req:ServiceRequest):RDD[Map[String,String]] = {
     /*
      * Elasticsearch is used as a data source as well as a data sink;
      * this implies that the respective indexes and mappings have to
      * be distinguished
      */
-    val index = params(Names.REQ_SOURCE_INDEX).asInstanceOf[String]
-    val mapping = params(Names.REQ_SOURCE_TYPE).asInstanceOf[String]
+    val index = req.data(Names.REQ_SOURCE_INDEX).asInstanceOf[String]
+    val mapping = req.data(Names.REQ_SOURCE_TYPE).asInstanceOf[String]
     
-    val query = params(Names.REQ_QUERY).asInstanceOf[String]
-    new ElasticReader(sc,index,mapping,query).read
+    val query = req.data(Names.REQ_QUERY).asInstanceOf[String]
+    new ElasticReader(sc,config,index,mapping,query).read
 
   }
 
