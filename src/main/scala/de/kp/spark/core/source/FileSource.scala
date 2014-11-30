@@ -21,8 +21,11 @@ package de.kp.spark.core.source
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 
+import de.kp.spark.core.Configuration
+import de.kp.spark.core.model._
+
 class FileSource(@transient sc:SparkContext) extends Serializable {
 
-  def connect(params:Map[String,Any],path:String):RDD[String] = sc.textFile(path)
+  def connect(config:Configuration,req:ServiceRequest):RDD[String] = sc.textFile(config.file)
 
 }

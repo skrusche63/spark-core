@@ -25,11 +25,11 @@ import de.kp.spark.core.Configuration
 import de.kp.spark.core.model._
 import de.kp.spark.core.redis.RedisCache
 
-import de.kp.spark.core.model._
-
 abstract class RootActor(config:Configuration) extends Actor with ActorLogging {
  
   protected val status = new BaseStatus()
+  protected val messages = new BaseMessages()
+
   protected val serializer = new BaseSerializer()
 
   private val (host,port) = config.redis
