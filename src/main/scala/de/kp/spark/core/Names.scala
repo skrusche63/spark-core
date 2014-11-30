@@ -31,6 +31,8 @@ object Names {
    *                     INDEXING
    *******************************************************/
 
+  val AMOUNT_FIELD:String = "amount"
+
   val EVENT_FIELD:String = "event"
   val GROUP_FIELD:String = "group"
 

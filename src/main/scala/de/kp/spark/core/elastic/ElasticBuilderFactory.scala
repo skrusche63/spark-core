@@ -26,6 +26,8 @@ object ElasticBuilderFactory {
     
     builder match {
 
+      case "amount"  => new ElasticAmountBuilder().createBuilder(mapping)
+
       case "event"   => new ElasticEventBuilder().createBuilder(mapping)
 
       case "item"    => new ElasticItemBuilder().createBuilder(mapping)
