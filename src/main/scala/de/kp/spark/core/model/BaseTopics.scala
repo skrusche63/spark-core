@@ -28,24 +28,14 @@ class BaseTopics {
 
   val PRODUCT:String = "product"
   val RULE:String    = "rule"
-
-  /*
-   * Exceptions: topics may be described in a different manner from
-   * an external viewpoint; these external topics are listed below
-   * 
-   */
-  val SEQUENCE:String = "sequence"
     
   private val topics = List(AMOUNT,EVENT,ITEM,FEATURE,PRODUCT,RULE)
   
   def get(candidate:String):String = {
     
     if (topics.contains(candidate)) return candidate
-    /* Handle exceptions */
     
-    if (candidate == SEQUENCE) return PRODUCT
-    
-    throw new Exception("Topic is unknown.")
+    throw new Exception("Unknown topic.")
     
   }
   
