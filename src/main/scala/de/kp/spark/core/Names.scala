@@ -33,17 +33,35 @@ object Names {
 
   val AMOUNT_FIELD:String = "amount"
 
+  val ANTECEDENT_FIELD:String = "antecedent"
+  val CONSEQUENT_FIELD:String = "consequent"
+ 
+  val CONFIDENCE_FIELD:String = "confidence"
+
   val EVENT_FIELD:String = "event"
   val GROUP_FIELD:String = "group"
 
   val ITEM_FIELD:String  = "item"
   val PRICE_FIELD:String = "price"
+  /*
+   * This is a relative identifier with respect to the timestamp
+   * to specify which antecendents refer to the same association
+   * rule
+   */
+  val RULE_FIELD:String = "rule"
     
   val SITE_FIELD:String = "site"
+
+  val SUPPORT_FIELD:String = "support"
+  val TIMESTAMP_FIELD:String = "timestamp"
+  /*
+   * The unique identifier of the mining task that created the
+   * respective rules
+   */
+  val UID_FIELD:String = "uid"
   
   val USER_FIELD:String = "user"
-  val TIMESTAMP_FIELD:String = "timestamp"
-  
+    
   /********************************************************
    *                     REQUEST
    *******************************************************/

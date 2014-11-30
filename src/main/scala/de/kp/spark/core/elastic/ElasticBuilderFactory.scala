@@ -35,6 +35,8 @@ object ElasticBuilderFactory {
       case "feature" => new ElasticFeatureBuilder().createBuilder(mapping,names,types)
 
       case "product" => new ElasticProductBuilder().createBuilder(mapping)
+
+      case "rule"    => new ElasticRuleBuilder().createBuilder(mapping)
       
       case _ => null
       
