@@ -27,8 +27,6 @@ import de.kp.spark.core.elastic.{ElasticBuilderFactory => EBF}
 
 class BaseIndexer(config:Configuration) extends RootActor(config) {
   
-  private val topics = new BaseTopics()
-  
   def receive = {
     
     case req:ServiceRequest => {
@@ -38,13 +36,12 @@ class BaseIndexer(config:Configuration) extends RootActor(config) {
 
       try {
     
-        val (names,types) = fieldspec(req)
+        val (names,types) = getSpec(req)
  
         val index   = req.data("index")
         val mapping = req.data("type")
     
-        val candidate = req.task.split(":")(1)
-        val topic = topics.get(candidate)
+        val topic = getTopic(req)
         
         val builder = EBF.getBuilder(topic,mapping,names,types)
         val indexer = new ElasticIndexer()
@@ -80,6 +77,17 @@ class BaseIndexer(config:Configuration) extends RootActor(config) {
     
   }
   
-  protected def fieldspec(req:ServiceRequest):(List[String],List[String]) = (List.empty[String],List.empty[String])
+  protected def getSpec(req:ServiceRequest):(List[String],List[String]) = (List.empty[String],List.empty[String])
+  
+  protected def getTopic(req:ServiceRequest):String = {
+  
+    val baseTopics = new BaseTopics()
+   
+    val candidate = req.task.split(":")(1)
+    val topic = baseTopics.get(candidate)
+    
+    topic
+    
+  }
   
 }
