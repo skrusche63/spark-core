@@ -20,7 +20,22 @@ package de.kp.spark.core
 
 object Names {
 
-  /* REQUEST SPECIFIC NAMES */
+  /********************************************************
+   *                     INDEXING
+   *******************************************************/
+
+  val EVENT_FIELD:String = "event"
+  val GROUP_FIELD:String = "group"
+
+  val ITEM_FIELD:String  = "item"
+  val SITE_FIELD:String = "site"
+  
+  val USER_FIELD:String = "user"
+  val TIMESTAMP_FIELD:String = "timestamp"
+  
+  /********************************************************
+   *                     REQUEST
+   *******************************************************/
   val REQ_QUERY:String = "query"
   val REQ_SITE:String  = "site"
 

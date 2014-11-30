@@ -30,11 +30,19 @@ class RedisCache(host:String,port:Int) {
   val serializer = new BaseSerializer()
 
   def addFields(req:ServiceRequest,fields:Fields) {
+    /*
+     * Request may not have a certain service specified, and for
+     * engines that use other engines, the service may change with
+     * respect to the original one.
+     * 
+     * Therefore, field registration must not use the service as
+     * part of the key
+     */
     
     val now = new Date()
     val timestamp = now.getTime()
     
-    val k = "fields:" + req.service + ":" + req.data("uid")
+    val k = "fields:" + req.data("uid")
     val v = "" + timestamp + ":" + serializer.serializeFields(fields)
     
     client.zadd(k,timestamp,v)
@@ -55,12 +63,20 @@ class RedisCache(host:String,port:Int) {
   
   def addStatus(req:ServiceRequest, status:String) {
    
+    /*
+     * Request may not have a certain service specified, and for
+     * engines that use other engines, the service may change with
+     * respect to the original one.
+     * 
+     * Therefore, status monitoring must not use the service as
+     * part of the key
+     */
     val (uid,service,task) = (req.data("uid"),req.service,req.task)
     
     val now = new Date()
     val timestamp = now.getTime()
     
-    val k = "status:" + service + ":" + uid
+    val k = "status:" + uid
     val v = "" + timestamp + ":" + serializer.serializeStatus(Status(service,task,status))
     
     client.zadd(k,timestamp,v)
@@ -69,21 +85,21 @@ class RedisCache(host:String,port:Int) {
   
   def fieldsExist(req:ServiceRequest):Boolean = {
 
-    val k = "fields:" + req.service + ":" + req.data("uid")
+    val k = "fields:" + req.data("uid")
     client.exists(k)
     
   }
   
   def statusExists(req:ServiceRequest):Boolean = {
 
-    val k = "status:" + req.service + ":" + req.data("uid")
+    val k = "status:" + req.data("uid")
     client.exists(k)
     
   }
   
   def fields(req:ServiceRequest):Fields = {
 
-    val k = "fields:" + req.service + ":" + req.data("uid")
+    val k = "fields:" + req.data("uid")
     val metas = client.zrange(k, 0, -1)
 
     if (metas.size() == 0) {
@@ -123,7 +139,7 @@ class RedisCache(host:String,port:Int) {
   
   def status(req:ServiceRequest):String = {
 
-    val k = "job:" + req.service + ":" + req.data("uid")
+    val k = "status:" + req.data("uid")
     val data = client.zrange(k, 0, -1)
 
     if (data.size() == 0) {
@@ -144,7 +160,7 @@ class RedisCache(host:String,port:Int) {
   
   def statuses(req:ServiceRequest):List[(Long,Status)] = {
     
-    val k = "job:" + req.service + ":" + req.data("uid")
+    val k = "status:" + req.data("uid")
     val data = client.zrange(k, 0, -1)
 
     if (data.size() == 0) {
