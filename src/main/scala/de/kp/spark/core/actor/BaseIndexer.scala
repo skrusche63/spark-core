@@ -37,14 +37,16 @@ class BaseIndexer(config:Configuration) extends RootActor(config) {
       val origin = sender
 
       try {
-
+    
+        val (names,types) = fieldspec(req)
+ 
         val index   = req.data("index")
         val mapping = req.data("type")
     
         val candidate = req.task.split(":")(1)
         val topic = topics.get(candidate)
         
-        val builder = EBF.getBuilder(topic,mapping)
+        val builder = EBF.getBuilder(topic,mapping,names,types)
         val indexer = new ElasticIndexer()
     
         indexer.create(index,mapping,builder)
@@ -77,5 +79,7 @@ class BaseIndexer(config:Configuration) extends RootActor(config) {
     }
     
   }
-
+  
+  protected def fieldspec(req:ServiceRequest):(List[String],List[String]) = (List.empty[String],List.empty[String])
+  
 }
