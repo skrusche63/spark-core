@@ -58,10 +58,11 @@ object Names {
    * The unique identifier of the mining task that created the
    * respective rules
    */
-  val UID_FIELD:String = "uid"
-  
+  val UID_FIELD:String = "uid"  
   val USER_FIELD:String = "user"
-    
+  
+  val WEIGHT_FIELD:String = "weight"
+   
   /********************************************************
    *                     REQUEST
    *******************************************************/

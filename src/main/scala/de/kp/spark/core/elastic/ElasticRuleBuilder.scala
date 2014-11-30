@@ -69,6 +69,11 @@ class ElasticRuleBuilder {
                           .startObject(CONFIDENCE_FIELD)
                             .field("type", "double")
                           .endObject()
+                          
+                          /* confidence */
+                          .startObject(WEIGHT_FIELD)
+                            .field("type", "double")
+                          .endObject()
 
                         .endObject() // properties
                       .endObject()   // mapping
