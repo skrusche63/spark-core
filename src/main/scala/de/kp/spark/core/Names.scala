@@ -66,8 +66,16 @@ object Names {
   /********************************************************
    *                     REQUEST
    *******************************************************/
+
+  val REQ_ITEMS:String = "items"
+
   val REQ_QUERY:String = "query"
   val REQ_SITE:String  = "site"
+
+  val REQ_TOTAL:String = "total"
+    
+  val REQ_UID:String = "uid"
+  val REQ_USERS:String = "users"
 
   val REQ_SOURCE_INDEX:String = "source.index"
   val REQ_SOURCE_TYPE:String  = "source.type"
