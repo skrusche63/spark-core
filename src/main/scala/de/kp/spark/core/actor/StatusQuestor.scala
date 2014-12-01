@@ -18,25 +18,17 @@ package de.kp.spark.core.actor
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-import akka.actor.{ActorRef,Props}
-
-import akka.pattern.ask
-import akka.util.Timeout
-
-import de.kp.spark.core.Configuration
+import de.kp.spark.core.{Configuration,Names}
 import de.kp.spark.core.model._
 
-import scala.concurrent.Future
-import scala.concurrent.duration.DurationInt
-
-class StatusMonitor(config:Configuration) extends RootActor(config) {
+class StatusQuestor(config:Configuration) extends RootActor(config) {
 
   def receive = {
 
     case req:ServiceRequest => {
       
       val origin = sender    
-      val uid = req.data("uid")
+      val uid = req.data(Names.REQ_UID)
          
       val response = if (cache.statusExists(req) == false) {           
         failure(req,messages.TASK_DOES_NOT_EXIST(uid))           
@@ -65,8 +57,8 @@ class StatusMonitor(config:Configuration) extends RootActor(config) {
 
   protected def status(req:ServiceRequest):ServiceResponse = {
     
-    val uid = req.data("uid")
-    val data = Map("uid" -> uid)
+    val uid = req.data(Names.REQ_UID)
+    val data = Map(Names.REQ_UID -> uid)
                 
     new ServiceResponse(req.service,req.task,data,cache.status(req))	
 
