@@ -59,6 +59,13 @@ abstract class FieldQuestor(config:Configuration) extends RootActor(config) {
   
   }
 
-  protected def fields(req:ServiceRequest):Fields = cache.fields(req)
+  protected def fields(req:ServiceRequest):ServiceResponse = {
+        
+    val uid = req.data(Names.REQ_UID)
+    val data = Map(Names.REQ_UID -> uid, Names.REQ_FIELDS -> serializer.serializeFields(cache.fields(req)))
+                
+    new ServiceResponse(req.service,req.task,data,status.SUCCESS)	
+
+  }
 
 }
