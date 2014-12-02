@@ -67,7 +67,10 @@ object Names {
    *                     REQUEST
    *******************************************************/
   
-  val REQ_FIELDS:String = "fields"
+  val REQ_CONTEXT:String = "context"
+  val REQ_FEATURES:String = "features"
+
+  val REQ_FIELDS:String  = "fields"
 
   val REQ_ITEM:String  = "item"
   val REQ_ITEMS:String = "items"
