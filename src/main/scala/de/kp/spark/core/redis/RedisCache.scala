@@ -21,6 +21,8 @@ package de.kp.spark.core.redis
 import java.util.Date
 import scala.collection.JavaConversions._
 
+import de.kp.spark.core.Names
+
 import de.kp.spark.core.model._
 import de.kp.spark.core.model.BaseSerializer
 
@@ -28,24 +30,25 @@ class RedisCache(host:String,port:Int) {
 
   val client  = RedisClient(host,port)
   val serializer = new BaseSerializer()
-
-  def addFields(req:ServiceRequest,fields:Fields) {
-    /*
-     * Request may not have a certain service specified, and for
-     * engines that use other engines, the service may change with
-     * respect to the original one.
-     * 
-     * Therefore, field registration must not use the service as
-     * part of the key
-     */
+  
+  /** 
+   *  Add a single field specification that refers to a named
+   *  training or model build task
+   */
+  def addField(req:ServiceRequest,field:Field) {
     
-    val now = new Date()
-    val timestamp = now.getTime()
+    val k = "fields:" + req.data(Names.REQ_NAME) + ":" + req.data(Names.REQ_UID)
+    val v = String.format("""%s:%s:%s""",field.name,field.datatype,field.value)
     
-    val k = "fields:" + req.data("uid")
-    val v = "" + timestamp + ":" + serializer.serializeFields(fields)
+    client.rpush(k,v)
     
-    client.zadd(k,timestamp,v)
+  }
+  /** 
+   *  Add a list of field specifications that refer to a named
+   *  training or model build task
+   */  
+  def addFields(req:ServiceRequest,fields:List[Field]) {
+    for (field <- fields) addField(req,field)
     
   }
   
@@ -85,7 +88,7 @@ class RedisCache(host:String,port:Int) {
   
   def fieldsExist(req:ServiceRequest):Boolean = {
 
-    val k = "fields:" + req.data("uid")
+    val k = "fields:" + req.data(Names.REQ_NAME) + ":" + req.data(Names.REQ_UID)
     client.exists(k)
     
   }
@@ -97,20 +100,22 @@ class RedisCache(host:String,port:Int) {
     
   }
   
-  def fields(req:ServiceRequest):Fields = {
+  def fields(req:ServiceRequest):List[Field] = {
 
-    val k = "fields:" + req.data("uid")
-    val metas = client.zrange(k, 0, -1)
+    val k = "fields:" + req.data(Names.REQ_NAME) + ":" + req.data(Names.REQ_UID)
+    val fields = client.lrange(k, 0, -1)
 
-    if (metas.size() == 0) {
-      new Fields(List.empty[Field])
+    if (fields.size() == 0) {
+      List.empty[Field]
     
     } else {
       
-      val latest = metas.toList.last
-      val Array(timestamp,fields) = latest.split(":")
-      
-      serializer.deserializeFields(fields)
+      fields.map(field => {
+        
+        val Array(name,datatype,value) = field.split(":")
+        Field(name,datatype,value)
+        
+      }).toList
      
     }
 

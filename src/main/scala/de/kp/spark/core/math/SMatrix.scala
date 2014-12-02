@@ -40,7 +40,14 @@ class SMatrix(dim:Int,diag:Double) extends Serializable {
     table(x)(y) = valu
   
   }
-	
+
+  /**
+   * This method retrieves a single data point from the
+   * symmetric matrix; as the associated table does not
+   * provide values for each (row,col), the respective
+   * must be computed under the assumption that the matrix
+   * is quadratic and symmetric
+   */
   def get(row:Int,col:Int):Double = {    
  
     if (row == col) {
@@ -63,7 +70,37 @@ class SMatrix(dim:Int,diag:Double) extends Serializable {
     }
 
   }
+  /**
+   * This method is a convenience method to retrieve
+   * values of a complete row from a quadratic and
+   * symmetric matrix
+   */
+  def getRow(row:Int):Array[Double] = {
+    
+    val values = Array.fill[Double](dim)(0)
+    (0 until dim).foreach(col => {
+      values(col) = get(row,col)
+    })
+    
+    values
+    
+  }
+  /**
+   * This method determines the 'k' most similar
+   * items with respect to the row (item)
+   */
+  def getHighest(row:Int,num:Int):List[(Int,Double)] = {
+    
+    val values = (0 until dim).map(col => (col,get(row,col))).toList
+    val sorted = values.sortBy(x => -x._2)
+    /*
+     * The highest similarity is '1' and must be excluded
+     * as this describes the similarity of row to itself
+     */
+    sorted.tail.take(num)
 
+  }
+  
   /**
    * Returns the K-means cost of a given point against the given cluster centers.
    * The `cost` is defined as 1 - sim

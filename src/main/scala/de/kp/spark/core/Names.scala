@@ -71,7 +71,9 @@ object Names {
   val REQ_END:String     = "end"
 
   val REQ_FEATURES:String = "features"
-  val REQ_FIELDS:String   = "fields"
+
+  val REQ_FIELD:String  = "field"
+  val REQ_FIELDS:String = "fields"
 
   val REQ_ITEM:String  = "item"
   val REQ_ITEMS:String = "items"
@@ -86,6 +88,8 @@ object Names {
   val REQ_START:String = "start"
 
   val REQ_TOTAL:String = "total"
+  val REQ_TYPES:String = "types"
+    
   val REQ_UID:String   = "uid"
     
   val REQ_USER:String  = "user"

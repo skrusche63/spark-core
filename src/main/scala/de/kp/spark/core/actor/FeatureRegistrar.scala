@@ -45,8 +45,8 @@ abstract class FeatureRegistrar(config:Configuration) extends RootActor(config) 
          * It is important to have the names specified in the order
          * they are used (later) to retrieve the respective data
          */
-        val names = req.data("names").split(",")
-        val types = req.data("types").split(",")
+        val names = req.data(Names.REQ_NAMES).split(",")
+        val types = req.data(Names.REQ_TYPES).split(",")
         
         /* Unpack fields from request and register in Redis instance */
         val fields = buildFields(names,types)
@@ -64,6 +64,6 @@ abstract class FeatureRegistrar(config:Configuration) extends RootActor(config) 
     
   }
   
-  protected def buildFields(names:Array[String],types:Array[String]):Fields
+  protected def buildFields(names:Array[String],types:Array[String]):List[Field]
 
 }
