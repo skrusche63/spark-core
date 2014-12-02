@@ -68,15 +68,22 @@ object Names {
    *******************************************************/
   
   val REQ_CONTEXT:String = "context"
-  val REQ_FEATURES:String = "features"
+  val REQ_END:String     = "end"
 
-  val REQ_FIELDS:String  = "fields"
+  val REQ_FEATURES:String = "features"
+  val REQ_FIELDS:String   = "fields"
 
   val REQ_ITEM:String  = "item"
   val REQ_ITEMS:String = "items"
 
-  val REQ_QUERY:String = "query"
+  val REQ_NAME:String  = "name"
+  val REQ_NAMES:String = "names"
+
+  val REQ_QUERY:String  = "query"
+  val REQ_SOURCE:String = "source"
+    
   val REQ_SITE:String  = "site"
+  val REQ_START:String = "start"
 
   val REQ_TOTAL:String = "total"
   val REQ_UID:String   = "uid"

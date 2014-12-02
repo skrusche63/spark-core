@@ -20,17 +20,29 @@ package de.kp.spark.core.model
 
 class BaseStatus {
 
-  val BUILDING_STARTED:String  = "predictive-works:building:started"
-  val BUILDING_FINISHED:String = "predictive-works:building:finsihed"
+  private val BUILDING_PREFIX = "predictive-works:building:"
+    
+  val BUILDING_STARTED:String  = BUILDING_PREFIX + "started"
+  val BUILDING_FINISHED:String = BUILDING_PREFIX + "finished"
+    
+  val BUILDING_NOT_FINISHED:String = BUILDING_PREFIX + "not:finished"  
 
-  val MINING_STARTED:String  = "predictive-works:mining:started"
-  val MINING_FINISHED:String = "predictive-works:mining:finished"
+  private val MINING_PREFIX = "predictive-works:mining:"
+    
+  val MINING_STARTED:String  = MINING_PREFIX + "started"
+  val MINING_FINISHED:String = MINING_PREFIX + "finished"
+    
+  val MINING_NOT_FINISHED:String = MINING_PREFIX + "not:finished"  
     
   val TRACKING_STARTED:String = "predictive-works:tracking:started"
   val TRACKING_FINISHED:String = "predictive-works:tracking:finsihed"
 
-  val TRAINING_STARTED:String  = "predictive-works:training:started"
-  val TRAINING_FINISHED:String = "predictive-works:training:finsihed"
+  private val TRAINING_PREFIX = "predictive-works:training:"
+    
+  val TRAINING_STARTED:String  = TRAINING_PREFIX + "started"
+  val TRAINING_FINISHED:String = TRAINING_PREFIX + "finished"
+    
+  val TRAINING_NOT_FINISHED:String = TRAINING_PREFIX + "not:finished"  
   
   val FAILURE:String = "predictive-works:failure"
   val SUCCESS:String = "predictive-works:success"
