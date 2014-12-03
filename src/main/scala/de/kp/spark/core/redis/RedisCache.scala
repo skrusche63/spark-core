@@ -26,7 +26,7 @@ import de.kp.spark.core.Names
 import de.kp.spark.core.model._
 import de.kp.spark.core.model.BaseSerializer
 
-class RedisCache(host:String,port:Int) {
+class RedisCache(host:String,port:Int) extends Serializable {
 
   val client  = RedisClient(host,port)
   val serializer = new BaseSerializer()
