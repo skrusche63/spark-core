@@ -30,6 +30,30 @@ class FieldBuilder {
     val fields = ArrayBuffer.empty[Field]
     topic match {
       
+      case "amount" => {
+
+        fields += new Field(SITE_FIELD,"string",req.data(SITE_FIELD))
+        fields += new Field(TIMESTAMP_FIELD,"long",req.data(TIMESTAMP_FIELD))
+
+        fields += new Field(USER_FIELD,"string",req.data(USER_FIELD))
+        fields += new Field(AMOUNT_FIELD,"float",req.data(AMOUNT_FIELD))
+
+        fields.toList
+        
+      }
+      case "event" => {
+
+        fields += new Field(SITE_FIELD,"string",req.data(SITE_FIELD))
+        fields += new Field(TIMESTAMP_FIELD,"long",req.data(TIMESTAMP_FIELD))
+
+        fields += new Field(USER_FIELD,"string",req.data(USER_FIELD))
+
+        fields += new Field(ITEM_FIELD,"integer",req.data(ITEM_FIELD))
+        fields += new Field(EVENT_FIELD,"integer",req.data(EVENT_FIELD))
+
+        fields.toList
+      }
+
       case "item" => {
 
         fields += new Field(SITE_FIELD,"string",req.data(SITE_FIELD))
@@ -43,8 +67,22 @@ class FieldBuilder {
         fields.toList
         
       }
+      case "product" => {
+
+        fields += new Field(SITE_FIELD,"string",req.data(SITE_FIELD))
+        fields += new Field(TIMESTAMP_FIELD,"long",req.data(TIMESTAMP_FIELD))
+
+        fields += new Field(USER_FIELD,"string",req.data(USER_FIELD))
+        fields += new Field(GROUP_FIELD,"string",req.data(GROUP_FIELD))
+
+        fields += new Field(ITEM_FIELD,"integer",req.data(ITEM_FIELD))
+        fields += new Field(PRICE_FIELD,"float",req.data(PRICE_FIELD))
+
+        fields.toList
+        
+      }
       
-      case _ => fields.toList
+      case _ => throw new Exception("Topic is unknown.")
       
     }
   

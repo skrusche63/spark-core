@@ -67,6 +67,8 @@ object Names {
    *                     REQUEST
    *******************************************************/
   
+    val REQ_ALGORITHM:String = "algorithm"
+  
   val REQ_CONTEXT:String = "context"
   val REQ_END:String     = "end"
 
@@ -75,13 +77,17 @@ object Names {
   val REQ_FIELD:String  = "field"
   val REQ_FIELDS:String = "fields"
 
+  val REQ_FORMAT:String = "format"
+
   val REQ_ITEM:String  = "item"
   val REQ_ITEMS:String = "items"
 
   val REQ_NAME:String  = "name"
   val REQ_NAMES:String = "names"
 
-  val REQ_QUERY:String  = "query"
+  val REQ_QUERY:String = "query"
+    
+  val REQ_SINK:String   = "sink"
   val REQ_SOURCE:String = "source"
     
   val REQ_SITE:String  = "site"

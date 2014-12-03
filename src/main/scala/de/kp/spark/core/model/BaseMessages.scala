@@ -27,6 +27,9 @@ class BaseMessages {
   def ALGORITHM_IS_UNKNOWN(uid:String,algorithm:String):String = 
     String.format("""[UID: %s] Algorithm '%s' is unknown.""", uid, algorithm)
 
+  def FILE_SINK_REQUIRED(uid:String):String = 
+    String.format("""[UID: %s] A file sink is required for this request.""", uid)
+
   def GENERAL_ERROR(uid:String):String = 
     String.format("""[UID: %s] A general error occurred.""", uid)
  
@@ -35,6 +38,9 @@ class BaseMessages {
 
   def NO_PARAMETERS_PROVIDED(uid:String):String = 
     String.format("""[UID: %s] No parameters provided.""", uid)
+
+  def NO_SINK_PROVIDED(uid:String):String = 
+    String.format("""[UID: %s] No sink provided.""", uid)
 
   def NO_SOURCE_PROVIDED(uid:String):String = 
     String.format("""[UID: %s] No source provided.""", uid)

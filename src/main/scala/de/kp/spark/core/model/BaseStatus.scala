@@ -20,6 +20,9 @@ package de.kp.spark.core.model
 
 class BaseStatus {
 
+  /**
+   * General purpose stati to describe a building process
+   */
   private val BUILDING_PREFIX = "predictive-works:building:"
     
   val BUILDING_STARTED:String  = BUILDING_PREFIX + "started"
@@ -27,15 +30,36 @@ class BaseStatus {
     
   val BUILDING_NOT_FINISHED:String = BUILDING_PREFIX + "not:finished"  
 
+  /**
+   * Stati to describe the rating building process
+   */
+  private val RATING_BUILDING_PREFIX = BUILDING_PREFIX + "rating:"
+    
+  val RATING_BUILDING_STARTED:String  = RATING_BUILDING_PREFIX + "started"
+  val RATING_BUILDING_FINISHED:String = RATING_BUILDING_PREFIX + "finished"
+    
+  val RATING_BUILDING_NOT_FINISHED:String = RATING_BUILDING_PREFIX + "not:finished"  
+
+  /**
+   * General purpose stati to describe a mining process
+   */
   private val MINING_PREFIX = "predictive-works:mining:"
     
   val MINING_STARTED:String  = MINING_PREFIX + "started"
   val MINING_FINISHED:String = MINING_PREFIX + "finished"
     
   val MINING_NOT_FINISHED:String = MINING_PREFIX + "not:finished"  
+
+  /**
+   * General purpose stati to describe a tracking process
+   */
     
   val TRACKING_STARTED:String = "predictive-works:tracking:started"
   val TRACKING_FINISHED:String = "predictive-works:tracking:finsihed"
+
+  /**
+   * General purpose stati to describe a training process
+   */
 
   private val TRAINING_PREFIX = "predictive-works:training:"
     
@@ -43,7 +67,30 @@ class BaseStatus {
   val TRAINING_FINISHED:String = TRAINING_PREFIX + "finished"
     
   val TRAINING_NOT_FINISHED:String = TRAINING_PREFIX + "not:finished"  
+
+  /**
+   * Stati to describe the matrix training process
+   */
+  private val MATRIX_TRAINING_PREFIX = TRAINING_PREFIX + "matrix:"
+    
+  val MATRIX_TRAINING_STARTED:String  = MATRIX_TRAINING_PREFIX + "started"
+  val MATRIX_TRAINING_FINISHED:String = MATRIX_TRAINING_PREFIX + "finished"
+    
+  val MATRIX_TRAINING_NOT_FINISHED:String = MATRIX_TRAINING_PREFIX + "not:finished"  
+
+  /**
+   * Stati to describe the model training process
+   */
+  private val MODEL_TRAINING_PREFIX = TRAINING_PREFIX + "model:"
+    
+  val MODEL_TRAINING_STARTED:String  = MODEL_TRAINING_PREFIX + "started"
+  val MODEL_TRAINING_FINISHED:String = MODEL_TRAINING_PREFIX + "finished"
+    
+  val MODEL_TRAINING_NOT_FINISHED:String = MODEL_TRAINING_PREFIX + "not:finished"  
   
+  /**
+   * General purpose stati to support request - response
+   */
   val FAILURE:String = "predictive-works:failure"
   val SUCCESS:String = "predictive-works:success"
  
