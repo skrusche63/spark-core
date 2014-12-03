@@ -80,7 +80,7 @@ class RedisCache(host:String,port:Int) extends Serializable {
     val timestamp = now.getTime()
     
     val k = "status:" + uid
-    val v = "" + timestamp + ":" + serializer.serializeStatus(Status(service,task,status))
+    val v = "" + timestamp + ":" + serializer.serializeStatus(Status(service,task,status,timestamp))
     
     client.zadd(k,timestamp,v)
     
@@ -141,7 +141,10 @@ class RedisCache(host:String,port:Int) extends Serializable {
     }).toList
     
   }
-  
+  /**
+   * This method is deprecated; the newer status interface is based
+   * on the method 'statuses'.
+   */
   def status(req:ServiceRequest):String = {
 
     val k = "status:" + req.data("uid")
@@ -163,7 +166,7 @@ class RedisCache(host:String,port:Int) extends Serializable {
 
   }
   
-  def statuses(req:ServiceRequest):List[(Long,Status)] = {
+  def statuses(req:ServiceRequest):List[Status] = {
     
     val k = "status:" + req.data("uid")
     val data = client.zrange(k, 0, -1)
@@ -176,7 +179,7 @@ class RedisCache(host:String,port:Int) extends Serializable {
       data.map(record => {
         
         val Array(timestamp,status) = record.split(":")
-        (timestamp.toLong,serializer.deserializeStatus(status))
+        serializer.deserializeStatus(status)
         
       }).toList
       

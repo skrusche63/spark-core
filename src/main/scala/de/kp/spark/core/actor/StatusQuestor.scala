@@ -33,9 +33,15 @@ class StatusQuestor(config:Configuration) extends RootActor(config) {
       val response = if (cache.statusExists(req) == false) {           
         failure(req,messages.TASK_DOES_NOT_EXIST(uid))           
 
-      } else {            
-        status(req)
-            
+      } else {     
+        
+        try {
+          doStatus(req)
+        
+        } catch {
+          case e:Exception => failure(req,e.getMessage)
+        }    
+      
       }
            
       origin ! response
@@ -55,13 +61,47 @@ class StatusQuestor(config:Configuration) extends RootActor(config) {
   
   }
 
-  protected def status(req:ServiceRequest):ServiceResponse = {
-    
-    val uid = req.data(Names.REQ_UID)
-    val data = Map(Names.REQ_UID -> uid)
-                
-    new ServiceResponse(req.service,req.task,data,cache.status(req))	
+  protected def doStatus(req:ServiceRequest):ServiceResponse = {
 
+    val task = req.task
+    val uid = req.data(Names.REQ_UID)
+    
+    if (task == "status") {
+      /*
+       * This is case is supported to be compliant to 
+       * previous versions of the status management
+       */
+      val data = Map(Names.REQ_UID -> uid)               
+      return new ServiceResponse(req.service,req.task,data,cache.status(req))	
+
+    }
+    /*
+     * The actual status management supports the following tasks:
+     * 
+     * 1) status:latest & 2) status:all
+     * 
+     */
+    val topic = task.split(":")(1)
+    if (topic == "latest") {
+      
+      val latest = cache.statuses(req).last
+      val result = StatusList(List(latest))
+      
+      val data = Map(Names.REQ_UID -> uid,Names.REQ_STATUS -> serializer.serializeStatusList(result))               
+      return new ServiceResponse(req.service,req.task,data,status.SUCCESS)	
+    
+    } else if (topic == "all") {
+      
+      val statuses = cache.statuses(req)
+      val result = StatusList(statuses)
+      
+      val data = Map(Names.REQ_UID -> uid,Names.REQ_STATUS -> serializer.serializeStatusList(result))               
+      return new ServiceResponse(req.service,req.task,data,status.SUCCESS)	
+     
+    } else {
+      throw new Exception("This status request type is not supported.")
+    }
+    
   }
 
 }

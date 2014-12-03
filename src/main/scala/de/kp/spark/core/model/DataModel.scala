@@ -51,6 +51,7 @@ case class ServiceResponse(
  * and are stored in a Redis instance
  */
 case class Status(
-  service:String,task:String,status:String
+  service:String,task:String,status:String,timestamp:Long
 )
 
+case class StatusList(items:List[Status])

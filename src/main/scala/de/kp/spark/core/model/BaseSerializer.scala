@@ -30,13 +30,16 @@ class BaseSerializer {
   def serializeFields(fields:Fields):String = write(fields) 
   def deserializeFields(fields:String):Fields = read[Fields](fields)
 
-  def serializeStatus(status:Status):String = write(Status)
-  def deserializeStatus(status:String):Status = read[Status](status)
-
   def deserializeResponse(response:String):ServiceResponse = read[ServiceResponse](response)
   def serializeResponse(response:ServiceResponse):String = write(response)
   
   def deserializeRequest(request:String):ServiceRequest = read[ServiceRequest](request)
   def serializeRequest(request:ServiceRequest):String = write(request)
+
+  def serializeStatus(status:Status):String = write(status)
+  def deserializeStatus(status:String):Status = read[Status](status)
+
+  def serializeStatusList(statuses:StatusList):String = write(statuses)
+  def deserializeStatusList(statuses:String):StatusList = read[StatusList](statuses)
 
 }

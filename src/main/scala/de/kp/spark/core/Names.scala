@@ -95,6 +95,8 @@ object Names {
   val REQ_SITE:String  = "site"
   val REQ_START:String = "start"
 
+  val REQ_STATUS:String = "status"
+
   val REQ_TOTAL:String = "total"
   val REQ_TYPES:String = "types"
     
