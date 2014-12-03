@@ -67,10 +67,12 @@ object Names {
    *                     REQUEST
    *******************************************************/
   
-    val REQ_ALGORITHM:String = "algorithm"
+  val REQ_ALGORITHM:String = "algorithm"
   
+  val REQ_COLUMNS:String = "columns"
   val REQ_CONTEXT:String = "context"
-  val REQ_END:String     = "end"
+
+  val REQ_END:String = "end"
 
   val REQ_FEATURES:String = "features"
 
