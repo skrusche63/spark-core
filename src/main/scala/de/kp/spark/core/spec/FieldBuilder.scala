@@ -48,8 +48,12 @@ class FieldBuilder {
 
         fields += new Field(USER_FIELD,"string",req.data(USER_FIELD))
 
-        fields += new Field(ITEM_FIELD,"integer",req.data(ITEM_FIELD))
         fields += new Field(EVENT_FIELD,"integer",req.data(EVENT_FIELD))
+        fields += new Field(ITEM_FIELD,"integer",req.data(ITEM_FIELD))
+        
+        /* events may have a score */
+        if (req.data.contains(SCORE_FIELD)) 
+          fields += new Field(SCORE_FIELD,"double",req.data(SCORE_FIELD))
 
         fields.toList
       }
@@ -63,6 +67,10 @@ class FieldBuilder {
         fields += new Field(GROUP_FIELD,"string",req.data(GROUP_FIELD))
 
         fields += new Field(ITEM_FIELD,"integer",req.data(ITEM_FIELD))
+        
+        /* items may have a score */
+        if (req.data.contains(SCORE_FIELD)) 
+          fields += new Field(SCORE_FIELD,"double",req.data(SCORE_FIELD))
 
         fields.toList
         
