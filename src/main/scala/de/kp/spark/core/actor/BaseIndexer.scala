@@ -20,6 +20,7 @@ package de.kp.spark.core.actor
 
 import de.kp.spark.core.Configuration
 
+import de.kp.spark.core.Names
 import de.kp.spark.core.model._
 
 import de.kp.spark.core.io.ElasticIndexer
@@ -31,15 +32,15 @@ class BaseIndexer(config:Configuration) extends RootActor(config) {
     
     case req:ServiceRequest => {
 
-      val uid = req.data("uid")
+      val uid = req.data(Names.REQ_UID)
       val origin = sender
 
       try {
     
         val (names,types) = getSpec(req)
  
-        val index   = req.data("index")
-        val mapping = req.data("type")
+        val index   = req.data(Names.REQ_INDEX)
+        val mapping = req.data(Names.REQ_TYPE)
     
         val topic = getTopic(req)
         
@@ -49,7 +50,7 @@ class BaseIndexer(config:Configuration) extends RootActor(config) {
         indexer.create(index,mapping,builder)
         indexer.close()
       
-        val data = Map("uid" -> uid, "message" -> messages.SEARCH_INDEX_CREATED(uid))
+        val data = Map(Names.REQ_UID -> uid, "message" -> messages.SEARCH_INDEX_CREATED(uid))
         val response = new ServiceResponse(req.service,req.task,data,status.SUCCESS)	
       
         origin ! response
@@ -60,7 +61,7 @@ class BaseIndexer(config:Configuration) extends RootActor(config) {
           
           log.error(e, e.getMessage())
       
-          val data = Map("uid" -> uid, "message" -> e.getMessage())
+          val data = Map(Names.REQ_UID -> uid, "message" -> e.getMessage())
           val response = new ServiceResponse(req.service,req.task,data,status.FAILURE)	
       
           origin ! response

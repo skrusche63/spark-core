@@ -81,6 +81,8 @@ object Names {
 
   val REQ_FORMAT:String = "format"
 
+  val REQ_INDEX:String  = "index"
+
   val REQ_ITEM:String  = "item"
   val REQ_ITEMS:String = "items"
 
@@ -98,6 +100,8 @@ object Names {
   val REQ_STATUS:String = "status"
 
   val REQ_TOTAL:String = "total"
+  val REQ_TYPE:String  = "type"
+
   val REQ_TYPES:String = "types"
     
   val REQ_UID:String   = "uid"
