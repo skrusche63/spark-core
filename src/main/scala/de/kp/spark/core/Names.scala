@@ -50,7 +50,8 @@ object Names {
    */
   val RULE_FIELD:String = "rule"
     
-  val SITE_FIELD:String = "site"
+  val SCORE_FIELD:String = "score"
+  val SITE_FIELD:String  = "site"
 
   val SUPPORT_FIELD:String = "support"
   val TIMESTAMP_FIELD:String = "timestamp"
@@ -90,6 +91,8 @@ object Names {
   val REQ_NAMES:String = "names"
 
   val REQ_QUERY:String = "query"
+
+  val REQ_SCORE:String = "score"
     
   val REQ_SINK:String   = "sink"
   val REQ_SOURCE:String = "source"

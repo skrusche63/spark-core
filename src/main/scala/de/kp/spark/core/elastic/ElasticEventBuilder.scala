@@ -25,42 +25,48 @@ class ElasticEventBuilder {
   import de.kp.spark.core.Names._
   
   def createBuilder(mapping:String):XContentBuilder = {
+    
     val builder = XContentFactory.jsonBuilder()
-                      .startObject()
-                      .startObject(mapping)
-                        .startObject("properties")
+          .startObject()
+            .startObject(mapping)
+              .startObject("properties")
 
-                          /* timestamp */
-                          .startObject(TIMESTAMP_FIELD)
-                            .field("type", "long")
-                          .endObject()
+                /* timestamp */
+                .startObject(TIMESTAMP_FIELD)
+                  .field("type", "long")
+                .endObject()
                     
-                          /* site */
-                          .startObject(SITE_FIELD)
-                            .field("type", "string")
-                            .field("index", "not_analyzed")
-                          .endObject()
+                /* site */
+                .startObject(SITE_FIELD)
+                   .field("type", "string")
+                   .field("index", "not_analyzed")
+                .endObject()
 
-                          /* user */
-                          .startObject(USER_FIELD)
-                            .field("type", "string")
-                            .field("index", "not_analyzed")
-                          .endObject()//
+                /* user */
+                .startObject(USER_FIELD)
+                   .field("type", "string")
+                   .field("index", "not_analyzed")
+                .endObject()//
 
-                          /* event */
-                          .startObject(EVENT_FIELD)
-                            .field("type", "integer")
-                            .field("index", "not_analyzed")
-                          .endObject()//
+                /* event */
+                .startObject(EVENT_FIELD)
+                   .field("type", "integer")
+                   .field("index", "not_analyzed")
+                .endObject()//
 
-                          /* item */
-                          .startObject(ITEM_FIELD)
-                            .field("type", "string")
-                          .endObject()
+                /* item */
+                .startObject(ITEM_FIELD)
+                  .field("type", "string")
+                .endObject()
 
-                        .endObject() // properties
-                      .endObject()   // mapping
-                    .endObject()
+                /* score */
+                .startObject(SCORE_FIELD)
+                   .field("type", "double")
+                .endObject()
+
+              .endObject() // properties
+            .endObject()   // mapping
+          .endObject()
                     
     builder
 
