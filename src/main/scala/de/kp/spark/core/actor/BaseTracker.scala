@@ -25,6 +25,9 @@ import de.kp.spark.core.model._
 
 import de.kp.spark.core.io.ElasticWriter
 
+import de.kp.spark.core.elastic.ElasticAmountBuilder
+import de.kp.spark.core.elastic.ElasticEventBuilder
+
 abstract class BaseTracker(config:Configuration) extends RootActor(config) {
   
   def receive = {
@@ -89,9 +92,20 @@ abstract class BaseTracker(config:Configuration) extends RootActor(config) {
  
      req.task.split(":")(1) match {
 
+       case "amount" => {
+      
+         val source = prepareAmount(req)
+         /*
+          * Writing this source to the respective index throws an
+          * exception in case of an error; note, that the writer is
+          * automatically closed 
+          */
+         writer.write(index, mapping, source)
+         
+       }
        case "event" => {
          
-         val source = prepareEvent(req.data)
+         val source = prepareEvent(req)
          /*
           * Writing this source to the respective index throws an
           * exception in case of an error; note, that the writer is
@@ -100,6 +114,17 @@ abstract class BaseTracker(config:Configuration) extends RootActor(config) {
          writer.write(index, mapping, source)        
         
        }       
+       case "feature" => {
+      
+         val source = prepareFeature(req.data)
+         /*
+          * Writing this source to the respective index throws an
+          * exception in case of an error; note, that the writer is
+          * automatically closed 
+          */
+         writer.write(index, mapping, source)
+         
+       }
        case "item" => {
       
          /*
@@ -142,6 +167,17 @@ abstract class BaseTracker(config:Configuration) extends RootActor(config) {
          }
          
        }      
+       case "sequence" => {
+      
+         val source = prepareSequence(req.data)
+         /*
+          * Writing this source to the respective index throws an
+          * exception in case of an error; note, that the writer is
+          * automatically closed 
+          */
+         writer.write(index, mapping, source)
+         
+       }
        case _ => {
           
          val msg = messages.TASK_IS_UNKNOWN(uid,req.task)
@@ -163,9 +199,20 @@ abstract class BaseTracker(config:Configuration) extends RootActor(config) {
    }
     
   }
-   
-  protected def prepareEvent(params:Map[String,String]):java.util.Map[String,Object]
+    
+  protected def prepareAmount(req:ServiceRequest):java.util.Map[String,Object] = {
+    new ElasticAmountBuilder().createSource(req.data)
+  }
+    
+  protected def prepareFeature(params:Map[String,String]):java.util.Map[String,Object] = null
+  
+  protected def prepareEvent(req:ServiceRequest):java.util.Map[String,Object] = {
+    new ElasticEventBuilder().createSource(req.data)
+  }
 
-  protected def prepareItem(params:Map[String,String]):java.util.Map[String,Object]
+  protected def prepareItem(params:Map[String,String]):java.util.Map[String,Object] = null
+  
+  protected def prepareSequence(params:Map[String,String]):java.util.Map[String,Object] = null
+  
  
 }

@@ -20,6 +20,11 @@ package de.kp.spark.core.elastic
 
 import org.elasticsearch.common.xcontent.{XContentBuilder,XContentFactory}
 
+import de.kp.spark.core.Names
+
+import scala.collection.JavaConversions._
+import scala.collection.mutable.HashMap
+
 class ElasticAmountBuilder {
 
   import de.kp.spark.core.Names._
@@ -29,38 +34,53 @@ class ElasticAmountBuilder {
      * Define mapping schema for index 'index' and 'type'
      */
     val builder = XContentFactory.jsonBuilder()
-                      .startObject()
-                      .startObject(mapping)
-                        .startObject("properties")
+          .startObject()
+            .startObject(mapping)
+               .startObject("properties")
 
-                          /* timestamp */
-                          .startObject(TIMESTAMP_FIELD)
-                            .field("type", "long")
-                          .endObject()
+               /* timestamp */
+               .startObject(TIMESTAMP_FIELD)
+                 .field("type", "long")
+               .endObject()
                     
-                          /* site */
-                          .startObject(SITE_FIELD)
-                            .field("type", "string")
-                            .field("index", "not_analyzed")
-                          .endObject()
+               /* site */
+               .startObject(SITE_FIELD)
+                  .field("type", "string")
+                  .field("index", "not_analyzed")
+               .endObject()
 
-                          /* user */
-                          .startObject(USER_FIELD)
-                            .field("type", "string")
-                            .field("index", "not_analyzed")
-                          .endObject()//
+               /* user */
+               .startObject(USER_FIELD)
+                  .field("type", "string")
+                  .field("index", "not_analyzed")
+               .endObject()//
 
-                          /* amount */
-                          .startObject(AMOUNT_FIELD)
-                            .field("type", "float")
-                          .endObject()//
+               /* amount */
+               .startObject(AMOUNT_FIELD)
+                  .field("type", "float")
+               .endObject()//
 
-                        .endObject() // properties
-                      .endObject()   // mapping
-                    .endObject()
+               .endObject() // properties
+            .endObject()   // mapping
+          .endObject()
                     
     builder
 
+  }
+  
+  def createSource(params:Map[String,String]):java.util.Map[String,Object] = {
+    
+    val source = HashMap.empty[String,String]
+    
+    source += Names.SITE_FIELD -> params(Names.SITE_FIELD)
+    source += Names.USER_FIELD -> params(Names.USER_FIELD)
+      
+    source += Names.TIMESTAMP_FIELD -> params(Names.TIMESTAMP_FIELD)
+ 
+    source += Names.AMOUNT_FIELD -> params(Names.AMOUNT_FIELD)
+
+    source
+    
   }
 
 }

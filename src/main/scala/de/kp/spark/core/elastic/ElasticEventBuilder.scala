@@ -20,6 +20,11 @@ package de.kp.spark.core.elastic
 
 import org.elasticsearch.common.xcontent.{XContentBuilder,XContentFactory}
 
+import de.kp.spark.core.Names
+
+import scala.collection.JavaConversions._
+import scala.collection.mutable.HashMap
+
 class ElasticEventBuilder {
 
   import de.kp.spark.core.Names._
@@ -70,6 +75,30 @@ class ElasticEventBuilder {
                     
     builder
 
+  }
+ 
+  def createSource(params:Map[String,String]):java.util.Map[String,Object] = {
+    
+    val source = HashMap.empty[String,String]
+    
+    source += Names.SITE_FIELD -> params(Names.SITE_FIELD)
+    source += Names.USER_FIELD -> params(Names.USER_FIELD)
+      
+    source += Names.TIMESTAMP_FIELD -> params(Names.TIMESTAMP_FIELD) 
+    source += Names.ITEM_FIELD -> params(Names.ITEM_FIELD) 
+
+    source += Names.EVENT_FIELD -> params(Names.EVENT_FIELD)
+ 
+    /*
+     * A trackable event may have a 'score' field assigned;
+     * note, that this field is optional
+     */
+    if (params.contains(Names.REQ_SCORE)) {
+      source += Names.REQ_SCORE -> params(Names.REQ_SCORE)     
+    }
+    
+    source
+    
   }
 
 }
