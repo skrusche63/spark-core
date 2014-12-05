@@ -42,7 +42,7 @@ class RedisDB(host:String,port:Int) extends Serializable {
     val now = new java.util.Date()
     val timestamp = now.getTime()
     
-    val k = "matrix:" + req.data(Names.REQ_NAME) + ":" + req.data(Names.REQ_UID)
+    val k = "matrix:" + req.data(Names.REQ_UID) + ":"  + req.data(Names.REQ_NAME)
     val v = "" + timestamp + ":" + matrix
     
     client.zadd(k,timestamp,v)
@@ -51,14 +51,14 @@ class RedisDB(host:String,port:Int) extends Serializable {
   
   def matrixExists(req:ServiceRequest):Boolean = {
 
-    val k = "matrix:" + req.data(Names.REQ_NAME) + ":" + req.data(Names.REQ_UID)
+    val k = "matrix:" + req.data(Names.REQ_UID) + ":"  + req.data(Names.REQ_NAME)
     client.exists(k)
     
   }
   
   def matrix(req:ServiceRequest):String = {
 
-    val k = "matrix:" + req.data(Names.REQ_NAME) + ":" + req.data(Names.REQ_UID)
+    val k = "matrix:" + req.data(Names.REQ_UID) + ":"  + req.data(Names.REQ_NAME)
     val matrices = client.zrange(k, 0, -1)
 
     if (matrices.size() == 0) {
@@ -90,7 +90,7 @@ class RedisDB(host:String,port:Int) extends Serializable {
     val now = new java.util.Date()
     val timestamp = now.getTime()
     
-    val k = "model:" + req.data(Names.REQ_NAME) + ":" + req.data(Names.REQ_UID)
+    val k = "model:" + req.data(Names.REQ_UID) + ":"  + req.data(Names.REQ_NAME)
     val v = "" + timestamp + ":" + model
     
     client.zadd(k,timestamp,v)
@@ -99,14 +99,14 @@ class RedisDB(host:String,port:Int) extends Serializable {
   
   def modelExists(req:ServiceRequest):Boolean = {
 
-    val k = "model:" + req.data(Names.REQ_NAME) + ":" + req.data(Names.REQ_UID)
+    val k = "model:" + req.data(Names.REQ_UID) + ":"  + req.data(Names.REQ_NAME)
     client.exists(k)
     
   }
   
   def model(req:ServiceRequest):String = {
 
-    val k = "model:" + req.data(Names.REQ_NAME) + ":" + req.data(Names.REQ_UID)
+    val k = "model:" + req.data(Names.REQ_UID) + ":"  + req.data(Names.REQ_NAME)
     val models = client.zrange(k, 0, -1)
 
     if (models.size() == 0) {
@@ -120,5 +120,52 @@ class RedisDB(host:String,port:Int) extends Serializable {
     }
   
   }
+  /**
+   * This method registers the unique identifier of a certain user in the Redis
+   * instance; this information is used by the Preference engine, Context-Aware
+   * Analysis engine and others
+   */
+  def addUser(req:ServiceRequest,uid:String) {
+    
+    val k = "user:" + req.data(Names.REQ_UID) + ":" + req.data(Names.REQ_NAME)
+    val v = uid
+    
+    client.rpush(k,v)
+    
+  }
 
+  def users (req:ServiceRequest):Seq[String] = {
+       
+    val k = "user:" + req.data(Names.REQ_UID) + ":" + req.data(Names.REQ_NAME)
+    val data = client.lrange(k, 0, -1)
+
+    val users = if (data.size() == 0) List.empty[String] else data.toList
+    users
+    
+  }
+  
+  /**
+   * This method registers the unique identifier of a certain item in the Redis
+   * instance; this information is used by the Preference engine, Context-Aware
+   * Analysis engine and others
+   */
+  def addItem(req:ServiceRequest,iid:String) {
+    
+    val k = "item:" + req.data(Names.REQ_UID) + ":" + req.data(Names.REQ_NAME)
+    val v = iid
+    
+    client.rpush(k,v)
+    
+  }
+
+  def items (req:ServiceRequest):Seq[String] = {
+       
+    val k = "item:" + req.data(Names.REQ_UID) + ":" + req.data(Names.REQ_NAME)
+    val data = client.lrange(k, 0, -1)
+
+    val items = if (data.size() == 0) List.empty[String] else data.toList
+    items
+    
+  }
+  
 }
