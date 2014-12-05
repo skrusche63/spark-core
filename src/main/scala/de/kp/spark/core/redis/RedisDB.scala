@@ -25,6 +25,9 @@ import scala.collection.JavaConversions._
 class RedisDB(host:String,port:Int) extends Serializable {
 
   val client = RedisClient(host,port)
+  
+  def exists(k:String):Boolean = client.exists(k)
+  
   /**
    * Register the path to similarity matrix; the similarity matrix
    * is built by the Context-Aware Analysis engine and specifies the
@@ -120,6 +123,26 @@ class RedisDB(host:String,port:Int) extends Serializable {
     }
   
   }
+  
+  def addEvent(req:ServiceRequest,eid:Int,ename:String) {
+    
+    val k = "event:" + req.data(Names.REQ_UID) + ":" + req.data(Names.REQ_NAME)
+    val v = "" + eid + ":" +ename
+    
+    client.rpush(k,v)
+    
+  }
+  
+  def events (req:ServiceRequest):Seq[String] = {
+       
+    val k = "event:" + req.data(Names.REQ_UID) + ":" + req.data(Names.REQ_NAME)
+    val data = client.lrange(k, 0, -1)
+
+    val events = if (data.size() == 0) List.empty[String] else data.map(x => x.split(":")(1))
+    events
+    
+  }
+  
   /**
    * This method registers the unique identifier of a certain user in the Redis
    * instance; this information is used by the Preference engine, Context-Aware
@@ -167,5 +190,14 @@ class RedisDB(host:String,port:Int) extends Serializable {
     items
     
   }
-  
+ 
+  def addRating(req:ServiceRequest,rating:String) {
+    
+    val k = "rating:" + req.data(Names.REQ_UID) + ":" + req.data(Names.REQ_NAME)
+    val v = rating
+    
+    client.rpush(k,v)
+
+  }
+ 
 }
