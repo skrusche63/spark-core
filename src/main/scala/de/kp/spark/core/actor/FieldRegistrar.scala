@@ -23,7 +23,7 @@ import de.kp.spark.core.{Configuration,Names}
 import de.kp.spark.core.model._
 import de.kp.spark.core.spec.FieldBuilder
 
-class ItemRegistrar(config:Configuration) extends RootActor(config) {
+class FieldRegistrar(config:Configuration) extends RootActor(config) {
   
   def receive = {
     
@@ -33,20 +33,51 @@ class ItemRegistrar(config:Configuration) extends RootActor(config) {
       val uid = req.data(Names.REQ_UID)
       
       val response = try {
-        
-        val fields = new FieldBuilder().build(req,"item")
-        cache.addFields(req, fields.toList)
-        
-        new ServiceResponse(req.service,req.task,Map(Names.REQ_UID-> uid),status.SUCCESS)
+        register(req)
         
       } catch {
         case throwable:Throwable => failure(req,throwable.getMessage)
       }
       
       origin ! response
+      context.stop(self)
 
     }
     
   }
 
+  protected def register(req:ServiceRequest):ServiceResponse = {
+    
+    val uid = req.data(Names.REQ_UID)
+    val topic = req.task.split(":")(1)
+    
+    topic match {
+       
+      case "event" => {
+        
+        val fields = new FieldBuilder().build(req,topic)
+        cache.addFields(req, fields.toList)
+        
+        new ServiceResponse(req.service,req.task,Map(Names.REQ_UID-> uid),status.SUCCESS)
+      
+      }
+      case "item" => {
+        
+        val fields = new FieldBuilder().build(req,topic)
+        cache.addFields(req, fields.toList)
+        
+        new ServiceResponse(req.service,req.task,Map(Names.REQ_UID-> uid),status.SUCCESS)
+                
+      }
+      case _ => {
+          
+         val msg = messages.TASK_IS_UNKNOWN(uid,req.task)
+         throw new Exception(msg)
+          
+       }
+
+    }
+    
+  }
+  
 }

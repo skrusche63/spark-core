@@ -20,6 +20,11 @@ package de.kp.spark.core.elastic
 
 import org.elasticsearch.common.xcontent.{XContentBuilder,XContentFactory}
 
+import de.kp.spark.core.Names
+
+import scala.collection.JavaConversions._
+import scala.collection.mutable.HashMap
+
 class ElasticFeatureBuilder {
 
   import de.kp.spark.core.Names._
@@ -60,6 +65,33 @@ class ElasticFeatureBuilder {
                     
     builder
 
+  }
+ 
+  def createSource(params:Map[String,String]):java.util.Map[String,Object] = {
+    
+    val now = new java.util.Date()
+    val source = HashMap.empty[String,String]
+    
+    source += Names.SITE_FIELD -> params(Names.SITE_FIELD)
+    source += Names.TIMESTAMP_FIELD -> now.getTime().toString    
+ 
+    /* 
+     * Restrict parameters to those that are relevant to feature description;
+     * note, that we use a flat JSON data structure for simplicity and distinguish
+     * field semantics by different prefixes 
+     */
+    val records = params.filter(kv => kv._1.startsWith("lbl.") || kv._1.startsWith("fea."))
+    for (rec <- records) {
+      
+      val (k,v) = rec
+        
+      val name = k.replace("lbl.","").replace("fea.","")
+      source += k -> v      
+      
+    }
+
+    source
+    
   }
 
 }

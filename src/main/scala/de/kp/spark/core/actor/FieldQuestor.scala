@@ -25,7 +25,7 @@ import de.kp.spark.core.model._
  * The FieldQuestor retrieves the field specification used
  * for a certain data mining or model building task
  */
-abstract class FieldQuestor(config:Configuration) extends RootActor(config) {
+class FieldQuestor(config:Configuration) extends RootActor(config) {
 
   def receive = {
 

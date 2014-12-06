@@ -65,7 +65,7 @@ object Names {
   val WEIGHT_FIELD:String = "weight"
    
   /********************************************************
-   *                     REQUEST
+   *                     REQUEST / RESPONSE
    *******************************************************/
   
   val REQ_ALGORITHM:String = "algorithm"
@@ -115,4 +115,7 @@ object Names {
   val REQ_SOURCE_INDEX:String = "source.index"
   val REQ_SOURCE_TYPE:String  = "source.type"
 
+  val REQ_MESSAGE:String  = "message"
+  val REQ_RESPONSE:String = "response"  
+    
 }

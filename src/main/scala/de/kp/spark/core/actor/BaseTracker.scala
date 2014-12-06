@@ -24,11 +24,9 @@ import de.kp.spark.core.Names
 import de.kp.spark.core.model._
 
 import de.kp.spark.core.io.ElasticWriter
+import de.kp.spark.core.elastic._
 
-import de.kp.spark.core.elastic.ElasticAmountBuilder
-import de.kp.spark.core.elastic.ElasticEventBuilder
-
-abstract class BaseTracker(config:Configuration) extends RootActor(config) {
+class BaseTracker(config:Configuration) extends RootActor(config) {
   
   def receive = {
 
@@ -116,7 +114,7 @@ abstract class BaseTracker(config:Configuration) extends RootActor(config) {
        }       
        case "feature" => {
       
-         val source = prepareFeature(req.data)
+         val source = prepareFeature(req)
          /*
           * Writing this source to the respective index throws an
           * exception in case of an error; note, that the writer is
@@ -133,7 +131,7 @@ abstract class BaseTracker(config:Configuration) extends RootActor(config) {
           * field may specify a list of purchase items and has to be 
           * processed differently.
           */
-         val source = prepareItem(req.data)
+         val source = prepareItem(req)
          /*
           * The 'item' field specifies a comma-separated list
           * of item (e.g.) product identifiers. Note, that every
@@ -204,13 +202,32 @@ abstract class BaseTracker(config:Configuration) extends RootActor(config) {
     new ElasticAmountBuilder().createSource(req.data)
   }
     
-  protected def prepareFeature(params:Map[String,String]):java.util.Map[String,Object] = null
+  protected def prepareFeature(req:ServiceRequest):java.util.Map[String,Object] = {
+    new ElasticFeatureBuilder().createSource(req.data)
+  }
   
   protected def prepareEvent(req:ServiceRequest):java.util.Map[String,Object] = {
     new ElasticEventBuilder().createSource(req.data)
   }
 
-  protected def prepareItem(params:Map[String,String]):java.util.Map[String,Object] = null
+  protected def prepareItem(req:ServiceRequest):java.util.Map[String,Object] = {
+   /*
+    * Example request data:
+    * 
+    * "uid": "123456"
+    * 
+    * "index": "orders"
+    * "type" : "products"
+    * 
+    * "site"    : "site-1"
+    * "user"    : "user-1"
+    * "timestamp: "1234567890"
+    * "group"   : "group-1"
+    * "item"    : "1,2,3,4,5,6,7"
+    * 
+    */   
+    new ElasticItemBuilder().createSource(req.data)
+  }
   
   protected def prepareSequence(params:Map[String,String]):java.util.Map[String,Object] = null
   
