@@ -32,65 +32,75 @@ class FieldBuilder {
       
       case "amount" => {
 
-        fields += new Field(SITE_FIELD,"string",req.data(SITE_FIELD))
-        fields += new Field(TIMESTAMP_FIELD,"long",req.data(TIMESTAMP_FIELD))
-
-        fields += new Field(USER_FIELD,"string",req.data(USER_FIELD))
-        fields += new Field(AMOUNT_FIELD,"float",req.data(AMOUNT_FIELD))
+        val names = List(SITE_FIELD,TIMESTAMP_FIELD,USER_FIELD,AMOUNT_FIELD)
+        val types = List("string","long","string","float")
+        
+        names.zip(types).foreach(entry => {
+          
+          val (name,datatype) = entry
+          val value = if (req.data.contains(name)) req.data(name) else name
+          
+          fields += new Field(name,datatype,value)
+          
+        })
 
         fields.toList
         
       }
       case "event" => {
 
-        fields += new Field(SITE_FIELD,"string",req.data(SITE_FIELD))
-        fields += new Field(TIMESTAMP_FIELD,"long",req.data(TIMESTAMP_FIELD))
-
-        fields += new Field(USER_FIELD,"string",req.data(USER_FIELD))
-
-        fields += new Field(EVENT_FIELD,"integer",req.data(EVENT_FIELD))
-        fields += new Field(ITEM_FIELD,"integer",req.data(ITEM_FIELD))
+        val names = List(SITE_FIELD,TIMESTAMP_FIELD,USER_FIELD,EVENT_FIELD,ITEM_FIELD,SCORE_FIELD)
+        val types = List("string","long","string","integer","integer","double")
         
-        /* events may have a score */
-        if (req.data.contains(SCORE_FIELD)) 
-          fields += new Field(SCORE_FIELD,"double",req.data(SCORE_FIELD))
+        names.zip(types).foreach(entry => {
+          
+          val (name,datatype) = entry
+          val value = if (req.data.contains(name)) req.data(name) else name
+          
+          fields += new Field(name,datatype,value)
+          
+        })
 
         fields.toList
+
       }
 
       case "item" => {
 
-        fields += new Field(SITE_FIELD,"string",req.data(SITE_FIELD))
-        fields += new Field(TIMESTAMP_FIELD,"long",req.data(TIMESTAMP_FIELD))
-
-        fields += new Field(USER_FIELD,"string",req.data(USER_FIELD))
-        fields += new Field(GROUP_FIELD,"string",req.data(GROUP_FIELD))
-
-        fields += new Field(ITEM_FIELD,"integer",req.data(ITEM_FIELD))
+        val names = List(SITE_FIELD,TIMESTAMP_FIELD,USER_FIELD,GROUP_FIELD,ITEM_FIELD,SCORE_FIELD)
+        val types = List("string","long","string","string","integer","double")
         
-        /* items may have a score */
-        if (req.data.contains(SCORE_FIELD)) 
-          fields += new Field(SCORE_FIELD,"double",req.data(SCORE_FIELD))
+        names.zip(types).foreach(entry => {
+          
+          val (name,datatype) = entry
+          val value = if (req.data.contains(name)) req.data(name) else name
+          
+          fields += new Field(name,datatype,value)
+          
+        })
 
         fields.toList
         
       }
       case "product" => {
 
-        fields += new Field(SITE_FIELD,"string",req.data(SITE_FIELD))
-        fields += new Field(TIMESTAMP_FIELD,"long",req.data(TIMESTAMP_FIELD))
-
-        fields += new Field(USER_FIELD,"string",req.data(USER_FIELD))
-        fields += new Field(GROUP_FIELD,"string",req.data(GROUP_FIELD))
-
-        fields += new Field(ITEM_FIELD,"integer",req.data(ITEM_FIELD))
-        fields += new Field(PRICE_FIELD,"float",req.data(PRICE_FIELD))
+        val names = List(SITE_FIELD,TIMESTAMP_FIELD,USER_FIELD,GROUP_FIELD,ITEM_FIELD,PRICE_FIELD)
+        val types = List("string","long","string","string","integer","float")
+        
+        names.zip(types).foreach(entry => {
+          
+          val (name,datatype) = entry
+          val value = if (req.data.contains(name)) req.data(name) else name
+          
+          fields += new Field(name,datatype,value)
+          
+        })
 
         fields.toList
         
       }
       
-      case _ => throw new Exception("Topic is unknown.")
+      case _ => fields.toList 
       
     }
   

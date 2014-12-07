@@ -26,6 +26,8 @@ import de.kp.spark.core.model._
 import de.kp.spark.core.io.ElasticIndexer
 import de.kp.spark.core.elastic.{ElasticBuilderFactory => EBF}
 
+import de.kp.spark.core.spec.FieldBuilder
+
 class BaseIndexer(config:Configuration) extends RootActor(config) {
   
   def receive = {
@@ -36,7 +38,11 @@ class BaseIndexer(config:Configuration) extends RootActor(config) {
       val origin = sender
 
       try {
-    
+        /*
+         * Retrieve the field specification for features from the request 
+         * as two lists, names & types; this is only required for dynamic
+         * field specifications 
+         */
         val (names,types) = getSpec(req)
  
         val index   = req.data(Names.REQ_INDEX)
@@ -49,7 +55,15 @@ class BaseIndexer(config:Configuration) extends RootActor(config) {
     
         indexer.create(index,mapping,builder)
         indexer.close()
-      
+        
+        /*
+         * Raw data that are ingested by the tracking functionality doe not have
+         * to be specified by a field or metadata specification; we therefore
+         * and the field specification here as an internal feature
+         */        
+        val fields = new FieldBuilder().build(req,topic)
+        if (fields.isEmpty == false) cache.addFields(req, fields.toList)
+        
         val data = Map(Names.REQ_UID -> uid, "message" -> messages.SEARCH_INDEX_CREATED(uid))
         val response = new ServiceResponse(req.service,req.task,data,status.SUCCESS)	
       

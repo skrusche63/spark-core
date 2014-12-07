@@ -37,7 +37,7 @@ class RedisCache(host:String,port:Int) extends Serializable {
    */
   def addField(req:ServiceRequest,field:Field) {
     
-    val k = "fields:" + req.data(Names.REQ_NAME) + ":" + req.data(Names.REQ_UID)
+    val k = "fields:" + req.data(Names.REQ_UID) + ":" + req.data(Names.REQ_NAME) 
     val v = String.format("""%s:%s:%s""",field.name,field.datatype,field.value)
     
     client.rpush(k,v)
@@ -88,7 +88,7 @@ class RedisCache(host:String,port:Int) extends Serializable {
   
   def fieldsExist(req:ServiceRequest):Boolean = {
 
-    val k = "fields:" + req.data(Names.REQ_NAME) + ":" + req.data(Names.REQ_UID)
+    val k = "fields:" + req.data(Names.REQ_UID) + ":" + req.data(Names.REQ_NAME) 
     client.exists(k)
     
   }
@@ -102,7 +102,7 @@ class RedisCache(host:String,port:Int) extends Serializable {
   
   def fields(req:ServiceRequest):List[Field] = {
 
-    val k = "fields:" + req.data(Names.REQ_NAME) + ":" + req.data(Names.REQ_UID)
+    val k = "fields:" + req.data(Names.REQ_UID) + ":" + req.data(Names.REQ_NAME) 
     val fields = client.lrange(k, 0, -1)
 
     if (fields.size() == 0) {
