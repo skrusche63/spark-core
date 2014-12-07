@@ -64,7 +64,7 @@ class FieldQuestor(config:Configuration) extends RootActor(config) {
     val fields = Fields(cache.fields(req))
     
     val uid = req.data(Names.REQ_UID)
-    val data = Map(Names.REQ_UID -> uid, Names.REQ_FIELDS -> serializer.serializeFields(fields))
+    val data = Map(Names.REQ_UID -> uid, Names.REQ_RESPONSE -> serializer.serializeFields(fields))
                 
     new ServiceResponse(req.service,req.task,data,status.SUCCESS)	
 

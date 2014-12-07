@@ -64,7 +64,7 @@ class BaseIndexer(config:Configuration) extends RootActor(config) {
         val fields = new FieldBuilder().build(req,topic)
         if (fields.isEmpty == false) cache.addFields(req, fields.toList)
         
-        val data = Map(Names.REQ_UID -> uid, "message" -> messages.SEARCH_INDEX_CREATED(uid))
+        val data = Map(Names.REQ_UID -> uid, Names.REQ_MESSAGE -> messages.SEARCH_INDEX_CREATED(uid))
         val response = new ServiceResponse(req.service,req.task,data,status.SUCCESS)	
       
         origin ! response
@@ -75,7 +75,7 @@ class BaseIndexer(config:Configuration) extends RootActor(config) {
           
           log.error(e, e.getMessage())
       
-          val data = Map(Names.REQ_UID -> uid, "message" -> e.getMessage())
+          val data = Map(Names.REQ_UID -> uid, Names.REQ_MESSAGE -> e.getMessage())
           val response = new ServiceResponse(req.service,req.task,data,status.FAILURE)	
       
           origin ! response
@@ -92,7 +92,24 @@ class BaseIndexer(config:Configuration) extends RootActor(config) {
     
   }
   
-  protected def getSpec(req:ServiceRequest):(List[String],List[String]) = (List.empty[String],List.empty[String])
+  protected def getSpec(req:ServiceRequest):(List[String],List[String]) = {
+   
+    val Array(task,topic) = req.task.split(":")
+    topic match {
+      
+      case "feature" => {
+    
+        val names = req.data(Names.REQ_NAMES).split(",").toList
+        val types = req.data(Names.REQ_TYPES).split(",").toList
+    
+        (names,types)
+        
+      }
+      case _ => (List.empty[String],List.empty[String])
+
+    }
+    
+  }
   
   protected def getTopic(req:ServiceRequest):String = {
   

@@ -96,7 +96,12 @@ object Names {
   val REQ_NAME:String  = "name"
   val REQ_NAMES:String = "names"
 
-  val REQ_QUERY:String   = "query"
+  val REQ_QUERY:String = "query"
+  /*
+   * This request field determines whether preference rating is explicit or implicit;
+   * in case of explicit rating, no additional computing must be initiated
+   */  
+  val REQ_RATING:String  = "rating"
   val REQ_RELATED:String = "related"
 
   val REQ_SCORE:String = "score"
@@ -124,5 +129,12 @@ object Names {
 
   val REQ_MESSAGE:String  = "message"
   val REQ_RESPONSE:String = "response"  
-    
+
+  /**
+   * Request fields that control the flow of engines;
+   * these fields are used internally
+   */
+  val REQ_NEXT:String = "next_"
+  val REQ_NEXT_ALGORITHM = REQ_NEXT + REQ_ALGORITHM
+  
 }

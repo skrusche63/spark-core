@@ -167,7 +167,7 @@ class BaseTracker(config:Configuration) extends RootActor(config) {
        }      
        case "sequence" => {
       
-         val source = prepareSequence(req.data)
+         val source = prepareSequence(req)
          /*
           * Writing this source to the respective index throws an
           * exception in case of an error; note, that the writer is
@@ -201,13 +201,13 @@ class BaseTracker(config:Configuration) extends RootActor(config) {
   protected def prepareAmount(req:ServiceRequest):java.util.Map[String,Object] = {
     new ElasticAmountBuilder().createSource(req.data)
   }
-    
-  protected def prepareFeature(req:ServiceRequest):java.util.Map[String,Object] = {
-    new ElasticFeatureBuilder().createSource(req.data)
-  }
   
   protected def prepareEvent(req:ServiceRequest):java.util.Map[String,Object] = {
     new ElasticEventBuilder().createSource(req.data)
+  }
+    
+  protected def prepareFeature(req:ServiceRequest):java.util.Map[String,Object] = {
+    new ElasticFeatureBuilder().createSource(req.data)
   }
 
   protected def prepareItem(req:ServiceRequest):java.util.Map[String,Object] = {
@@ -229,7 +229,8 @@ class BaseTracker(config:Configuration) extends RootActor(config) {
     new ElasticItemBuilder().createSource(req.data)
   }
   
-  protected def prepareSequence(params:Map[String,String]):java.util.Map[String,Object] = null
-  
+  protected def prepareSequence(req:ServiceRequest):java.util.Map[String,Object] = {
+    new ElasticSequenceBuilder().createSource(req.data)    
+  }
  
 }

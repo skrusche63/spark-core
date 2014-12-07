@@ -20,21 +20,22 @@ package de.kp.spark.core.model
 
 class BaseTopics {
 
-  val AMOUNT:String = "amount"
-  val EVENT:String  = "event"
+  val AMOUNT:String   = "amount"
+  val EVENT:String    = "event"
 
-  val ITEM:String    = "item"
-  val FEATURE:String = "feature"
+  val ITEM:String     = "item"
+  val FEATURE:String  = "feature"
 
-  val PRODUCT:String = "product"
-  val RULE:String    = "rule"
+  val PRODUCT:String  = "product"
+  val RULE:String     = "rule"
+
+  val SEQUENCE:String = "rule"
     
-  private val topics = List(AMOUNT,EVENT,ITEM,FEATURE,PRODUCT,RULE)
+  private val topics = List(AMOUNT,EVENT,ITEM,FEATURE,PRODUCT,RULE,SEQUENCE)
   
-  def get(candidate:String):String = {
+  def get(topic:String):String = {
     
-    if (topics.contains(candidate)) return candidate
-    
+    if (topics.contains(topic)) return topic    
     throw new Exception("Unknown topic.")
     
   }

@@ -99,6 +99,24 @@ class FieldBuilder {
         fields.toList
         
       }
+
+      case "sequence" => {
+
+        val names = List(SITE_FIELD,TIMESTAMP_FIELD,USER_FIELD,GROUP_FIELD,ITEM_FIELD)
+        val types = List("string","long","string","string","integer")
+        
+        names.zip(types).foreach(entry => {
+          
+          val (name,datatype) = entry
+          val value = if (req.data.contains(name)) req.data(name) else name
+          
+          fields += new Field(name,datatype,value)
+          
+        })
+
+        fields.toList
+        
+      }
       
       case _ => fields.toList 
       
