@@ -71,9 +71,11 @@ object Names {
   val REQ_ALGORITHM:String = "algorithm"
   
   val REQ_COLUMNS:String = "columns"
-  val REQ_CONTEXT:String = "context"
 
-  val REQ_END:String = "end"
+  val REQ_DAY_OF_WEEK:String = "dayOfweek"
+    
+  val REQ_END:String   = "end"
+  val REQ_EVENT:String = "event"
 
   val REQ_FEATURES:String = "features"
 
@@ -82,15 +84,20 @@ object Names {
 
   val REQ_FORMAT:String = "format"
 
+  val REQ_HOUR_OF_DAY:String = "hourOfday"
+    
   val REQ_INDEX:String  = "index"
 
   val REQ_ITEM:String  = "item"
   val REQ_ITEMS:String = "items"
 
+  val REQ_MATRIX:String = "matrix"
+    
   val REQ_NAME:String  = "name"
   val REQ_NAMES:String = "names"
 
-  val REQ_QUERY:String = "query"
+  val REQ_QUERY:String   = "query"
+  val REQ_RELATED:String = "related"
 
   val REQ_SCORE:String = "score"
     

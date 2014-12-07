@@ -45,7 +45,7 @@ class RedisDB(host:String,port:Int) extends Serializable {
     val now = new java.util.Date()
     val timestamp = now.getTime()
     
-    val k = "matrix:" + req.data(Names.REQ_UID) + ":"  + req.data(Names.REQ_NAME)
+    val k = "matrix:" + req.data(Names.REQ_UID) + ":"  + req.data(Names.REQ_NAME) + ":"  + req.data(Names.REQ_MATRIX)
     val v = "" + timestamp + ":" + matrix
     
     client.zadd(k,timestamp,v)
@@ -54,14 +54,14 @@ class RedisDB(host:String,port:Int) extends Serializable {
   
   def matrixExists(req:ServiceRequest):Boolean = {
 
-    val k = "matrix:" + req.data(Names.REQ_UID) + ":"  + req.data(Names.REQ_NAME)
+    val k = "matrix:" + req.data(Names.REQ_UID) + ":"  + req.data(Names.REQ_NAME) + ":"  + req.data(Names.REQ_MATRIX)
     client.exists(k)
     
   }
   
   def matrix(req:ServiceRequest):String = {
 
-    val k = "matrix:" + req.data(Names.REQ_UID) + ":"  + req.data(Names.REQ_NAME)
+    val k = "matrix:" + req.data(Names.REQ_UID) + ":"  + req.data(Names.REQ_NAME) + ":"  + req.data(Names.REQ_MATRIX)
     val matrices = client.zrange(k, 0, -1)
 
     if (matrices.size() == 0) {
