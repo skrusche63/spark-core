@@ -20,6 +20,11 @@ package de.kp.spark.core.elastic
 
 import org.elasticsearch.common.xcontent.{XContentBuilder,XContentFactory}
 
+import de.kp.spark.core.Names
+
+import scala.collection.JavaConversions._
+import scala.collection.mutable.HashMap
+
 class ElasticProductBuilder {
 
   import de.kp.spark.core.Names._
@@ -72,6 +77,24 @@ class ElasticProductBuilder {
                     
     builder
 
+  }
+  
+  def createSource(params:Map[String,String]):java.util.Map[String,Object] = {
+    
+    val source = HashMap.empty[String,String]
+    
+    source += Names.SITE_FIELD -> params(Names.SITE_FIELD)
+    source += Names.USER_FIELD -> params(Names.USER_FIELD)
+      
+    source += Names.TIMESTAMP_FIELD -> params(Names.TIMESTAMP_FIELD)
+ 
+    source += Names.GROUP_FIELD -> params(Names.GROUP_FIELD)
+    source += Names.ITEM_FIELD -> params(Names.ITEM_FIELD)
+
+    source += Names.PRICE_FIELD -> params(Names.PRICE_FIELD)
+
+    source
+    
   }
 
 }

@@ -165,6 +165,17 @@ class BaseTracker(config:Configuration) extends RootActor(config) {
          }
          
        }      
+       case "product" => {
+      
+         val source = prepareProduct(req)
+         /*
+          * Writing this source to the respective index throws an
+          * exception in case of an error; note, that the writer is
+          * automatically closed 
+          */
+         writer.write(index, mapping, source)
+         
+       }
        case "sequence" => {
       
          val source = prepareSequence(req)
@@ -227,6 +238,10 @@ class BaseTracker(config:Configuration) extends RootActor(config) {
     * 
     */   
     new ElasticItemBuilder().createSource(req.data)
+  }
+  
+  protected def prepareProduct(req:ServiceRequest):java.util.Map[String,Object] = {
+    new ElasticProductBuilder().createSource(req.data)    
   }
   
   protected def prepareSequence(req:ServiceRequest):java.util.Map[String,Object] = {

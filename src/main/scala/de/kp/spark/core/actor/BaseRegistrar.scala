@@ -23,7 +23,7 @@ import de.kp.spark.core.{Configuration,Names}
 import de.kp.spark.core.model._
 import de.kp.spark.core.spec.FieldBuilder
 
-class FieldRegistrar(config:Configuration) extends RootActor(config) {
+class BaseRegistrar(config:Configuration) extends RootActor(config) {
   
   def receive = {
     
@@ -53,6 +53,14 @@ class FieldRegistrar(config:Configuration) extends RootActor(config) {
     
     topic match {
        
+      case "amount" => {
+        
+        val fields = new FieldBuilder().build(req,topic)
+        cache.addFields(req, fields.toList)
+        
+        new ServiceResponse(req.service,req.task,Map(Names.REQ_UID-> uid),status.SUCCESS)
+      
+      }
       case "event" => {
         
         val fields = new FieldBuilder().build(req,topic)
@@ -61,6 +69,28 @@ class FieldRegistrar(config:Configuration) extends RootActor(config) {
         new ServiceResponse(req.service,req.task,Map(Names.REQ_UID-> uid),status.SUCCESS)
       
       }
+      case "feature" => {
+        /*
+         * ********************************************
+         *  Example:
+         *  
+         *  "names" -> "target,feature,feature,feature"
+         *  "types" -> "string,double,double,string"
+         *
+         * ********************************************
+         * 
+         * It is important to have the names specified in the order
+         * they are used (later) to retrieve the respective data
+         */
+        val names = req.data(Names.REQ_NAMES).split(",")
+        val types = req.data(Names.REQ_TYPES).split(",")
+        
+        val fields = buildFields(names,types)
+        cache.addFields(req, fields)    
+
+        new ServiceResponse(req.service,req.task,Map(Names.REQ_UID-> uid),status.SUCCESS)
+        
+      }
       case "item" => {
         
         val fields = new FieldBuilder().build(req,topic)
@@ -68,6 +98,22 @@ class FieldRegistrar(config:Configuration) extends RootActor(config) {
         
         new ServiceResponse(req.service,req.task,Map(Names.REQ_UID-> uid),status.SUCCESS)
                 
+      }        
+      case "product" => {
+        
+        val fields = new FieldBuilder().build(req,topic)
+        cache.addFields(req, fields)
+        
+        new ServiceResponse(req.service,req.task,Map(Names.REQ_UID-> uid),status.SUCCESS)
+          
+      }
+      case "sequence" => {
+        
+        val fields = new FieldBuilder().build(req,topic)
+        cache.addFields(req, fields)
+        
+        new ServiceResponse(req.service,req.task,Map(Names.REQ_UID-> uid),status.SUCCESS)
+          
       }
       case _ => {
           
@@ -79,5 +125,7 @@ class FieldRegistrar(config:Configuration) extends RootActor(config) {
     }
     
   }
+  
+  protected def buildFields(names:Array[String],types:Array[String]):List[Field] = List.empty[Field]
   
 }
