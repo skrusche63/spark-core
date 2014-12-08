@@ -17,12 +17,17 @@ package de.kp.spark.core.actor
  * 
  * If not, see <http://www.gnu.org/licenses/>.
  */
+
 import akka.actor.ActorRef
+
+import akka.pattern.ask
+import akka.util.Timeout
 
 import de.kp.spark.core.{Configuration,Names}
 import de.kp.spark.core.model._
 
 import scala.concurrent.Future
+import scala.concurrent.duration.DurationInt
 
 abstract class BaseTrainer(config:Configuration) extends RootActor(config) {
 
@@ -33,27 +38,35 @@ abstract class BaseTrainer(config:Configuration) extends RootActor(config) {
     case req:ServiceRequest => {
       
       val origin = sender    
-      val uid = req.data(Names.REQ_UID)
-          
-      val response = validate(req) match {
-            
-        case None => train(req).mapTo[ServiceResponse]            
-        case Some(message) => Future {failure(req,message)}
-            
-      }
+      val response = try {
 
+        validate(req) match {
+            
+          case None => train(req).mapTo[ServiceResponse]            
+          case Some(message) => Future {failure(req,message)}
+            
+        }
+        
+      } catch {
+        case e:Exception => Future {failure(req,e.getMessage)}
+      }
+      
       response.onSuccess {
+        
         case result => {
           origin ! result
           context.stop(self)
         }
+      
       }
 
       response.onFailure {
-        case throwable => {             
-          origin ! failure(req,throwable.toString)	 
+        
+        case throwable => {           
+          origin ! failure(req,throwable.toString)	                  
           context.stop(self)
         }	  
+      
       }
      
     }
@@ -70,7 +83,14 @@ abstract class BaseTrainer(config:Configuration) extends RootActor(config) {
   
   }
   
-  protected def train(req:ServiceRequest):Future[Any]
+  protected def train(req:ServiceRequest):Future[Any] = {
+
+    val (duration,retries,time) = config.actor      
+    implicit val timeout:Timeout = DurationInt(time).second
+    
+    ask(actor(req), req)
+    
+  }
 
   protected def validate(req:ServiceRequest):Option[String]
   
