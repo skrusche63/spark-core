@@ -37,7 +37,7 @@ class RedisCache(host:String,port:Int) extends Serializable {
    */
   def addField(req:ServiceRequest,field:Field) {
     
-    val k = "fields:" + req.data(Names.REQ_UID) + ":" + req.data(Names.REQ_NAME) 
+    val k = "fields:" + req.data(Names.REQ_SITE) + ":" + req.data(Names.REQ_UID) + ":" + req.data(Names.REQ_NAME) 
     val v = String.format("""%s:%s:%s""",field.name,field.datatype,field.value)
     
     client.rpush(k,v)
@@ -57,7 +57,7 @@ class RedisCache(host:String,port:Int) extends Serializable {
    */
   def addParam(req:ServiceRequest,param:Param) {
     
-    val k = "params:" + req.data(Names.REQ_UID) + ":" + req.data(Names.REQ_NAME) 
+    val k = "params:" + req.data(Names.REQ_SITE) + ":" + req.data(Names.REQ_UID) + ":" + req.data(Names.REQ_NAME) 
     val v = String.format("""%s:%s:%s""",param.name,param.datatype,param.value)
     
     client.rpush(k,v)
@@ -99,7 +99,7 @@ class RedisCache(host:String,port:Int) extends Serializable {
     val now = new Date()
     val timestamp = now.getTime()
     
-    val k = "status:" + uid
+    val k = "status:"  + req.data(Names.REQ_SITE) + ":" + uid
     val v = "" + timestamp + ":" + serializer.serializeStatus(Status(service,task,status,timestamp))
     
     client.zadd(k,timestamp,v)
@@ -108,28 +108,28 @@ class RedisCache(host:String,port:Int) extends Serializable {
   
   def fieldsExist(req:ServiceRequest):Boolean = {
 
-    val k = "fields:" + req.data(Names.REQ_UID) + ":" + req.data(Names.REQ_NAME) 
+    val k = "fields:" + req.data(Names.REQ_SITE) + ":" + req.data(Names.REQ_UID) + ":" + req.data(Names.REQ_NAME) 
     client.exists(k)
     
   }
   
   def paramsExist(req:ServiceRequest):Boolean = {
 
-    val k = "params:" + req.data(Names.REQ_UID) + ":" + req.data(Names.REQ_NAME) 
+    val k = "params:" + req.data(Names.REQ_SITE) + ":" + req.data(Names.REQ_UID) + ":" + req.data(Names.REQ_NAME) 
     client.exists(k)
     
   }
   
   def statusExists(req:ServiceRequest):Boolean = {
 
-    val k = "status:" + req.data("uid")
+    val k = "status:"  + req.data(Names.REQ_SITE) + ":" + req.data(Names.REQ_UID)
     client.exists(k)
     
   }
   
   def fields(req:ServiceRequest):List[Field] = {
 
-    val k = "fields:" + req.data(Names.REQ_UID) + ":" + req.data(Names.REQ_NAME) 
+    val k = "fields:" + req.data(Names.REQ_SITE) + ":" + req.data(Names.REQ_UID) + ":" + req.data(Names.REQ_NAME) 
     val fields = client.lrange(k, 0, -1)
 
     if (fields.size() == 0) {
@@ -150,7 +150,7 @@ class RedisCache(host:String,port:Int) extends Serializable {
   
   def params(req:ServiceRequest):List[Param] = {
 
-    val k = "params:" + req.data(Names.REQ_UID) + ":" + req.data(Names.REQ_NAME) 
+    val k = "params:" + req.data(Names.REQ_SITE) + ":" + req.data(Names.REQ_UID) + ":" + req.data(Names.REQ_NAME) 
     val params = client.lrange(k, 0, -1)
 
     if (params.size() == 0) {
@@ -195,7 +195,7 @@ class RedisCache(host:String,port:Int) extends Serializable {
    */
   def status(req:ServiceRequest):String = {
 
-    val k = "status:" + req.data("uid")
+    val k = "status:"  + req.data(Names.REQ_SITE) + ":" + req.data(Names.REQ_UID)
     val data = client.zrange(k, 0, -1)
 
     if (data.size() == 0) {
@@ -216,7 +216,7 @@ class RedisCache(host:String,port:Int) extends Serializable {
   
   def statuses(req:ServiceRequest):List[Status] = {
     
-    val k = "status:" + req.data("uid")
+    val k = "status:"  + req.data(Names.REQ_SITE) + ":" + req.data(Names.REQ_UID)
     val data = client.zrange(k, 0, -1)
 
     if (data.size() == 0) {
