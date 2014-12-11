@@ -29,6 +29,15 @@ case class Field(
 case class Fields(items:List[Field])
 
 /**
+ * Param & Params are used to register the model parameters
+ * used for a certain data mining or model building task
+ */
+case class Param(
+  name:String,datatype:String,value:String
+)
+case class Params(items:List[Params])
+
+/**
  * Listener specifies a remote akka service to send
  * notifications to
  */

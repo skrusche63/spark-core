@@ -33,7 +33,7 @@ class RedisCache(host:String,port:Int) extends Serializable {
   
   /** 
    *  Add a single field specification that refers to a named
-   *  training or model build task
+   *  training or model building task
    */
   def addField(req:ServiceRequest,field:Field) {
     
@@ -49,6 +49,26 @@ class RedisCache(host:String,port:Int) extends Serializable {
    */  
   def addFields(req:ServiceRequest,fields:List[Field]) {
     for (field <- fields) addField(req,field)
+    
+  }
+  /** 
+   *  Add a single model parameter that refers to a named
+   *  training or model building task
+   */
+  def addParam(req:ServiceRequest,param:Param) {
+    
+    val k = "params:" + req.data(Names.REQ_UID) + ":" + req.data(Names.REQ_NAME) 
+    val v = String.format("""%s:%s:%s""",param.name,param.datatype,param.value)
+    
+    client.rpush(k,v)
+    
+  }
+  /** 
+   *  Add a list of model parameters that refer to a named
+   *  training or model building task
+   */  
+  def addParams(req:ServiceRequest,params:List[Param]) {
+    for (param <- params) addParam(req,param)
     
   }
   
@@ -93,6 +113,13 @@ class RedisCache(host:String,port:Int) extends Serializable {
     
   }
   
+  def paramsExist(req:ServiceRequest):Boolean = {
+
+    val k = "params:" + req.data(Names.REQ_UID) + ":" + req.data(Names.REQ_NAME) 
+    client.exists(k)
+    
+  }
+  
   def statusExists(req:ServiceRequest):Boolean = {
 
     val k = "status:" + req.data("uid")
@@ -114,6 +141,27 @@ class RedisCache(host:String,port:Int) extends Serializable {
         
         val Array(name,datatype,value) = field.split(":")
         Field(name,datatype,value)
+        
+      }).toList
+     
+    }
+
+  }
+  
+  def params(req:ServiceRequest):List[Param] = {
+
+    val k = "params:" + req.data(Names.REQ_UID) + ":" + req.data(Names.REQ_NAME) 
+    val params = client.lrange(k, 0, -1)
+
+    if (params.size() == 0) {
+      List.empty[Param]
+    
+    } else {
+      
+      params.map(param => {
+        
+        val Array(name,datatype,value) = param.split(":")
+        Param(name,datatype,value)
         
       }).toList
      
