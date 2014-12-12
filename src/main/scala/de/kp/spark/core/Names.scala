@@ -127,6 +127,9 @@ object Names {
   val REQ_SOURCE_INDEX:String = "source.index"
   val REQ_SOURCE_TYPE:String  = "source.type"
 
+  val REQ_SINK_INDEX:String = "sink.index"
+  val REQ_SINK_TYPE:String  = "sink.type"
+
   val REQ_MESSAGE:String  = "message"
   val REQ_RESPONSE:String = "response"  
 

@@ -22,10 +22,10 @@ import de.kp.spark.core.{Configuration,Names}
 import de.kp.spark.core.model._
 
 /**
- * The FieldQuestor retrieves the field specification used
+ * The ParamQuestor retrieves the parameters used
  * for a certain data mining or model building task
  */
-class FieldQuestor(config:Configuration) extends RootActor(config) {
+class ParamQuestor(config:Configuration) extends RootActor(config) {
 
   def receive = {
 
@@ -34,11 +34,11 @@ class FieldQuestor(config:Configuration) extends RootActor(config) {
       val origin = sender    
       val uid = req.data(Names.REQ_UID)
          
-      val response = if (cache.fieldsExist(req) == false) {           
+      val response = if (cache.paramsExist(req) == false) {           
         failure(req,messages.TASK_DOES_NOT_EXIST(uid))           
 
       } else {            
-        fields(req)
+        params(req)
             
       }
            
@@ -59,12 +59,12 @@ class FieldQuestor(config:Configuration) extends RootActor(config) {
   
   }
 
-  protected def fields(req:ServiceRequest):ServiceResponse = {
+  protected def params(req:ServiceRequest):ServiceResponse = {
     
-    val fields = Fields(cache.fields(req))
+    val params = Params(cache.params(req))
     
     val uid = req.data(Names.REQ_UID)
-    val data = Map(Names.REQ_UID -> uid, Names.REQ_RESPONSE -> serializer.serializeFields(fields))
+    val data = Map(Names.REQ_UID -> uid, Names.REQ_RESPONSE -> serializer.serializeParams(params))
                 
     new ServiceResponse(req.service,req.task,data,status.SUCCESS)	
 

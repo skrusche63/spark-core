@@ -29,6 +29,9 @@ class BaseSerializer {
   
   def serializeFields(fields:Fields):String = write(fields) 
   def deserializeFields(fields:String):Fields = read[Fields](fields)
+  
+  def serializeParams(params:Params):String = write(params) 
+  def deserializeParams(params:String):Params = read[Params](params)
 
   def deserializeResponse(response:String):ServiceResponse = read[ServiceResponse](response)
   def serializeResponse(response:ServiceResponse):String = write(response)

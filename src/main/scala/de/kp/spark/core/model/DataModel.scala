@@ -35,7 +35,7 @@ case class Fields(items:List[Field])
 case class Param(
   name:String,datatype:String,value:String
 )
-case class Params(items:List[Params])
+case class Params(items:List[Param])
 
 /**
  * Listener specifies a remote akka service to send
