@@ -91,6 +91,8 @@ object Names {
   val REQ_ITEM:String  = "item"
   val REQ_ITEMS:String = "items"
 
+  val REQ_K:String = "k"
+
   val REQ_MATRIX:String = "matrix"
     
   val REQ_NAME:String  = "name"
@@ -113,11 +115,15 @@ object Names {
   val REQ_START:String = "start"
 
   val REQ_STATUS:String = "status"
+  val REQ_STRATEGY:String = "strategy"
 
+  val REQ_THRESHOLD:String = "threshold"
+    
   val REQ_TOTAL:String = "total"
   val REQ_TYPE:String  = "type"
 
   val REQ_TYPES:String = "types"
+  val REQ_WEIGHT:String = "weight"
     
   val REQ_UID:String   = "uid"
     

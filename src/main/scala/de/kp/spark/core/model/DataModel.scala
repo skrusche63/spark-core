@@ -64,3 +64,15 @@ case class Status(
 )
 
 case class StatusList(items:List[Status])
+
+/**
+ * TOPICS DATA MODEL
+ */
+case class ItemTopic(
+  val site:String,
+  val timestamp:Long,
+  val user:String,
+  val group:String,
+  val item:Integer,
+  val score:Double
+)

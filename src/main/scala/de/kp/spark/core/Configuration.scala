@@ -34,14 +34,22 @@ trait Configuration {
   def elastic:HConf
   /** 
    * This method retrieves the path from the configuration
-   * where to access a file source from the HDFS
+   * where to access a file source or a parquet file from 
+   * the HDFS 
    */ 
-  def file:List[String]
+  def input:List[String]
    /**
     * This method retrieves the access parameter for a MySQL
     * data source, comprising url, db, user, password
     */
   def mysql:(String,String,String,String)
+
+  /** 
+   * This method retrieves the path from the configuration
+   * where to save a text file or parquet file to the HDFS 
+   */ 
+  def output:List[String]
+
   /**
    * This method retrieves the access parameter for the
    * internally used Redis Instance: (host,port)

@@ -26,7 +26,7 @@ import org.apache.spark.rdd.{JdbcRDD,RDD}
 import de.kp.spark.core.Configuration
 import scala.collection.mutable.HashMap
 
-class JdbcReader(@transient sc:SparkContext,config:Configuration,site:Int,query:String) {
+class JdbcReader(@transient sc:SparkContext,config:Configuration,site:Int,query:String) extends Serializable {
 
   protected val MYSQL_DRIVER   = "com.mysql.jdbc.Driver"
   protected val NUM_PARTITIONS = 1

@@ -17,8 +17,9 @@
     <maven.compiler.source>1.6</maven.compiler.source>
     <maven.compiler.target>1.6</maven.compiler.target>
     <encoding>UTF-8</encoding>
+    <avro.version>1.7.7</avro.version>
     <scala.tools.version>2.10</scala.tools.version>
-    <scala.version>2.10.0</scala.version>
+    <scala.version>2.10.2</scala.version>
     <spark.version>1.1.0</spark.version>
   </properties>
 
@@ -55,6 +56,13 @@
 	  <artifactId>spark-core_2.10</artifactId>
 	  <version>${spark.version}</version>
     </dependency>
+   
+    <!--  spark sql -->
+    <dependency>
+	  <groupId>org.apache.spark</groupId>
+	  <artifactId>spark-sql_2.10</artifactId>
+	  <version>${spark.version}</version>
+    </dependency>            
     
     <!--  cascading (from conjars.org) -->
     <dependency>
@@ -146,7 +154,7 @@
       <artifactId>jedis</artifactId>
       <version>2.5.2</version>
     </dependency>
-    
+  
   </dependencies>
  
   <repositories>
