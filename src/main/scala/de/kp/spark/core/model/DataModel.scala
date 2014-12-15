@@ -66,13 +66,24 @@ case class Status(
 case class StatusList(items:List[Status])
 
 /**
- * TOPICS DATA MODEL
+ * IO DATA MODEL
  */
-case class ItemTopic(
+case class ItemObject(
   val site:String,
   val timestamp:Long,
   val user:String,
   val group:String,
   val item:Integer,
   val score:Double
+)
+
+case class RuleObject(
+  val timestamp:Long,
+  val uid:String,
+  val rule:String,
+  val antecendent:List[Int],
+  val consequent:List[Int],
+  val support:Int,
+  val confidence:Double,
+  val weight:Double
 )

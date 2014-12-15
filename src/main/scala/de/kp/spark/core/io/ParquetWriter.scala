@@ -28,9 +28,24 @@ import de.kp.spark.core.model._
 
 class ParquetWriter(@transient sc:SparkContext) {
   /**
-   * This method writes 'item' topics to a parquet file
+   * This method writes 'item' objects to a parquet file
    */
-  def writeItems(store:String,dataset:RDD[ItemTopic]) {
+  def writeItems(store:String,dataset:RDD[ItemObject]) {
+
+    val sqlCtx = new SQLContext(sc)
+    import sqlCtx.createSchemaRDD
+
+    /* 
+     * The RDD is implicitly converted to a SchemaRDD by createSchemaRDD, 
+     * allowing it to be stored using Parquet. 
+     */
+    dataset.saveAsParquetFile(store)
+
+  }
+  /**
+   * This method writes 'rule' objects to a parquet file
+   */
+  def writeRules(store:String,dataset:RDD[RuleObject]) {
 
     val sqlCtx = new SQLContext(sc)
     import sqlCtx.createSchemaRDD
