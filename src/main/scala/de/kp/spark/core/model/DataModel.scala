@@ -68,6 +68,15 @@ case class StatusList(items:List[Status])
 /**
  * IO DATA MODEL
  */
+case class EventScoreObject(
+  val site:String,
+  val user:String,
+  val item:String,
+  val score:Double,
+  val timestamp:Long,
+  val event:Int  
+)
+
 case class ItemObject(
   val site:String,
   val timestamp:Long,
@@ -77,13 +86,24 @@ case class ItemObject(
   val score:Double
 )
 
+case class ItemScoreObject(
+  val site:String,
+  val user:String,
+  val item:Integer,
+  val score:Double
+)
+
 case class RuleObject(
   val timestamp:Long,
   val uid:String,
   val rule:String,
-  val antecendent:List[Int],
-  val consequent:List[Int],
+  val antecendent:Int,
+  val consequent:Seq[Int],
   val support:Int,
   val confidence:Double,
   val weight:Double
+)
+
+case class TargetedPointObject(
+  val target:Double,features:Seq[Double]
 )

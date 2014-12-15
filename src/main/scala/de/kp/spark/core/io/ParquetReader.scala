@@ -48,27 +48,16 @@ class ParquetReader(@transient sc:SparkContext) extends Serializable {
   private def toMap(row:Row,metadata:Seq[(StructField,Int)],fields:List[String]):Map[String,Any] = {
 
     val data = HashMap.empty[String,Any]
+    val values = row.iterator.zipWithIndex.map(x => (x._2,x._1)).toMap
+    
     metadata.foreach(entry => {
       
       val field = entry._1
       val col   = entry._2
       
       val colname = field.name
-      val coltype = field.dataType.simpleString
+      val colvalu = values(col)
       
-      val colvalu = coltype match {
-        
-        case "double"  => row.getDouble(col)
-        case "float"   => row.getFloat(col)
-        
-        case "integer" => row.getInt(col)
-        case "long"    => row.getLong(col)
-        
-        case "string"  => row.getString(col)
-      
-        case _ => throw new Exception("Datatype not supported.")
-      }
-
       if (fields.isEmpty) {
         data += colname -> colvalu
         

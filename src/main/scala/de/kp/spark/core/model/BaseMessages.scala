@@ -50,6 +50,9 @@ class BaseMessages {
   def SEARCH_INDEX_CREATED(uid:String):String = 
     String.format("""[UID: %s] Search index created.""", uid)
 
+  def SINK_IS_UNKNOWN(uid:String,sink:String):String = 
+    String.format("""[UID: %s] Data sink '%s' is unknown.""", uid, sink)
+
   def SOURCE_IS_UNKNOWN(uid:String,source:String):String = 
     String.format("""[UID: %s] Data source '%s' is unknown.""", uid, source)
 

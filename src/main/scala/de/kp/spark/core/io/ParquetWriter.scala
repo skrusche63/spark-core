@@ -57,5 +57,50 @@ class ParquetWriter(@transient sc:SparkContext) {
     dataset.saveAsParquetFile(store)
 
   }
+  /**
+   * This method writes scored 'event' objects to a parquet file
+   */
+  def writeScoredEvents(store:String,dataset:RDD[EventScoreObject]) {
+
+    val sqlCtx = new SQLContext(sc)
+    import sqlCtx.createSchemaRDD
+
+    /* 
+     * The RDD is implicitly converted to a SchemaRDD by createSchemaRDD, 
+     * allowing it to be stored using Parquet. 
+     */
+    dataset.saveAsParquetFile(store)
+
+  }  
+  /**
+   * This method writes scored 'item' objects to a parquet file
+   */
+  def writeScoredItems(store:String,dataset:RDD[ItemScoreObject]) {
+
+    val sqlCtx = new SQLContext(sc)
+    import sqlCtx.createSchemaRDD
+
+    /* 
+     * The RDD is implicitly converted to a SchemaRDD by createSchemaRDD, 
+     * allowing it to be stored using Parquet. 
+     */
+    dataset.saveAsParquetFile(store)
+
+  }
+  /**
+   * This method writes scored 'targeted point' objects to a parquet file
+   */
+  def writeTargetedPoints(store:String,dataset:RDD[TargetedPointObject]) {
+
+    val sqlCtx = new SQLContext(sc)
+    import sqlCtx.createSchemaRDD
+
+    /* 
+     * The RDD is implicitly converted to a SchemaRDD by createSchemaRDD, 
+     * allowing it to be stored using Parquet. 
+     */
+    dataset.saveAsParquetFile(store)
+
+  }
   
 }
