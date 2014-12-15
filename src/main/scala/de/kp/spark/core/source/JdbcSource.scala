@@ -31,7 +31,7 @@ import de.kp.spark.core.io.JdbcReader
  * a SQL query and a specification of the fields that have 
  * to be put into the result. The data are returned as a Map.
  */
-class JdbcSource(@transient sc:SparkContext) {
+class JdbcSource(@transient sc:SparkContext) extends Serializable {
   
   def connect(config:Configuration,req:ServiceRequest,fields:List[String]):RDD[Map[String,Any]] = {
     

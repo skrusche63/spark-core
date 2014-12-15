@@ -2,7 +2,7 @@ package de.kp.spark.core.source
 /* Copyright (c) 2014 Dr. Krusche & Partner PartG
 * 
 * This file is part of the Spark-Core project
-* (https://github.com/skrusche63/spark-core).
+* (https://github.com/skrusche63/spark-arules).
 * 
 * Spark-Core is free software: you can redistribute it and/or modify it under the
 * terms of the GNU General Public License as published by the Free Software
@@ -22,28 +22,14 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 
 import de.kp.spark.core.model._
+import de.kp.spark.core.io.ParquetReader
 
-import de.kp.spark.core.{Configuration,Names}
-import de.kp.spark.core.io.ElasticReader
+class ParquetSource(@transient sc:SparkContext) extends Serializable {
 
-/**
- * ElasticSource retrieves data from an Elasticsearch index
- * through a search query; the result is returned as a Map
- */
-class ElasticSource(@transient sc:SparkContext) extends Serializable {
- 
-  def connect(config:Configuration,req:ServiceRequest):RDD[Map[String,String]] = {
-    /*
-     * Elasticsearch is used as a data source as well as a data sink;
-     * this implies that the respective indexes and mappings have to
-     * be distinguished
-     */
-    val index = req.data(Names.REQ_SOURCE_INDEX).asInstanceOf[String]
-    val mapping = req.data(Names.REQ_SOURCE_TYPE).asInstanceOf[String]
+  def connect(path:String,req:ServiceRequest,fields:List[String]):RDD[Map[String,Any]] = {
     
-    val query = req.data(Names.REQ_QUERY).asInstanceOf[String]
-    new ElasticReader(sc,config,index,mapping,query).read
-
+    new ParquetReader(sc).read(path,fields)
+    
   }
-
+  
 }
