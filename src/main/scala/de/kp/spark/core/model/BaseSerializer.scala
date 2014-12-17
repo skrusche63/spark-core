@@ -38,6 +38,19 @@ class BaseSerializer {
   
   def deserializeRequest(request:String):ServiceRequest = read[ServiceRequest](request)
   def serializeRequest(request:ServiceRequest):String = write(request)
+  /*
+   * Serialization and de-serialization support for association rules;
+   * a serialized version is e.g. stored in a Redis instance or sent
+   * via TCP to a remote Akka service
+   */  
+  def serializeRules(rules:Rules):String = write(rules)  
+  def deserializeRules(rules:String):Rules = read[Rules](rules)
+  /*
+   * Serialization and de-serialization support for classifier
+   * rules; these rules can be used to feed to e.g. decision trees
+   */
+  def serializeCRules(rules:CRules):String = write(rules)
+  def deserializeCRules(rules:String):CRules = read[CRules](rules)
 
   def serializeStatus(status:Status):String = write(status)
   def deserializeStatus(status:String):Status = read[Status](status)

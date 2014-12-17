@@ -23,10 +23,15 @@ package de.kp.spark.core.model
  * respect to the data source provided, that have to be mapped onto
  * site,timestamp,user,group,item
  */
+
+/********** REGISTRATION SUPPORT **/
+
 case class Field(
   name:String,datatype:String,value:String
 )
 case class Fields(items:List[Field])
+
+/********* TRAINING SUPPORT */
 
 /**
  * Param & Params are used to register the model parameters
@@ -37,6 +42,8 @@ case class Param(
 )
 case class Params(items:List[Param])
 
+/********* LISTENER SUPPORT */
+
 /**
  * Listener specifies a remote akka service to send
  * notifications to
@@ -44,6 +51,33 @@ case class Params(items:List[Param])
 case class Listener(
   timeout:Int, url:String
 )
+
+/********* ASSOCIATION SUPPORT */
+
+/**
+ * A Rule specifies the raw result of association rule mining, and describes
+ * the relation between 'antecedent' & 'consequent' itemsets.
+ */
+case class Rule (
+  antecedent:List[Int],consequent:List[Int],support:Int,confidence:Double
+)
+/**
+ * A CRule is derived from mined association rules and has a focus on a 
+ * single consequent, and the respective weight of this with respective
+ * to the association rule.
+ * 
+ * A CRule is the basis for associative classifiers, where the consequent
+ * is used as the target class to classify the items specified as antecedent.
+ * 
+ */
+case class CRule(
+  antecedent:List[Int],consequent:Int,support:Int,confidence:Double,weight:Double
+)  
+
+case class CRules(items:List[CRule])
+  
+case class Rules(items:List[Rule])
+
 /**
  * ServiceRequest & ServiceResponse specify the content sent to 
  * and received from the different predictive engines

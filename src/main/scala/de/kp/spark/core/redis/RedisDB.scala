@@ -17,6 +17,7 @@ package de.kp.spark.core.redis
 * 
 * If not, see <http://www.gnu.org/licenses/>.
 */
+
 import de.kp.spark.core.Names
 import de.kp.spark.core.model._
 
@@ -24,9 +25,12 @@ import scala.collection.JavaConversions._
 
 class RedisDB(host:String,port:Int) extends Serializable {
 
-  val client = RedisClient(host,port)
+  private val client = RedisClient(host,port)
+  private val serializer = new BaseSerializer()
   
   def exists(k:String):Boolean = client.exists(k)
+  
+  def getClient = client
   
   /**
    * Register the path to similarity matrix; the similarity matrix
@@ -199,5 +203,116 @@ class RedisDB(host:String,port:Int) extends Serializable {
     client.rpush(k,v)
 
   }
+
+  def addRules(req:ServiceRequest, rules:Rules) {
+   
+    val now = new java.util.Date()
+    val timestamp = now.getTime()
+    
+    val k = ruleKey(req)
+    val v = "" + timestamp + ":" + serializer.serializeRules(rules)
+    
+    client.zadd(k,timestamp,v)
+    
+  }
+   
+  def rulesExist(req:ServiceRequest):Boolean = {
+
+    val k = ruleKey(req)
+    client.exists(k)
+    
+  }
+   
+  def rulesAsList(req:ServiceRequest):List[Rule] = {
+
+    val k = ruleKey(req)
+    val rules = client.zrange(k, 0, -1)
+
+    if (rules.size() == 0) {
+      List.empty[Rule]
+    
+    } else {
+      
+      val last = rules.toList.last
+      serializer.deserializeRules(last.split(":")(1)).items
+      
+    }
+  
+  }
  
+  def rulesAsString(req:ServiceRequest):String = {
+
+    val k = ruleKey(req)
+    val rules = client.zrange(k, 0, -1)
+
+    if (rules.size() == 0) {
+      serializer.serializeRules(new Rules(List.empty[Rule]))
+    
+    } else {
+      
+      val last = rules.toList.last
+      last.split(":")(1)
+      
+    }
+  
+  }
+  /**
+   * Retrieve those rules, where the antecedents match the provided ones;
+   * we distinguish two different matching methods, lazy and strict.
+   */
+  def rulesByAntecedent(req:ServiceRequest,antecedent:List[Int]):String = {
+  
+    val service = req.service
+    val items = service match {
+      
+      case "association" => rulesAsList(req).filter(rule => isLazyEqual(rule.antecedent,antecedent))
+      case "series"      => rulesAsList(req).filter(rule => isStrictEqual(rule.antecedent,antecedent))
+      
+      case _ => throw new Exception("Service not supported.")
+     
+    }
+    serializer.serializeRules(new Rules(items))
+    
+  } 
+  /**
+   * Retrieve those rules, where the consequents match the provided ones;
+   * we distinguish two different matching methods, lazy and strict.
+   */
+  def rulesByConsequent(req:ServiceRequest,consequent:List[Int]):String = {
+  
+    val service = req.service
+    val items = service match {
+      
+      case "association" => rulesAsList(req).filter(rule => isLazyEqual(rule.consequent,consequent))
+      case "series"      => rulesAsList(req).filter(rule => isStrictEqual(rule.consequent,consequent))
+      
+      case _ => throw new Exception("Service not supported.")
+     
+    }
+    serializer.serializeRules(new Rules(items))
+
+  } 
+
+  private def ruleKey(req:ServiceRequest):String = {
+    "rule:" + req.data(Names.REQ_SITE) + ":" + req.data(Names.REQ_UID) + ":" + req.data(Names.REQ_NAME) 
+  }
+  
+  private def isLazyEqual(itemset1:List[Int],itemset2:List[Int]):Boolean = {
+    
+    val intersect = itemset1.intersect(itemset2)
+    intersect.size == itemset1.size
+    
+  }
+   
+  private def isStrictEqual(itemset1:List[Int],itemset2:List[Int]):Boolean = {
+    
+    if (itemset1.length != itemset2.length) {
+      return false
+    }
+    
+    val max = itemset1.zip(itemset2).map(x => Math.abs(x._1 -x._2)).max
+    (max == 0)
+    
+  }
+
 }

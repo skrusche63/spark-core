@@ -47,6 +47,9 @@ class BaseMessages {
 
   def REQUEST_IS_UNKNOWN():String = String.format("""Unknown request.""")
 
+  def RULES_DO_NOT_EXIST(uid:String):String = 
+    String.format("""[UID: %s] No association rules found.""", uid)
+
   def SEARCH_INDEX_CREATED(uid:String):String = 
     String.format("""[UID: %s] Search index created.""", uid)
 

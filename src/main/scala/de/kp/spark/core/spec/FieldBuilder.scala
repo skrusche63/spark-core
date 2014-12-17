@@ -26,14 +26,20 @@ import scala.collection.mutable.ArrayBuffer
 class FieldBuilder {
 
   def build(req:ServiceRequest,topic:String):List[Field] = {
-                
+
+    /*
+     * Note, that the 'site' field is fixed and cannot be renamed; it specifies
+     * the API KEY of a certain tenant
+     */
     val fields = ArrayBuffer.empty[Field]
+    fields += new Field(SITE_FIELD,"string",SITE_FIELD)
+    
     topic match {
       
       case "amount" => {
 
-        val names = List(SITE_FIELD,TIMESTAMP_FIELD,USER_FIELD,AMOUNT_FIELD)
-        val types = List("string","long","string","float")
+        val names = List(TIMESTAMP_FIELD,USER_FIELD,AMOUNT_FIELD)
+        val types = List("long","string","float")
         
         names.zip(types).foreach(entry => {
           
@@ -49,8 +55,8 @@ class FieldBuilder {
       }
       case "event" => {
 
-        val names = List(SITE_FIELD,TIMESTAMP_FIELD,USER_FIELD,EVENT_FIELD,ITEM_FIELD,SCORE_FIELD)
-        val types = List("string","long","string","integer","integer","double")
+        val names = List(TIMESTAMP_FIELD,USER_FIELD,EVENT_FIELD,ITEM_FIELD,SCORE_FIELD)
+        val types = List("long","string","integer","integer","double")
         
         names.zip(types).foreach(entry => {
           
@@ -67,8 +73,8 @@ class FieldBuilder {
 
       case "item" => {
 
-        val names = List(SITE_FIELD,TIMESTAMP_FIELD,USER_FIELD,GROUP_FIELD,ITEM_FIELD,SCORE_FIELD)
-        val types = List("string","long","string","string","integer","double")
+        val names = List(TIMESTAMP_FIELD,USER_FIELD,GROUP_FIELD,ITEM_FIELD,SCORE_FIELD)
+        val types = List("long","string","string","integer","double")
         
         names.zip(types).foreach(entry => {
           
@@ -84,8 +90,8 @@ class FieldBuilder {
       }
       case "product" => {
 
-        val names = List(SITE_FIELD,TIMESTAMP_FIELD,USER_FIELD,GROUP_FIELD,ITEM_FIELD,PRICE_FIELD)
-        val types = List("string","long","string","string","integer","float")
+        val names = List(TIMESTAMP_FIELD,USER_FIELD,GROUP_FIELD,ITEM_FIELD,PRICE_FIELD)
+        val types = List("long","string","string","integer","float")
         
         names.zip(types).foreach(entry => {
           
@@ -102,8 +108,8 @@ class FieldBuilder {
 
       case "sequence" => {
 
-        val names = List(SITE_FIELD,TIMESTAMP_FIELD,USER_FIELD,GROUP_FIELD,ITEM_FIELD)
-        val types = List("string","long","string","string","integer")
+        val names = List(TIMESTAMP_FIELD,USER_FIELD,GROUP_FIELD,ITEM_FIELD)
+        val types = List("long","string","string","integer")
         
         names.zip(types).foreach(entry => {
           

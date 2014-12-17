@@ -86,7 +86,7 @@ class ElasticFeatureBuilder {
       val (k,v) = rec
         
       val name = k.replace("lbl.","").replace("fea.","")
-      source += k -> v      
+      source += name -> v      
       
     }
 
