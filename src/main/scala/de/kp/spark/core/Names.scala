@@ -53,6 +53,8 @@ object Names {
   val SCORE_FIELD:String = "score"
   val SITE_FIELD:String  = "site"
 
+  val STATE_FIELD:String  = "state"
+
   val SUPPORT_FIELD:String = "support"
   val TIMESTAMP_FIELD:String = "timestamp"
   /*
@@ -87,6 +89,7 @@ object Names {
   val REQ_HOUR_OF_DAY:String = "hourOfday"
     
   val REQ_INDEX:String  = "index"
+  val REQ_INTENT:String = "intent"
 
   val REQ_ITEM:String  = "item"
   val REQ_ITEMS:String = "items"
@@ -98,6 +101,8 @@ object Names {
   val REQ_NAME:String  = "name"
   val REQ_NAMES:String = "names"
 
+  val REQ_OBSERVATIONS:String = "observations"
+    
   val REQ_QUERY:String = "query"
   /*
    * This request field determines whether preference rating is explicit or implicit;
@@ -106,6 +111,7 @@ object Names {
   val REQ_RATING:String  = "rating"
   val REQ_RELATED:String = "related"
 
+  val REQ_SCALE:String = "scale"
   val REQ_SCORE:String = "score"
     
   val REQ_SINK:String   = "sink"
@@ -117,6 +123,14 @@ object Names {
   val REQ_STATUS:String = "status"
   val REQ_STRATEGY:String = "strategy"
 
+  val REQ_STEPS:String = "steps"
+
+  val REQ_STATE:String = "state"
+  val REQ_STATES:String = "states"
+
+  val REQ_HSTATES:String = "hstates"
+  val REQ_OSTATES:String = "ostates"
+    
   val REQ_THRESHOLD:String = "threshold"
     
   val REQ_TOTAL:String = "total"

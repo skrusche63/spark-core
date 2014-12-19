@@ -26,10 +26,33 @@ import org.json4s.native.Serialization.{read,write}
 class BaseSerializer {
     
   implicit val formats = Serialization.formats(NoTypeHints)
-  
+  /*
+   * Serialization and de-serialization of behaviors; a behavior
+   * describes an ordered sequence of behavioral states on a per
+   * site and user basis
+   */
+  def serializeBehaviors(behaviors:Behaviors):String = write(behaviors)
+  def deserializeBehavior(behaviors:String):Behaviors = read[Behaviors](behaviors)
+  /*
+   * Serialization and de-serialization of field or metadata
+   * specification that describe the mapping from external
+   * data source fields to internal pre-defined variables
+   */
   def serializeFields(fields:Fields):String = write(fields) 
   def deserializeFields(fields:String):Fields = read[Fields](fields)
-  
+  /*
+   * Serialization and de-serialization of Markov states, where
+   * a certain state is described by a name and a probability to
+   * reach this state from a previous state. Markovian states
+   * are used by Intent Recognition
+   */
+  def serializeMarkovStates(states:MarkovStates):String = write(states) 
+  def deserializeMarkovStates(states:String):MarkovStates = read[MarkovStates](states)
+  /*
+   * Serialization and de-serialization of model parameters
+   * used to build or train a specific model; these parameters
+   * refer to a certain task (uid) and model name (name)
+   */
   def serializeParams(params:Params):String = write(params) 
   def deserializeParams(params:String):Params = read[Params](params)
 

@@ -61,6 +61,9 @@ case class Listener(
 case class Rule (
   antecedent:List[Int],consequent:List[Int],support:Int,confidence:Double
 )
+  
+case class Rules(items:List[Rule])
+
 /**
  * A CRule is derived from mined association rules and has a focus on a 
  * single consequent, and the respective weight of this with respective
@@ -75,8 +78,20 @@ case class CRule(
 )  
 
 case class CRules(items:List[CRule])
-  
-case class Rules(items:List[Rule])
+
+/********* INTENT SUPPORT */
+/*
+ * Behavior assigns a set of (time-ordered) states to a certain 
+ * site and user; a state is an aggregated part of information
+ * that must be derived from e.g. commerce transactions
+ */
+case class Behavior(site:String,user:String,states:List[String])
+case class Behaviors(items:List[Behavior])
+
+case class MarkovState(name:String,probability:Double)
+case class MarkovStates(items:List[MarkovState])
+
+/********* REQUEST / RESPONSE SUPPORT */
 
 /**
  * ServiceRequest & ServiceResponse specify the content sent to 

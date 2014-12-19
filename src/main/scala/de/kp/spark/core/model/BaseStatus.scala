@@ -29,6 +29,16 @@ class BaseStatus {
   val BUILDING_FINISHED:String = BUILDING_PREFIX + "finished"
     
   val BUILDING_NOT_FINISHED:String = BUILDING_PREFIX + "not:finished"  
+  
+  /**
+   * Stati to describe the data preparation process
+   */
+  private val PREPARATION_PREFIX = "predictive-works:preparation:"
+    
+  val PREPARATION_STARTED:String  = PREPARATION_STARTED + "started"
+  val PREPARATION_FINISHED:String = PREPARATION_STARTED + "finished"
+    
+  val PREPARATION_NOT_FINISHED:String = PREPARATION_STARTED + "not:finished"  
 
   /**
    * Stati to describe the rating building process

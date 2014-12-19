@@ -27,6 +27,9 @@ class BaseMessages {
   def ALGORITHM_IS_UNKNOWN(uid:String,algorithm:String):String = 
     String.format("""[UID: %s] Algorithm '%s' is unknown.""", uid, algorithm)
 
+  def DATA_PREPARATION_STARTED(uid:String):String = 
+    String.format("""[UID: %s] Data preparation process started.""", uid)
+
   def FILE_SINK_REQUIRED(uid:String):String = 
     String.format("""[UID: %s] A file sink is required for this request.""", uid)
 

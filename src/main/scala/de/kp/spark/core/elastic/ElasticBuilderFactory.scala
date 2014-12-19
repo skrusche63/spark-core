@@ -36,6 +36,7 @@ object ElasticBuilderFactory {
       case "rule"    => new ElasticRuleBuilder().createBuilder(mapping)
 
       case "sequence" => new ElasticSequenceBuilder().createBuilder(mapping)
+      case "state"    => new ElasticStateBuilder().createBuilder(mapping)
       
       case _ => null
       
