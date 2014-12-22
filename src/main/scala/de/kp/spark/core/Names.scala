@@ -43,6 +43,9 @@ object Names {
 
   val ITEM_FIELD:String  = "item"
   val PRICE_FIELD:String = "price"
+
+  val RECOMMENDATION_FIELD:String = "recommendation"
+
   /*
    * This is a relative identifier with respect to the timestamp
    * to specify which antecendents refer to the same association
@@ -53,7 +56,8 @@ object Names {
   val SCORE_FIELD:String = "score"
   val SITE_FIELD:String  = "site"
 
-  val STATE_FIELD:String  = "state"
+  val STATE_FIELD:String = "state"
+  val STEP_FIELD:String  = "step"
 
   val SUPPORT_FIELD:String = "support"
   val TIMESTAMP_FIELD:String = "timestamp"
@@ -71,9 +75,11 @@ object Names {
    *******************************************************/
   
   val REQ_ALGORITHM:String = "algorithm"
+  val REQ_AMOUNTS:String    = "amounts"
   
   val REQ_COLUMNS:String = "columns"
 
+  val REQ_DAYS:String = "days"
   val REQ_DAY_OF_WEEK:String = "dayOfweek"
     
   val REQ_END:String   = "end"
@@ -97,6 +103,7 @@ object Names {
   val REQ_K:String = "k"
 
   val REQ_MATRIX:String = "matrix"
+  val REQ_MODEL:String  = "model"
     
   val REQ_NAME:String  = "name"
   val REQ_NAMES:String = "names"
@@ -132,11 +139,15 @@ object Names {
   val REQ_OSTATES:String = "ostates"
     
   val REQ_THRESHOLD:String = "threshold"
+
+  val REQ_TIMES:String = "times"
     
   val REQ_TOTAL:String = "total"
   val REQ_TYPE:String  = "type"
 
+  val REQ_TOPIC:String = "topic"
   val REQ_TYPES:String = "types"
+    
   val REQ_WEIGHT:String = "weight"
     
   val REQ_UID:String   = "uid"

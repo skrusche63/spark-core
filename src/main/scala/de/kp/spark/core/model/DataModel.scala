@@ -89,7 +89,13 @@ case class Behavior(site:String,user:String,states:List[String])
 case class Behaviors(items:List[Behavior])
 
 case class MarkovState(name:String,probability:Double)
-case class MarkovStates(items:List[MarkovState])
+/*
+ * A Markov Rule assigns a certain state (antecedent) to a list
+ * of most probable subsequent states
+ */
+case class MarkovRule(antecedent:String,consequent:List[MarkovState])
+
+case class MarkovRules(items:List[MarkovRule])
 
 /********* REQUEST / RESPONSE SUPPORT */
 
@@ -109,7 +115,7 @@ case class ServiceResponse(
  * and are stored in a Redis instance
  */
 case class Status(
-  service:String,task:String,status:String,timestamp:Long
+  service:String,task:String,value:String,timestamp:Long
 )
 
 case class StatusList(items:List[Status])
@@ -117,6 +123,13 @@ case class StatusList(items:List[Status])
 /**
  * IO DATA MODEL
  */
+case class AmountObject(
+  val site:String,
+  val user:String,
+  val timestamp:Long,
+  val amount:Float  
+)
+
 case class EventScoreObject(
   val site:String,
   val user:String,

@@ -25,7 +25,9 @@ import scala.collection.mutable.ArrayBuffer
 
 class FieldBuilder {
 
-  def build(req:ServiceRequest,topic:String):List[Field] = {
+  def build(req:ServiceRequest,topic:String):List[Field] = build(req.data,topic)
+
+  def build(data:Map[String,String],topic:String):List[Field] = {
 
     /*
      * Note, that the 'site' field is fixed and cannot be renamed; it specifies
@@ -44,7 +46,7 @@ class FieldBuilder {
         names.zip(types).foreach(entry => {
           
           val (name,datatype) = entry
-          val value = if (req.data.contains(name)) req.data(name) else name
+          val value = if (data.contains(name)) data(name) else name
           
           fields += new Field(name,datatype,value)
           
@@ -61,7 +63,7 @@ class FieldBuilder {
         names.zip(types).foreach(entry => {
           
           val (name,datatype) = entry
-          val value = if (req.data.contains(name)) req.data(name) else name
+          val value = if (data.contains(name)) data(name) else name
           
           fields += new Field(name,datatype,value)
           
@@ -79,7 +81,7 @@ class FieldBuilder {
         names.zip(types).foreach(entry => {
           
           val (name,datatype) = entry
-          val value = if (req.data.contains(name)) req.data(name) else name
+          val value = if (data.contains(name)) data(name) else name
           
           fields += new Field(name,datatype,value)
           
@@ -96,7 +98,7 @@ class FieldBuilder {
         names.zip(types).foreach(entry => {
           
           val (name,datatype) = entry
-          val value = if (req.data.contains(name)) req.data(name) else name
+          val value = if (data.contains(name)) data(name) else name
           
           fields += new Field(name,datatype,value)
           
@@ -114,7 +116,25 @@ class FieldBuilder {
         names.zip(types).foreach(entry => {
           
           val (name,datatype) = entry
-          val value = if (req.data.contains(name)) req.data(name) else name
+          val value = if (data.contains(name)) data(name) else name
+          
+          fields += new Field(name,datatype,value)
+          
+        })
+
+        fields.toList
+        
+      }
+
+      case "state" => {
+
+        val names = List(TIMESTAMP_FIELD,USER_FIELD,STATE_FIELD)
+        val types = List("long","string","string")
+        
+        names.zip(types).foreach(entry => {
+          
+          val (name,datatype) = entry
+          val value = if (data.contains(name)) data(name) else name
           
           fields += new Field(name,datatype,value)
           

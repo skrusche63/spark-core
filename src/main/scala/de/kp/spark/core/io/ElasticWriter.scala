@@ -21,6 +21,9 @@ package de.kp.spark.core.io
 import org.elasticsearch.node.NodeBuilder._
 
 import org.elasticsearch.action.ActionListener
+
+import org.elasticsearch.action.bulk.BulkResponse
+
 import org.elasticsearch.action.index.IndexResponse
 import org.elasticsearch.action.index.IndexRequest.OpType
 
@@ -31,7 +34,10 @@ import org.elasticsearch.client.Requests
 import scala.collection.JavaConversions._
 
 class ElasticWriter {
-
+  /*
+   * Create an Elasticsearch node by interacting with
+   * the Elasticsearch server on the local machine
+   */
   private val node = nodeBuilder().node()
   private val client = node.client()
   
@@ -119,4 +125,57 @@ class ElasticWriter {
   
   }
   
+  def writeBulk(index:String,mapping:String,sources:List[java.util.Map[String,Object]]):Boolean = {
+     
+    if (readyToWrite == false) return false
+    
+    /*
+     * Prepare bulk request and fill with sources
+     */
+    val bulkRequest = client.prepareBulk()
+    for (source <- sources) {
+      
+      /* Convert source to content */
+      val content = XContentFactory.contentBuilder(Requests.INDEX_CONTENT_TYPE)
+      content.map(source)
+
+      bulkRequest.add(client.prepareIndex(index, mapping).setSource(content).setRefresh(true).setOpType(OpType.INDEX))
+      
+    }
+    
+    bulkRequest.execute(new ActionListener[BulkResponse](){
+      override def onResponse(response:BulkResponse) {
+
+        if (response.hasFailures()) {
+          
+          val msg = String.format("""Failed to register data for %s/%s""",index,mapping)
+          logger.error(msg, response.buildFailureMessage())
+                
+        } else {
+          
+          val msg = "Successful registration of bulk sources."
+          logger.info(msg)
+          
+        }        
+      
+      }
+       
+      override def onFailure(t:Throwable) {
+	    /*
+	     * In case of failure, we expect one or both of the following causes:
+	     * the index and / or the respective mapping may not exists
+	     */
+        val msg = "Failed to register bulk of sources."
+        logger.info(msg,t)
+	      
+        close()
+        throw new Exception(msg)
+	    
+      }
+      
+    })
+    
+    true
+  
+  }
 }

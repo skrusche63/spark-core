@@ -72,7 +72,7 @@ class StatusQuestor(config:Configuration) extends RootActor(config) {
        * previous versions of the status management
        */
       val data = Map(Names.REQ_UID -> uid)               
-      return new ServiceResponse(req.service,req.task,data,cache.status(req))	
+      return new ServiceResponse(req.service,req.task,data,serializer.serializeStatus(cache.status(req)))
 
     }
     /*

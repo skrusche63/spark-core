@@ -73,6 +73,9 @@ class BaseMessages {
  
   def TRACKED_DATA_RECEIVED(uid:String):String = 
     String.format("""[UID: %s] Tracked data received.""", uid)
+ 
+  def TRACKING_STARTED(uid:String):String = 
+    String.format("""[UID: %s] Data tracking process started.""", uid)
 
   def TRAINING_NOT_FINISHED(uid:String):String = 
     String.format("""[UID: %s] Training task is not finished yet.""", uid)

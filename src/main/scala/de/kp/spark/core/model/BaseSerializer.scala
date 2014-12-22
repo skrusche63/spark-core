@@ -41,13 +41,13 @@ class BaseSerializer {
   def serializeFields(fields:Fields):String = write(fields) 
   def deserializeFields(fields:String):Fields = read[Fields](fields)
   /*
-   * Serialization and de-serialization of Markov states, where
+   * Serialization and de-serialization of Markov rules, where
    * a certain state is described by a name and a probability to
-   * reach this state from a previous state. Markovian states
+   * reach this state from a previous state. Markovian rules
    * are used by Intent Recognition
    */
-  def serializeMarkovStates(states:MarkovStates):String = write(states) 
-  def deserializeMarkovStates(states:String):MarkovStates = read[MarkovStates](states)
+  def serializeMarkovRules(rules:MarkovRules):String = write(rules) 
+  def deserializeMarkovRules(rules:String):MarkovRules = read[MarkovRules](rules)
   /*
    * Serialization and de-serialization of model parameters
    * used to build or train a specific model; these parameters

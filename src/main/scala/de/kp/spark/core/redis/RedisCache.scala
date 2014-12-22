@@ -35,14 +35,17 @@ class RedisCache(host:String,port:Int) extends Serializable {
    *  Add a single field specification that refers to a named
    *  training or model building task
    */
-  def addField(req:ServiceRequest,field:Field) {
+  def addField(req:ServiceRequest,field:Field) {addField(req.data,field)}
+  
+  def addField(data:Map[String,String],field:Field) {
     
-    val k = "fields:" + req.data(Names.REQ_SITE) + ":" + req.data(Names.REQ_UID) + ":" + req.data(Names.REQ_NAME) 
+    val k = "fields:" + data(Names.REQ_SITE) + ":" + data(Names.REQ_UID) + ":" + data(Names.REQ_NAME) 
     val v = String.format("""%s:%s:%s""",field.name,field.datatype,field.value)
     
     client.rpush(k,v)
     
   }
+  
   /** 
    *  Add a list of field specifications that refer to a named
    *  training or model build task
@@ -51,6 +54,12 @@ class RedisCache(host:String,port:Int) extends Serializable {
     for (field <- fields) addField(req,field)
     
   }
+  
+  def addFields(data:Map[String,String],fields:List[Field]) {
+    for (field <- fields) addField(data,field)
+    
+  }
+
   /** 
    *  Add a single model parameter that refers to a named
    *  training or model building task
@@ -193,7 +202,7 @@ class RedisCache(host:String,port:Int) extends Serializable {
    * This method is deprecated; the newer status interface is based
    * on the method 'statuses'.
    */
-  def status(req:ServiceRequest):String = {
+  def status(req:ServiceRequest):Status = {
 
     val k = "status:"  + req.data(Names.REQ_SITE) + ":" + req.data(Names.REQ_UID)
     val data = client.zrange(k, 0, -1)
@@ -207,8 +216,7 @@ class RedisCache(host:String,port:Int) extends Serializable {
       val last = data.toList.last
       val Array(timestamp,status) = last.split(":")
       
-      val job = serializer.deserializeStatus(status)
-      job.status
+      serializer.deserializeStatus(status)
       
     }
 
