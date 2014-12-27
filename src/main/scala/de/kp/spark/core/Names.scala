@@ -61,6 +61,10 @@ object Names {
 
   val SUPPORT_FIELD:String = "support"
   val TIMESTAMP_FIELD:String = "timestamp"
+    
+  val TOTAL_FIELD:String = "total"
+  val TRAJECTORY_FIELD:String = "trajectory"
+    
   /*
    * The unique identifier of the mining task that created the
    * respective rules
@@ -107,7 +111,11 @@ object Names {
     
   val REQ_NAME:String  = "name"
   val REQ_NAMES:String = "names"
-
+  
+  val REQ_OBSERVATION:String = "observation"
+  /*
+   * A list of observations
+   */
   val REQ_OBSERVATIONS:String = "observations"
     
   val REQ_QUERY:String = "query"

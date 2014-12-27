@@ -43,12 +43,6 @@ class ElasticRuleBuilder {
                             .field("type", "string")
                             .field("index", "not_analyzed")
                           .endObject()
-                    
-                          /* rule */
-                          .startObject(RULE_FIELD)
-                            .field("type", "string")
-                            .field("index", "not_analyzed")
-                          .endObject()
 
                           /* antecedent */
                           .startObject(ANTECEDENT_FIELD)
@@ -64,14 +58,14 @@ class ElasticRuleBuilder {
                           .startObject(SUPPORT_FIELD)
                             .field("type", "integer")
                           .endObject()
+                          
+                          /* total */
+                          .startObject(TOTAL_FIELD)
+                            .field("type", "long")
+                          .endObject()
 
                           /* confidence */
                           .startObject(CONFIDENCE_FIELD)
-                            .field("type", "double")
-                          .endObject()
-                          
-                          /* confidence */
-                          .startObject(WEIGHT_FIELD)
                             .field("type", "double")
                           .endObject()
 

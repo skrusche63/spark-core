@@ -59,7 +59,11 @@ case class Listener(
  * the relation between 'antecedent' & 'consequent' itemsets.
  */
 case class Rule (
-  antecedent:List[Int],consequent:List[Int],support:Int,confidence:Double
+  /* 
+   * 'total' specifies the total number of transactions and is added 
+   * to provide a reference base for the 'support' parameter 
+   */
+  antecedent:List[Int],consequent:List[Int],support:Int,total:Long,confidence:Double
 )
   
 case class Rules(items:List[Rule])
@@ -156,14 +160,13 @@ case class ItemScoreObject(
 )
 
 case class RuleObject(
-  val timestamp:Long,
   val uid:String,
-  val rule:String,
-  val antecendent:Int,
+  val timestamp:Long,
+  val antecendent:Seq[Int],
   val consequent:Seq[Int],
   val support:Int,
-  val confidence:Double,
-  val weight:Double
+  val total:Long,
+  val confidence:Double
 )
 
 case class TargetedPointObject(

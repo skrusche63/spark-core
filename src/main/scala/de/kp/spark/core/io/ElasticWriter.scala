@@ -28,7 +28,7 @@ import org.elasticsearch.action.index.IndexResponse
 import org.elasticsearch.action.index.IndexRequest.OpType
 
 import org.elasticsearch.common.logging.Loggers
-import org.elasticsearch.common.xcontent.{XContentFactory}
+import org.elasticsearch.common.xcontent.{XContentBuilder,XContentFactory}
 
 import org.elasticsearch.client.Requests
 import scala.collection.JavaConversions._
@@ -87,14 +87,20 @@ class ElasticWriter {
   }
     
   def write(index:String,mapping:String,source:java.util.Map[String,Object]):Boolean = {
-    
-    if (readyToWrite == false) return false
  		
     /* Update index operation */
     val content = XContentFactory.contentBuilder(Requests.INDEX_CONTENT_TYPE)
     content.map(source)
 	
-    client.prepareIndex(index, mapping).setSource(content).setRefresh(true).setOpType(OpType.INDEX)
+    writeJSON(index,mapping,content)
+    
+  }
+   
+  def writeJSON(index:String,mapping:String,source:XContentBuilder):Boolean = {
+    
+    if (readyToWrite == false) return false
+    
+    client.prepareIndex(index, mapping).setSource(source).setRefresh(true).setOpType(OpType.INDEX)
       .execute(new ActionListener[IndexResponse]() {
         override def onResponse(response:IndexResponse) {
           /*
@@ -124,7 +130,7 @@ class ElasticWriter {
     true
   
   }
-  
+ 
   def writeBulk(index:String,mapping:String,sources:List[java.util.Map[String,Object]]):Boolean = {
      
     if (readyToWrite == false) return false
@@ -178,4 +184,53 @@ class ElasticWriter {
     true
   
   }
+  
+  def writeBulkJSON(index:String,mapping:String,sources:List[XContentBuilder]):Boolean = {
+     
+    if (readyToWrite == false) return false
+    
+    /*
+     * Prepare bulk request and fill with sources
+     */
+    val bulkRequest = client.prepareBulk()
+    for (source <- sources) {
+      bulkRequest.add(client.prepareIndex(index, mapping).setSource(source).setRefresh(true).setOpType(OpType.INDEX))
+    }
+    
+    bulkRequest.execute(new ActionListener[BulkResponse](){
+      override def onResponse(response:BulkResponse) {
+
+        if (response.hasFailures()) {
+          
+          val msg = String.format("""Failed to register data for %s/%s""",index,mapping)
+          logger.error(msg, response.buildFailureMessage())
+                
+        } else {
+          
+          val msg = "Successful registration of bulk sources."
+          logger.info(msg)
+          
+        }        
+      
+      }
+       
+      override def onFailure(t:Throwable) {
+	    /*
+	     * In case of failure, we expect one or both of the following causes:
+	     * the index and / or the respective mapping may not exists
+	     */
+        val msg = "Failed to register bulk of sources."
+        logger.info(msg,t)
+	      
+        close()
+        throw new Exception(msg)
+	    
+      }
+      
+    })
+    
+    true
+  
+  }
+
 }
