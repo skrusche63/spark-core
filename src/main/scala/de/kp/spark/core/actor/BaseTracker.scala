@@ -26,6 +26,8 @@ import de.kp.spark.core.model._
 import de.kp.spark.core.io.ElasticWriter
 import de.kp.spark.core.elastic._
 
+import org.elasticsearch.common.xcontent.XContentBuilder
+
 class BaseTracker(config:Configuration) extends RootActor(config) {
   
   def receive = {
@@ -125,44 +127,13 @@ class BaseTracker(config:Configuration) extends RootActor(config) {
        }
        case "item" => {
       
+         val sources = prepareItemJSON(req)
          /*
-          * Data preparation comprises the extraction of all common 
-          * fields, i.e. timestamp, site, user and group. The 'item' 
-          * field may specify a list of purchase items and has to be 
-          * processed differently.
+          * Writing these sources to the respective index throws an
+          * exception in case of an error; note, that the writer is
+          * automatically closed 
           */
-         val source = prepareItem(req)
-         /*
-          * The 'item' field specifies a comma-separated list
-          * of item (e.g.) product identifiers. Note, that every
-          * item is actually indexed individually. This is due to
-          * synergy effects with other data sources
-          */
-         val items = req.data(Names.ITEM_FIELD).split(",")
- 
-         /*
-          * A trackable event may have a 'score' field assigned;
-          * note, that this field is optional
-          */
-         val scores = if (req.data.contains(Names.REQ_SCORE)) req.data(Names.REQ_SCORE).split(",").map(_.toDouble) else Array.fill[Double](items.length)(0)
-
-         val zipped = items.zip(scores)
-         for  ((item,score) <- zipped) {
-           /*
-            * Set or overwrite the 'item' field in the respective source
-            */
-           source.put(Names.ITEM_FIELD, item)
-           /*
-            * Set or overwrite the 'score' field in the respective source
-            */
-           source.put(Names.SCORE_FIELD, score.asInstanceOf[Object])
-           /*
-            * Writing this source to the respective index throws an
-            * exception in case of an error; note, that the writer is
-            * automatically closed 
-            */
-           writer.write(index, mapping, source)
-         }
+         writer.writeBulkJSON(index, mapping, sources)
          
        }      
        case "product" => {
@@ -221,7 +192,7 @@ class BaseTracker(config:Configuration) extends RootActor(config) {
     new ElasticFeatureBuilder().createSource(req.data)
   }
 
-  protected def prepareItem(req:ServiceRequest):java.util.Map[String,Object] = {
+  protected def prepareItemJSON(req:ServiceRequest):List[XContentBuilder] = {
    /*
     * Example request data:
     * 
@@ -237,7 +208,7 @@ class BaseTracker(config:Configuration) extends RootActor(config) {
     * "item"    : "1,2,3,4,5,6,7"
     * 
     */   
-    new ElasticItemBuilder().createSource(req.data)
+    new ElasticItemBuilder().createSourceJSON(req.data)
   }
   
   protected def prepareProduct(req:ServiceRequest):java.util.Map[String,Object] = {

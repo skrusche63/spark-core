@@ -40,9 +40,10 @@ class ElasticItemBuilder {
             .startObject(mapping)
               .startObject("properties")
 
-                /* timestamp */
-                .startObject(TIMESTAMP_FIELD)
-                  .field("type", "long")
+                /* uid */
+                .startObject(UID_FIELD)
+                  .field("type", "string")
+                  .field("index", "not_analyzed")
                 .endObject()
                     
                 /* site */
@@ -56,6 +57,11 @@ class ElasticItemBuilder {
                    .field("type", "string")
                    .field("index", "not_analyzed")
                 .endObject()//
+
+                /* timestamp */
+                .startObject(TIMESTAMP_FIELD)
+                  .field("type", "long")
+                .endObject()
 
                 /* group */
                 .startObject(GROUP_FIELD)
@@ -92,6 +98,58 @@ class ElasticItemBuilder {
     source += Names.GROUP_FIELD -> params(Names.GROUP_FIELD)
  
     source
+    
+  }
+  
+  def createSourceJSON(params:Map[String,String]):List[XContentBuilder] = {
+    
+    /*
+     * The 'item' field specifies a comma-separated list
+     * of item (e.g.) product identifiers. Note, that every
+     * item is actually indexed individually. This is due to
+     * synergy effects with other data sources
+     */
+    val items = params(Names.ITEM_FIELD).split(",")
+    /*
+     * A trackable event may have a 'score' field assigned;
+     * note, that this field is optional
+     */
+    val scores = if (params.contains(Names.REQ_SCORE)) params(Names.REQ_SCORE).split(",").map(_.toDouble) else Array.fill[Double](items.length)(0)
+
+    val zipped = items.zip(scores)
+    
+    /* Common field values */
+    val uid = params(Names.UID_FIELD)
+
+    val site = params(Names.SITE_FIELD)
+    val user = params(Names.USER_FIELD)
+     
+    val timestamp = params(Names.TIMESTAMP_FIELD).toLong 
+    val group = params(Names.GROUP_FIELD)
+
+    zipped.map(x => {
+      
+      val (item,score) = x
+
+      val builder = XContentFactory.jsonBuilder()
+	  builder.startObject()
+	  
+	  builder.field(Names.UID_FIELD, uid)
+
+	  builder.field(Names.SITE_FIELD, site)
+	  builder.field(Names.USER_FIELD, user)
+
+	  builder.field(Names.TIMESTAMP_FIELD, timestamp)
+	  builder.field(Names.GROUP_FIELD, group)
+
+	  builder.field(Names.ITEM_FIELD, item)
+	  builder.field(Names.SCORE_FIELD, score)
+	  
+      builder.endObject()
+	  
+      builder
+    
+    }).toList
     
   }
 

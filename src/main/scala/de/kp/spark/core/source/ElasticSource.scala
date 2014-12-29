@@ -42,7 +42,7 @@ class ElasticSource(@transient sc:SparkContext) extends Serializable {
     val mapping = req.data(Names.REQ_SOURCE_TYPE).asInstanceOf[String]
     
     val query = req.data(Names.REQ_QUERY).asInstanceOf[String]
-    new ElasticReader(sc,config,index,mapping,query).read
+    new ElasticReader().readRDD(sc,config,index,mapping,query)
 
   }
 

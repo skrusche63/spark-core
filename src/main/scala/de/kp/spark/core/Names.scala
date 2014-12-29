@@ -61,6 +61,8 @@ object Names {
 
   val SUPPORT_FIELD:String = "support"
   val TIMESTAMP_FIELD:String = "timestamp"
+  
+  val DAYS_FIELD:String = "days"
     
   val TOTAL_FIELD:String = "total"
   val TRAJECTORY_FIELD:String = "trajectory"

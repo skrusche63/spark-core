@@ -23,27 +23,88 @@ import org.apache.spark.rdd.RDD
 
 import org.apache.hadoop.io.{ArrayWritable,MapWritable,NullWritable,Text}
 
-import de.kp.spark.core.{Configuration,Names}
+import org.elasticsearch.node.NodeBuilder._
+import org.elasticsearch.common.logging.Loggers
+
+import de.kp.spark.core.{Configuration => Config,Names}
 
 import org.elasticsearch.hadoop.mr.EsInputFormat
 import scala.collection.JavaConversions._
 
-class ElasticReader(@transient sc:SparkContext,config:Configuration,index:String,mapping:String,query:String) {
-          
-  private val conf = config.elastic
-  /**
-   * Append dynamic request specific data to Elasticsearch configuration;
-   * this comprises the search query to be used and the index (and mapping)
-   * to be accessed
+class ElasticReader {
+  /*
+   * Create an Elasticsearch node by interacting with
+   * the Elasticsearch server on the local machine
    */
-  conf.set(Names.ES_QUERY,query)
-  conf.set(Names.ES_RESOURCE,(index + "/" + mapping))
+  private val node = nodeBuilder().node()
+  private val client = node.client()
   
-  def read():RDD[Map[String,String]] = {
-
+  private val logger = Loggers.getLogger(getClass())
+  
+  def readRDD(@transient sc:SparkContext,config:Config,index:String,mapping:String,query:String):RDD[Map[String,String]] = {
+          
+    val conf = config.elastic
+    /*
+     * Append dynamic request specific data to Elasticsearch configuration;
+     * this comprises the search query to be used and the index (and mapping)
+     * to be accessed
+     */
+    conf.set(Names.ES_QUERY,query)
+    conf.set(Names.ES_RESOURCE,(index + "/" + mapping))
+ 
     val source = sc.newAPIHadoopRDD(conf, classOf[EsInputFormat[Text, MapWritable]], classOf[Text], classOf[MapWritable])
     source.map(hit => toMap(hit._2))
     
+  }
+
+  def open(index:String,mapping:String):Boolean = {
+        
+    val readyToRead = try {
+      
+      val indices = client.admin().indices
+      /*
+       * Check whether referenced index exists; if index does not
+       * exist, through exception
+       */
+      val existsRes = indices.prepareExists(index).execute().actionGet()            
+      if (existsRes.isExists() == false) {
+        new Exception("Index '" + index + "' does not exist.")            
+      }
+
+      /*
+       * Check whether the referenced mapping exists; if mapping
+       * does not exist, through exception
+       */
+      val prepareRes = indices.prepareGetMappings(index).setTypes(mapping).execute().actionGet()
+      if (prepareRes.mappings().isEmpty) {
+        new Exception("Mapping '" + index + "/" + mapping + "' does not exist.")
+      }
+      
+      true
+
+    } catch {
+      case e:Exception => {
+        
+        logger.error(e.getMessage())
+        false
+        
+      }
+       
+    }
+    
+    readyToRead
+    
+  }
+
+  def exists(index:String,mapping:String,id:String):Boolean = {
+    
+    val response = client.prepareGet(index,mapping,id).execute().actionGet()
+    if (response.isExists()) true else false
+
+  }
+  
+  def close() {
+    if (node != null) node.close()
   }
   
   private def toMap(mw:MapWritable):Map[String,String] = {
