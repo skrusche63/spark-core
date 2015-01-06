@@ -26,6 +26,14 @@ package de.kp.spark.core.model
 
 /********** REGISTRATION SUPPORT **/
 
+case class AliveMessage()
+/**
+ * Status event specifies a message sent by the Supervisor actor 
+ * to indicate that a certain 'status' of a data mining or model 
+ * building task has been reached.
+ */
+case class StatusEvent(uid:String,service:String,task:String,value:String)
+
 case class Field(
   name:String,datatype:String,value:String
 )
