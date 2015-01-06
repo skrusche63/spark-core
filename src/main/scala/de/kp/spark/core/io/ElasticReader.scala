@@ -28,7 +28,9 @@ import org.elasticsearch.common.logging.Loggers
 
 import de.kp.spark.core.{Configuration => Config,Names}
 
+import org.apache.hadoop.conf.{Configuration => HadoopConfig}
 import org.elasticsearch.hadoop.mr.EsInputFormat
+
 import scala.collection.JavaConversions._
 
 class ElasticReader {
@@ -41,6 +43,13 @@ class ElasticReader {
   
   private val logger = Loggers.getLogger(getClass())
   
+  def readRDD(@transient sc:SparkContext,config:HadoopConfig):RDD[Map[String,String]] = {
+
+    val source = sc.newAPIHadoopRDD(config, classOf[EsInputFormat[Text, MapWritable]], classOf[Text], classOf[MapWritable])
+    source.map(hit => toMap(hit._2))
+    
+  }
+  
   def readRDD(@transient sc:SparkContext,config:Config,index:String,mapping:String,query:String):RDD[Map[String,String]] = {
           
     val conf = config.elastic
@@ -52,8 +61,7 @@ class ElasticReader {
     conf.set(Names.ES_QUERY,query)
     conf.set(Names.ES_RESOURCE,(index + "/" + mapping))
  
-    val source = sc.newAPIHadoopRDD(conf, classOf[EsInputFormat[Text, MapWritable]], classOf[Text], classOf[MapWritable])
-    source.map(hit => toMap(hit._2))
+    readRDD(sc,conf)
     
   }
 

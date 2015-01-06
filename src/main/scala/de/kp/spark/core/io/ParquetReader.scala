@@ -65,9 +65,7 @@ class ParquetReader(@transient sc:SparkContext) extends Serializable {
         if (fields.contains(colname)) data += colname -> colvalu
         
       }
-      
-      data += colname -> colvalu
-    
+     
     })
     
     data.toMap

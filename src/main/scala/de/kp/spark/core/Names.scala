@@ -37,6 +37,7 @@ object Names {
   val CONSEQUENT_FIELD:String = "consequent"
  
   val CONFIDENCE_FIELD:String = "confidence"
+  val COVERAGE_FIELD:String = "coverage"
 
   val EVENT_FIELD:String = "event"
   val GROUP_FIELD:String = "group"
@@ -60,6 +61,8 @@ object Names {
   val STEP_FIELD:String  = "step"
 
   val SUPPORT_FIELD:String = "support"
+
+  val TIME_FIELD:String = "time"
   val TIMESTAMP_FIELD:String = "timestamp"
   
   val DAYS_FIELD:String = "days"
@@ -110,6 +113,8 @@ object Names {
 
   val REQ_MATRIX:String = "matrix"
   val REQ_MODEL:String  = "model"
+
+  val REQ_METHOD:String = "method"
     
   val REQ_NAME:String  = "name"
   val REQ_NAMES:String = "names"

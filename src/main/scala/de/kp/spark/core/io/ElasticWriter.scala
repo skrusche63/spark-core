@@ -85,7 +85,14 @@ class ElasticWriter {
   def close() {
     if (node != null) node.close()
   }
+
+  def exists(index:String,mapping:String,id:String):Boolean = {
     
+    val response = client.prepareGet(index,mapping,id).execute().actionGet()
+    if (response.isExists()) true else false
+
+  }
+
   def write(index:String,mapping:String,source:java.util.Map[String,Object]):Boolean = {
  		
     /* Update index operation */
@@ -99,8 +106,49 @@ class ElasticWriter {
   def writeJSON(index:String,mapping:String,source:XContentBuilder):Boolean = {
     
     if (readyToWrite == false) return false
-    
+    /*
+     * The OpType INDEX (other than CREATE) ensures that the document is
+     * 'updated' which means an existing document is replaced and reindexed
+     */
     client.prepareIndex(index, mapping).setSource(source).setRefresh(true).setOpType(OpType.INDEX)
+      .execute(new ActionListener[IndexResponse]() {
+        override def onResponse(response:IndexResponse) {
+          /*
+           * Registration of provided source successfully performed; no further
+           * action, just logging this event
+           */
+          val msg = String.format("""Successful registration for: %s""", source.toString)
+          logger.info(msg)
+        
+        }      
+
+        override def onFailure(t:Throwable) {
+	      /*
+	       * In case of failure, we expect one or both of the following causes:
+	       * the index and / or the respective mapping may not exists
+	       */
+          val msg = String.format("""Failed to register %s""", source.toString)
+          logger.info(msg,t)
+	      
+          close()
+          throw new Exception(msg)
+	    
+        }
+        
+      })
+      
+    true
+  
+  }
+  
+  def writeJSON(index:String,mapping:String,id:String,source:XContentBuilder):Boolean = {
+    
+    if (readyToWrite == false) return false
+    /*
+     * The OpType INDEX (other than CREATE) ensures that the document is
+     * 'updated' which means an existing document is replaced and reindexed
+     */
+    client.prepareIndex(index,mapping,id).setSource(source).setRefresh(true).setOpType(OpType.INDEX)
       .execute(new ActionListener[IndexResponse]() {
         override def onResponse(response:IndexResponse) {
           /*
@@ -195,6 +243,56 @@ class ElasticWriter {
     val bulkRequest = client.prepareBulk()
     for (source <- sources) {
       bulkRequest.add(client.prepareIndex(index, mapping).setSource(source).setRefresh(true).setOpType(OpType.INDEX))
+    }
+    
+    bulkRequest.execute(new ActionListener[BulkResponse](){
+      override def onResponse(response:BulkResponse) {
+
+        if (response.hasFailures()) {
+          
+          val msg = String.format("""Failed to register data for %s/%s""",index,mapping)
+          logger.error(msg, response.buildFailureMessage())
+                
+        } else {
+          
+          val msg = "Successful registration of bulk sources."
+          logger.info(msg)
+          
+        }        
+      
+      }
+       
+      override def onFailure(t:Throwable) {
+	    /*
+	     * In case of failure, we expect one or both of the following causes:
+	     * the index and / or the respective mapping may not exists
+	     */
+        val msg = "Failed to register bulk of sources."
+        logger.info(msg,t)
+	      
+        close()
+        throw new Exception(msg)
+	    
+      }
+      
+    })
+    
+    true
+  
+  }
+  
+  def writeBulkJSON(index:String,mapping:String,ids:List[String],sources:List[XContentBuilder]):Boolean = {
+     
+    if (readyToWrite == false) return false
+    
+    val zipped = ids.zip(sources)
+
+    /*
+     * Prepare bulk request and fill with sources
+     */
+    val bulkRequest = client.prepareBulk()
+    for ((id,source) <- zipped) {
+      bulkRequest.add(client.prepareIndex(index,mapping,id).setSource(source).setRefresh(true).setOpType(OpType.INDEX))
     }
     
     bulkRequest.execute(new ActionListener[BulkResponse](){
