@@ -26,10 +26,8 @@ import de.kp.spark.core.io.ParquetReader
 
 class ParquetSource(@transient sc:SparkContext) extends Serializable {
 
-  def connect(path:String,req:ServiceRequest,fields:List[String]):RDD[Map[String,Any]] = {
-    
-    new ParquetReader(sc).read(path,fields)
-    
-  }
+  def connect(store:String,req:ServiceRequest):RDD[Map[String,Any]] = connect(store,req,List.empty[String])
+  
+  def connect(store:String,req:ServiceRequest,fields:List[String]):RDD[Map[String,Any]] = new ParquetReader(sc).read(store,fields)
   
 }
