@@ -21,42 +21,36 @@ package de.kp.spark.core.elastic
 import org.elasticsearch.common.xcontent.{XContentBuilder,XContentFactory}
 import de.kp.spark.core.Names
 
-class ElasticAmountBuilder {
+class ElasticVectorBuilder {
 
   import de.kp.spark.core.Names._
   
   def createBuilder(mapping:String):XContentBuilder = {
-    /*
-     * Define mapping schema for index 'index' and 'type'
-     */
+
     val builder = XContentFactory.jsonBuilder()
           .startObject()
             .startObject(mapping)
-               .startObject("properties")
+              .startObject("properties")
 
-               /* timestamp */
-               .startObject(TIMESTAMP_FIELD)
-                 .field("type", "long")
-               .endObject()
+                /* row */
+                .startObject(ROW_FIELD)
+                  .field("type", "long")
+                  .field("index", "not_analyzed")
+                .endObject()
                     
-               /* site */
-               .startObject(SITE_FIELD)
-                  .field("type", "string")
-                  .field("index", "not_analyzed")
-               .endObject()
+                /* col */
+                .startObject(COL_FIELD)
+                   .field("type", "long")
+                   .field("index", "not_analyzed")
+                .endObject()
 
-               /* user */
-               .startObject(USER_FIELD)
-                  .field("type", "string")
-                  .field("index", "not_analyzed")
-               .endObject()//
+                /* val */
+                .startObject(VAL_FIELD)
+                   .field("type", "string")
+                   .field("index", "not_analyzed")
+                .endObject()
 
-               /* amount */
-               .startObject(AMOUNT_FIELD)
-                  .field("type", "float")
-               .endObject()//
-
-               .endObject() // properties
+              .endObject() // properties
             .endObject()   // mapping
           .endObject()
                     
@@ -66,31 +60,21 @@ class ElasticAmountBuilder {
   
   def createSourceJSON(params:Map[String,String]):XContentBuilder = {
     
-    val site = params(Names.SITE_FIELD)
-    val user = params(Names.USER_FIELD)
+    val row = params(Names.ROW_FIELD).toLong
+    val col = params(Names.COL_FIELD).toLong
     
-    val amount = params(Names.AMOUNT_FIELD).toFloat
-    val timestamp = params(Names.TIMESTAMP_FIELD).toLong
-    
+    val value = params(Names.VAL_FIELD)
 
     val builder = XContentFactory.jsonBuilder()
 	builder.startObject()
-    
-	/* timestamp */
-    builder.field(Names.TIMESTAMP_FIELD, timestamp)
+	  
+	builder.field(Names.ROW_FIELD, row)
+    builder.field(Names.COL_FIELD, col)
 
-    /* site */
-	builder.field(Names.SITE_FIELD, site)
-	
-	/* user */
-    builder.field(Names.USER_FIELD, user)
-	
-    /* amount */
-    builder.field(Names.AMOUNT_FIELD, amount)
+    builder.field(Names.VAL_FIELD, value)
 	  
     builder.endObject()
     builder
     
   }
- 
 }

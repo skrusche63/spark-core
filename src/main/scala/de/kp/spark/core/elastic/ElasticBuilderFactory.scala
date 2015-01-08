@@ -38,6 +38,8 @@ object ElasticBuilderFactory {
       case "sequence" => new ElasticSequenceBuilder().createBuilder(mapping)
       case "state"    => new ElasticStateBuilder().createBuilder(mapping)
       
+      case "vector"   => new ElasticVectorBuilder().createBuilder(mapping)
+      
       case _ => null
       
     }

@@ -143,6 +143,24 @@ class FieldBuilder {
         fields.toList
         
       }
+
+      case "vector" => {
+
+        val names = List(ROW_FIELD,COL_FIELD,VAL_FIELD)
+        val types = List("long","long","string")
+        
+        names.zip(types).foreach(entry => {
+          
+          val (name,datatype) = entry
+          val value = if (data.contains(name)) data(name) else name
+          
+          fields += new Field(name,datatype,value)
+          
+        })
+
+        fields.toList
+        
+      }
       
       case _ => fields.toList 
       

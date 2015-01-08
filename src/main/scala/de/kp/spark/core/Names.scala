@@ -31,6 +31,10 @@ object Names {
    *                     INDEXING
    *******************************************************/
 
+  val ROW_FIELD:String = "row"
+  val COL_FIELD:String = "col"
+  val VAL_FIELD:String = "val"
+    
   val AMOUNT_FIELD:String = "amount"
 
   val ANTECEDENT_FIELD:String = "antecedent"

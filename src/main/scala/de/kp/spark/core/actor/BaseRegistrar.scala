@@ -115,6 +115,14 @@ class BaseRegistrar(config:Configuration) extends RootActor(config) {
         new ServiceResponse(req.service,req.task,Map(Names.REQ_UID-> uid),status.SUCCESS)
           
       }
+      case "vector" => {
+        
+        val fields = new FieldBuilder().build(req,topic)
+        cache.addFields(req, fields)
+        
+        new ServiceResponse(req.service,req.task,Map(Names.REQ_UID-> uid),status.SUCCESS)
+          
+      }
       case _ => {
           
          val msg = messages.TASK_IS_UNKNOWN(uid,req.task)
