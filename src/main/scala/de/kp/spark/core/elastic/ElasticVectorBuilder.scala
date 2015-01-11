@@ -43,6 +43,12 @@ class ElasticVectorBuilder {
                    .field("type", "long")
                    .field("index", "not_analyzed")
                 .endObject()
+                
+                /* lbl */
+                .startObject(LBL_FIELD)
+                   .field("type", "string")
+                   .field("index", "not_analyzed")
+                .endObject()
 
                 /* val */
                 .startObject(VAL_FIELD)
@@ -63,6 +69,7 @@ class ElasticVectorBuilder {
     val row = params(Names.ROW_FIELD).toLong
     val col = params(Names.COL_FIELD).toLong
     
+    val label = params(Names.LBL_FIELD)
     val value = params(Names.VAL_FIELD)
 
     val builder = XContentFactory.jsonBuilder()
@@ -71,6 +78,7 @@ class ElasticVectorBuilder {
 	builder.field(Names.ROW_FIELD, row)
     builder.field(Names.COL_FIELD, col)
 
+    builder.field(Names.LBL_FIELD, label)
     builder.field(Names.VAL_FIELD, value)
 	  
     builder.endObject()

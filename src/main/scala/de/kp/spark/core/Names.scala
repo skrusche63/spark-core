@@ -31,8 +31,13 @@ object Names {
    *                     INDEXING
    *******************************************************/
 
+  /*
+   * The subquent block of fields describes labeled vector
+   * vectors that are used by cluster algorithms and others
+   */
   val ROW_FIELD:String = "row"
   val COL_FIELD:String = "col"
+  val LBL_FIELD:String = "lbl"
   val VAL_FIELD:String = "val"
     
   val AMOUNT_FIELD:String = "amount"

@@ -146,8 +146,8 @@ class FieldBuilder {
 
       case "vector" => {
 
-        val names = List(ROW_FIELD,COL_FIELD,VAL_FIELD)
-        val types = List("long","long","string")
+        val names = List(ROW_FIELD,COL_FIELD,LBL_FIELD,VAL_FIELD)
+        val types = List("long","long","string","string")
         
         names.zip(types).foreach(entry => {
           
