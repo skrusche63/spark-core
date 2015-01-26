@@ -92,15 +92,6 @@ class BaseTracker(config:Configuration) extends RootActor(config) {
  
      req.task.split(":")(1) match {
 
-       case "amount" => {     
-         /*
-          * Writing this source to the respective index throws an
-          * exception in case of an error; note, that the writer is
-          * automatically closed 
-          */
-         writer.writeJSON(index, mapping, prepareAmount(req))
-         
-       }
        case "event" => {
          
          val source = prepareEvent(req)
@@ -154,6 +145,15 @@ class BaseTracker(config:Configuration) extends RootActor(config) {
          writer.write(index, mapping, source)
          
        }
+       case "state" => {     
+         /*
+          * Writing this source to the respective index throws an
+          * exception in case of an error; note, that the writer is
+          * automatically closed 
+          */
+         writer.write(index, mapping, prepareState(req))
+         
+       }
        case "vector" => {
          /*
           * Writing this source to the respective index throws an
@@ -183,10 +183,6 @@ class BaseTracker(config:Configuration) extends RootActor(config) {
   
    }
     
-  }
-    
-  protected def prepareAmount(req:ServiceRequest):XContentBuilder = {
-    new ElasticAmountBuilder().createSourceJSON(req.data)
   }
   
   protected def prepareEvent(req:ServiceRequest):java.util.Map[String,Object] = {
@@ -222,6 +218,10 @@ class BaseTracker(config:Configuration) extends RootActor(config) {
   
   protected def prepareSequence(req:ServiceRequest):java.util.Map[String,Object] = {
     new ElasticSequenceBuilder().createSource(req.data)    
+  }
+    
+  protected def prepareState(req:ServiceRequest):java.util.Map[String,Object] = {
+    new ElasticStateBuilder().createSource(req.data)
   }
   
   protected def prepareVector(req:ServiceRequest):XContentBuilder = {

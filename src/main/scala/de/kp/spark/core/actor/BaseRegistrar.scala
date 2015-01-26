@@ -53,14 +53,6 @@ class BaseRegistrar(config:Configuration) extends RootActor(config) {
     
     topic match {
        
-      case "amount" => {
-        
-        val fields = new FieldBuilder().build(req,topic)
-        cache.addFields(req, fields.toList)
-        
-        new ServiceResponse(req.service,req.task,Map(Names.REQ_UID-> uid),status.SUCCESS)
-      
-      }
       case "event" => {
         
         val fields = new FieldBuilder().build(req,topic)
@@ -108,6 +100,14 @@ class BaseRegistrar(config:Configuration) extends RootActor(config) {
           
       }
       case "sequence" => {
+        
+        val fields = new FieldBuilder().build(req,topic)
+        cache.addFields(req, fields)
+        
+        new ServiceResponse(req.service,req.task,Map(Names.REQ_UID-> uid),status.SUCCESS)
+          
+      }
+      case "state" => {
         
         val fields = new FieldBuilder().build(req,topic)
         cache.addFields(req, fields)

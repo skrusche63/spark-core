@@ -174,7 +174,8 @@ object Names {
     
   val REQ_WEIGHT:String = "weight"
     
-  val REQ_UID:String   = "uid"
+  val REQ_UID:String = "uid"
+  val REQ_URL:String = "url"
     
   val REQ_USER:String  = "user"
   val REQ_USERS:String = "users"
