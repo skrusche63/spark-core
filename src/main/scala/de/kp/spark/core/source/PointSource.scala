@@ -26,67 +26,47 @@ import de.kp.spark.core.{Names,Configuration}
 import de.kp.spark.core.model._
 import de.kp.spark.core.spec.Fields
 
-/**
- * VectorSource is an abstraction layer on top the physical 
- * data sources supported by KMeans outlier detection
- */
-class VectorSource (@transient sc:SparkContext,config:Configuration,fields:Fields) {
+class PointSource (@transient sc:SparkContext,config:Configuration,fields:Fields) {
 
-  private val model = new VectorModel(sc)
+  private val model = new PointModel(sc)
   
   def connect(req:ServiceRequest):RDD[(Long,Long,String,Double)] = {
-   
+ 
     val source = req.data(Names.REQ_SOURCE)
     source match {
-      
-      /* 
-       * Discover clusters from feature set persisted as an appropriate search 
-       * index from Elasticsearch; the configuration parameters are retrieved 
-       * from the service configuration 
-       */    
+
       case Sources.ELASTIC => {
-        
-        val rawset = new ElasticSource(sc).connect(config,req)
-        model.buildElastic(req,rawset,fields)
-        
+       
+       val rawset = new ElasticSource(sc).connect(config,req)
+       model.buildElastic(req,rawset,fields)
+       
       }
-      /* 
-       * Discover clusters from feature set persisted as a file on the (HDFS) 
-       * file system; the configuration parameters are retrieved from the service 
-       * configuration  
-       */    
+ 
       case Sources.FILE => {
        
         val store = req.data(Names.REQ_URL)
-         
-        val rawset = new FileSource(sc).connect(store,req)        
+       
+        val rawset = new FileSource(sc).connect(store,req)
         model.buildFile(req,rawset)
         
       }
-      /*
-       * Discover clusters from feature set persisted as an appropriate table 
-       * from a JDBC database; the configuration parameters are retrieved from 
-       * the service configuration
-       */
+
       case Sources.JDBC => {
     
         val names = fields.get(req).map(kv => kv._2).toList  
         
         val rawset = new JdbcSource(sc).connect(config,req,names)
         model.buildJDBC(req,rawset,fields)
-        
+
       }
-      /*
-       * Discover clusters from feature set persisted as a parquet file on HDFS; 
-       * the configuration parameters are retrieved from the service configuration
-       */
+
       case Sources.PARQUET => {
        
         val store = req.data(Names.REQ_URL)
         
         val rawset = new ParquetSource(sc).connect(store,req)
         model.buildParquet(req,rawset,fields)
-        
+
       }
       
       case _ => null
@@ -94,4 +74,5 @@ class VectorSource (@transient sc:SparkContext,config:Configuration,fields:Field
     }
 
   }
+  
 }
