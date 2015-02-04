@@ -58,7 +58,8 @@ class PiwikSource(@transient sc:SparkContext) extends JdbcSource(sc) {
     val (url,database,user,password) = config.mysql
     val sql = query(database,site.toString,startdate,enddate)
     
-    new JdbcReader(sc,config,site,sql).read(LOG_ITEM_FIELDS)    
+    val rawset = new JdbcReader(sc,config,site,sql).read(LOG_ITEM_FIELDS)    
+    rawset.filter(row => (isDeleted(row) == false))
 
   }
   

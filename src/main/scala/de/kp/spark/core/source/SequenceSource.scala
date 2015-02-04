@@ -21,26 +21,29 @@ package de.kp.spark.core.source
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 
-import de.kp.spark.core.{Configuration,Names}
-import de.kp.spark.core.model._
+import de.kp.spark.core.{Names,Configuration}
 
+import de.kp.spark.core.model._
 import de.kp.spark.core.spec.Fields
 
 /**
- * An ItemSource is an abstraction layer on top of different physical 
- * data source to retrieve a transaction database compatible with the 
- * Top-K and Top-KNR algorithm of SPMF
+ * A SequenceSource is an abstraction layer on top of
+ * different physical data source to retrieve a sequence
+ * database compatible with the SPADE and TSR algorithm
  */
-class ItemSource(@transient sc:SparkContext,config:Configuration,fields:Fields) {
-  
-  private val model = new ItemModel(sc)  
-  def connect(req:ServiceRequest):RDD[(Int,Array[Int])] = {
+class SequenceSource (@transient sc:SparkContext,config:Configuration,fields:Fields) {
+
+  private val model = new SequenceModel(sc)  
+  def get(req:ServiceRequest):RDD[(Int,String)] = {
+    
+    val uid = req.data(Names.REQ_UID)
     
     val source = req.data(Names.REQ_SOURCE)
     source match {
+      
       /* 
-       * Discover top k association rules from transaction database persisted 
-       * as an appropriate search index from Elasticsearch; the configuration
+       * Retrieve sequence database persisted as an appropriate 
+       * search index from Elasticsearch; the configuration
        * parameters are retrieved from the service configuration 
        */    
       case Sources.ELASTIC => {
@@ -50,35 +53,35 @@ class ItemSource(@transient sc:SparkContext,config:Configuration,fields:Fields) 
         
       }
       /* 
-       * Discover top k association rules from transaction database persisted 
-       * as a file on the (HDFS) file system; the configuration parameters are 
-       * retrieved from the service configuration  
+       * Retrieve sequence database persisted as a file on the (HDFS) 
+       * file system; the configuration parameters are retrieved from 
+       * the service configuration  
        */    
       case Sources.FILE => {
        
         val store = req.data(Names.REQ_URL)
-         
+        
         val rawset = new FileSource(sc).connect(store,req)
         model.buildFile(req,rawset)
         
       }
       /*
-       * Retrieve Top-K association rules from transaction database persisted 
-       * as an appropriate table from a JDBC database; the configuration parameters 
-       * are retrieved from the service configuration
+       * Retrieve sequence database persisted as an appropriate table 
+       * from a JDBC database; the configuration parameters are retrieved 
+       * from the service configuration
        */
       case Sources.JDBC => {
     
         val names = fields.get(req).map(kv => kv._2._1).toList    
-        
+       
         val rawset = new JdbcSource(sc).connect(config,req,names)
         model.buildJDBC(req,rawset,fields)
         
       }
       /*
-       * Retrieve Top-K association rules from transaction database persisted 
-       * as parquet file; the configuration parameters are retrieved from the 
-       * service configuration
+       * Retrieve sequence database persisted as a parquet file from HDFS; 
+       * the configuration parameters are retrieved from the service 
+       * configuration
        */
       case Sources.PARQUET => {
        
@@ -89,9 +92,9 @@ class ItemSource(@transient sc:SparkContext,config:Configuration,fields:Fields) 
         
       }
       /*
-       * Retrieve Top-K association rules from transaction database persisted 
-       * as an appropriate table from a Piwik database; the configuration parameters 
-       * are retrieved from the service configuration
+       * Retrieve sequence database persisted as an appropriate table from 
+       * a Piwik database; the configuration parameters are retrieved from 
+       * the service configuration
        */
       case Sources.PIWIK => {
         
@@ -102,8 +105,8 @@ class ItemSource(@transient sc:SparkContext,config:Configuration,fields:Fields) 
             
       case _ => null
       
-   }
+    }
 
   }
-
+  
 }
