@@ -1,4 +1,4 @@
-package de.kp.spark.core.spec
+package de.kp.spark.core.model
 /* Copyright (c) 2014 Dr. Krusche & Partner PartG
  * 
  * This file is part of the Spark-Core project
@@ -18,14 +18,15 @@ package de.kp.spark.core.spec
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-import de.kp.spark.core.model._
+object Sources {
 
-trait Fields {
-  /**
-   * Method to retrieve the metadata description
-   * either from a Redis instance or a configuration
-   * file
-   */
-  def get(req:ServiceRequest):Map[String,(String,String)]
-
+  val FILE:String    = "FILE"
+  val ELASTIC:String = "ELASTIC" 
+  val JDBC:String    = "JDBC"    
+  val PARQUET:String = "PARQUET"    
+  val PIWIK:String   = "PIWIK"    
+  
+  private val sources = List(FILE,ELASTIC,JDBC,PARQUET,PIWIK)
+  def isSource(source:String):Boolean = sources.contains(source)
+  
 }

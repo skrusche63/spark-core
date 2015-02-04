@@ -39,6 +39,7 @@ object Names {
   val COL_FIELD:String = "col"
   val LBL_FIELD:String = "lbl"
   val VAL_FIELD:String = "val"
+  val CAT_FIELD:String = "cat"
     
   val AMOUNT_FIELD:String = "amount"
 

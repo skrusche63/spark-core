@@ -79,6 +79,16 @@ class BaseStatus {
   val TRAINING_NOT_FINISHED:String = TRAINING_PREFIX + "not:finished"  
 
   /**
+   * Stati to describe the feature training process
+   */
+  private val FEATURE_TRAINING_PREFIX = TRAINING_PREFIX + "feature:"
+    
+  val FEATURE_TRAINING_STARTED:String  = FEATURE_TRAINING_PREFIX + "started"
+  val FEATURE_TRAINING_FINISHED:String = FEATURE_TRAINING_PREFIX + "finished"
+    
+  val FEATURE_TRAINING_NOT_FINISHED:String = FEATURE_TRAINING_PREFIX + "not:finished"  
+
+  /**
    * Stati to describe the matrix training process
    */
   private val MATRIX_TRAINING_PREFIX = TRAINING_PREFIX + "matrix:"

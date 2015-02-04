@@ -42,11 +42,17 @@ class BaseMessages {
   def NO_PARAMETERS_PROVIDED(uid:String):String = 
     String.format("""[UID: %s] No parameters provided.""", uid)
 
+  def NO_RATING_PROVIDED(uid:String):String = 
+    String.format("""[UID: %s] No rating type (explicit or implicit) provided.""", uid)
+
   def NO_SINK_PROVIDED(uid:String):String = 
     String.format("""[UID: %s] No sink provided.""", uid)
 
   def NO_SOURCE_PROVIDED(uid:String):String = 
     String.format("""[UID: %s] No source provided.""", uid)
+
+  def RATING_IS_UNKNOWN(uid:String,rating:String):String = 
+    String.format("""[UID: %s] Rating '%s' is unknown.""", uid, rating)
 
   def REQUEST_IS_UNKNOWN():String = String.format("""Unknown request.""")
 
