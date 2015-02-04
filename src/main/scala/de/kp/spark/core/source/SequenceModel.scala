@@ -28,10 +28,10 @@ import scala.collection.mutable.ArrayBuffer
 
 class SequenceModel(@transient sc:SparkContext) extends Serializable {
   
-  def buildElastic(req:ServiceRequest,rawset:RDD[Map[String,String]],fields:Fields):RDD[(Int,String)] = {
+  def buildElastic(req:ServiceRequest,rawset:RDD[Map[String,String]],fields:Fields):RDD[(String,String,String,Long,String)] = {
  
     val spec = sc.broadcast(fields.get(req))
-    val dataset = rawset.map(data => {
+    rawset.map(data => {
       
       val site = data(spec.value("site")._1)
       val timestamp = data(spec.value("timestamp")._1).toLong
@@ -44,57 +44,24 @@ class SequenceModel(@transient sc:SparkContext) extends Serializable {
       (site,user,group,timestamp,item)
       
     })
-    /*
-     * Group dataset by site & user and aggregate all items of a
-     * certain group and all groups into a time-ordered sequence
-     * representation that is compatible to the SPMF format.
-     */
-    val sequences = dataset.groupBy(v => (v._1,v._2)).map(data => {
-      
-      /*
-       * Aggregate all items of a certain group onto a single
-       * line thereby sorting these items in ascending order.
-       * 
-       * And then, sort these items by timestamp in ascending
-       * order.
-       */
-      val groups = data._2.groupBy(_._3).map(group => {
-
-        val timestamp = group._2.head._4
-        val items = group._2.map(_._5.toInt).toList.distinct.sorted.mkString(" ")
-
-        (timestamp,items)
-        
-      }).toList.sortBy(_._1)
-      
-      /*
-       * Finally aggregate all sorted item groups (or sets) in a single
-       * line and use SPMF format
-       */
-      groups.map(_._2).mkString(" -1 ") + " -2"
-      
-    }).coalesce(1)
-
-    val ids = sc.parallelize(Range.Long(0,sequences.count,1),sequences.partitions.size)
-    sequences.zip(ids).map(valu => (valu._2.toInt,valu._1)).cache()
 
   }
   
-  def buildFile(req:ServiceRequest,rawset:RDD[String]):RDD[(Int,String)] = {
+  def buildFile(req:ServiceRequest,rawset:RDD[String]):RDD[(String,String,String,Long,String)] = {
     
-    rawset.map(valu => {
+    rawset.map(line => {
       
-      val Array(sid,seq) = valu.split("\\|")  
-      (sid.toInt,seq)
+      val Array(site,user,group,timestamp,item) = line.split(",")  
+      (site,user,group,timestamp.toLong,item)
     
     })
     
   }
   
-  def buildJDBC(req:ServiceRequest,rawset:RDD[Map[String,Any]],fields:Fields):RDD[(Int,String)] = {
+  def buildJDBC(req:ServiceRequest,rawset:RDD[Map[String,Any]],fields:Fields):RDD[(String,String,String,Long,String)] = {
 
     val spec = sc.broadcast(fields.get(req))
-    val dataset = rawset.map(data => {
+    rawset.map(data => {
       
       val site = data(spec.value("site")._1).asInstanceOf[String]
       val timestamp = data(spec.value("timestamp")._1).asInstanceOf[Long]
@@ -102,52 +69,18 @@ class SequenceModel(@transient sc:SparkContext) extends Serializable {
       val user = data(spec.value("user")._1).asInstanceOf[String] 
       val group = data(spec.value("group")._1).asInstanceOf[String]
       
-      val item  = data(spec.value("item")._1).asInstanceOf[Int]
+      val item  = data(spec.value("item")._1).asInstanceOf[String]
       
       (site,user,group,timestamp,item)
       
     })
-    
-    /*
-     * Group dataset by site & user and aggregate all items of a
-     * certain group and all groups into a time-ordered sequence
-     * representation that is compatible to the SPMF format.
-     */
-    val sequences = dataset.groupBy(v => (v._1,v._2)).map(data => {
-      
-      /*
-       * Aggregate all items of a certain group onto a single
-       * line thereby sorting these items in ascending order.
-       * 
-       * And then, sort these items by timestamp in ascending
-       * order.
-       */
-      val groups = data._2.groupBy(_._3).map(group => {
-
-        val timestamp = group._2.head._4
-        val items = group._2.map(_._5.toInt).toList.distinct.sorted.mkString(" ")
-
-        (timestamp,items)
-        
-      }).toList.sortBy(_._1)
-      
-      /*
-       * Finally aggregate all sorted item groups (or sets) in a single
-       * line and use SPMF format
-       */
-      groups.map(_._2).mkString(" -1 ") + " -2"
-      
-    }).coalesce(1)
-
-    val ids = sc.parallelize(Range.Long(0,sequences.count,1),sequences.partitions.size)
-    sequences.zip(ids).map(valu => (valu._2.toInt,valu._1)).cache()
 
   }
    
-  def buildParquet(req:ServiceRequest,rawset:RDD[Map[String,Any]],fields:Fields):RDD[(Int,String)] = {
+  def buildParquet(req:ServiceRequest,rawset:RDD[Map[String,Any]],fields:Fields):RDD[(String,String,String,Long,String)] = {
 
     val spec = sc.broadcast(fields.get(req))
-    val dataset = rawset.map(data => {
+    rawset.map(data => {
       
       val site = data(spec.value("site")._1).asInstanceOf[String]
       val timestamp = data(spec.value("timestamp")._1).asInstanceOf[Long]
@@ -155,51 +88,17 @@ class SequenceModel(@transient sc:SparkContext) extends Serializable {
       val user = data(spec.value("user")._1).asInstanceOf[String] 
       val group = data(spec.value("group")._1).asInstanceOf[String]
       
-      val item  = data(spec.value("item")._1).asInstanceOf[Int]
+      val item  = data(spec.value("item")._1).asInstanceOf[String]
       
       (site,user,group,timestamp,item)
       
     })
-    
-    /*
-     * Group dataset by site & user and aggregate all items of a
-     * certain group and all groups into a time-ordered sequence
-     * representation that is compatible to the SPMF format.
-     */
-    val sequences = dataset.groupBy(v => (v._1,v._2)).map(data => {
-      
-      /*
-       * Aggregate all items of a certain group onto a single
-       * line thereby sorting these items in ascending order.
-       * 
-       * And then, sort these items by timestamp in ascending
-       * order.
-       */
-      val groups = data._2.groupBy(_._3).map(group => {
-
-        val timestamp = group._2.head._4
-        val items = group._2.map(_._5.toInt).toList.distinct.sorted.mkString(" ")
-
-        (timestamp,items)
-        
-      }).toList.sortBy(_._1)
-      
-      /*
-       * Finally aggregate all sorted item groups (or sets) in a single
-       * line and use SPMF format
-       */
-      groups.map(_._2).mkString(" -1 ") + " -2"
-      
-    }).coalesce(1)
-
-    val ids = sc.parallelize(Range.Long(0,sequences.count,1),sequences.partitions.size)
-    sequences.zip(ids).map(valu => (valu._2.toInt,valu._1)).cache()
 
   }
  
-  def buildPiwik(req:ServiceRequest,rawset:RDD[Map[String,Any]]):RDD[(Int,String)] = {
+  def buildPiwik(req:ServiceRequest,rawset:RDD[Map[String,Any]]):RDD[(String,String,String,Long,String)] = {
     
-    val rows = rawset.map(row => {
+    rawset.map(row => {
       
       val site = row("idsite").asInstanceOf[Long]
       val timestamp  = row("server_time").asInstanceOf[Long]
@@ -211,43 +110,9 @@ class SequenceModel(@transient sc:SparkContext) extends Serializable {
       val group = row("idorder").asInstanceOf[String]
       val item  = row("idaction_sku").asInstanceOf[Long]
       
-      (site,user,group,timestamp,item)
+      (site.toString,user,group,timestamp,item.toString)
       
     })
-    
-    /*
-     * Group dataset by site & user and aggregate all items of a
-     * certain group and all groups into a time-ordered sequence
-     * representation that is compatible to the SPMF format.
-     */
-    val sequences = rows.groupBy(v => (v._1,v._2)).map(data => {
-      
-      /*
-       * Aggregate all items of a certain group onto a single
-       * line thereby sorting these items in ascending order.
-       * 
-       * And then, sort these items by timestamp in ascending
-       * order.
-       */
-      val groups = data._2.groupBy(_._3).map(group => {
-
-        val timestamp = group._2.head._4
-        val items = group._2.map(_._5.toInt).toList.distinct.sorted.mkString(" ")
-
-        (timestamp,items)
-        
-      }).toList.sortBy(_._1)
-      
-      /*
-       * Finally aggregate all sorted item groups (or sets) in a single
-       * line and use SPMF format
-       */
-      groups.map(_._2).mkString(" -1 ") + " -2"
-      
-    }).coalesce(1)
-
-    val ids = sc.parallelize(Range.Long(0,sequences.count,1),sequences.partitions.size)
-    sequences.zip(ids).map(valu => (valu._2.toInt,valu._1)).cache()
     
   }
 

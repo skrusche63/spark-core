@@ -34,7 +34,7 @@ import de.kp.spark.core.spec.Fields
 class ItemSource(@transient sc:SparkContext,config:Configuration,fields:Fields) {
   
   private val model = new ItemModel(sc)  
-  def connect(req:ServiceRequest):RDD[(Int,Array[Int])] = {
+  def connect(req:ServiceRequest):RDD[(String,String,String,Int)] = {
     
     val source = req.data(Names.REQ_SOURCE)
     source match {
