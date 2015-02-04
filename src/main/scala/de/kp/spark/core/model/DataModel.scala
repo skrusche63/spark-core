@@ -91,6 +91,21 @@ case class CRule(
 
 case class CRules(items:List[CRule])
 
+/********* CLUSTER SUPPORT */
+
+/**
+ * A LabeledPoint describes a combination of a feature
+ * vector and an assigned label. Each data record is
+ * also uniquely identifier by the 'id' parameter.
+ * 
+ * This parameter is usually equal to the row descriptor
+ * of the data record (see vector description).
+ * 
+ */
+case class LabeledPoint(
+  id:Long,label:String,features:Array[Double]
+)
+
 /********* INTENT SUPPORT */
 /*
  * Behavior assigns a set of (time-ordered) states to a certain 
@@ -108,6 +123,8 @@ case class MarkovState(name:String,probability:Double)
 case class MarkovRule(antecedent:String,consequent:List[MarkovState])
 
 case class MarkovRules(items:List[MarkovRule])
+
+case class NumberedSequence(sid:Int,data:Array[Array[Int]])
 
 /********* REQUEST / RESPONSE SUPPORT */
 

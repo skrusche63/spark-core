@@ -27,24 +27,22 @@ import de.kp.spark.core.model._
 import de.kp.spark.core.spec.Fields
 
 /**
- * A SequenceSource is an abstraction layer on top of
- * different physical data source to retrieve a sequence
- * database compatible with the SPADE and TSR algorithm
+ * VectorSource is an abstraction layer on top the physical 
+ * data sources supported by KMeans outlier detection
  */
-class SequenceSource (@transient sc:SparkContext,config:Configuration,fields:Fields) {
+class VectorSource (@transient sc:SparkContext,config:Configuration,fields:Fields) {
 
-  private val model = new SequenceModel(sc)  
-  def connect(req:ServiceRequest):RDD[(String,String,String,Long,String)] = {
-    
-    val uid = req.data(Names.REQ_UID)
-    
+  private val model = new VectorModel(sc)
+  
+  def get(req:ServiceRequest):RDD[(Long,Long,String,Double)] = {
+   
     val source = req.data(Names.REQ_SOURCE)
     source match {
       
       /* 
-       * Retrieve sequence database persisted as an appropriate 
-       * search index from Elasticsearch; the configuration
-       * parameters are retrieved from the service configuration 
+       * Discover clusters from feature set persisted as an appropriate search 
+       * index from Elasticsearch; the configuration parameters are retrieved 
+       * from the service configuration 
        */    
       case Sources.ELASTIC => {
         
@@ -53,60 +51,47 @@ class SequenceSource (@transient sc:SparkContext,config:Configuration,fields:Fie
         
       }
       /* 
-       * Retrieve sequence database persisted as a file on the (HDFS) 
-       * file system; the configuration parameters are retrieved from 
-       * the service configuration  
+       * Discover clusters from feature set persisted as a file on the (HDFS) 
+       * file system; the configuration parameters are retrieved from the service 
+       * configuration  
        */    
       case Sources.FILE => {
        
         val store = req.data(Names.REQ_URL)
-        
-        val rawset = new FileSource(sc).connect(store,req)
+         
+        val rawset = new FileSource(sc).connect(store,req)        
         model.buildFile(req,rawset)
         
       }
       /*
-       * Retrieve sequence database persisted as an appropriate table 
-       * from a JDBC database; the configuration parameters are retrieved 
-       * from the service configuration
+       * Discover clusters from feature set persisted as an appropriate table 
+       * from a JDBC database; the configuration parameters are retrieved from 
+       * the service configuration
        */
       case Sources.JDBC => {
     
-        val names = fields.get(req).map(kv => kv._2).toList    
-       
+        val names = fields.get(req).map(kv => kv._2).toList  
+        
         val rawset = new JdbcSource(sc).connect(config,req,names)
         model.buildJDBC(req,rawset,fields)
         
       }
       /*
-       * Retrieve sequence database persisted as a parquet file from HDFS; 
-       * the configuration parameters are retrieved from the service 
-       * configuration
+       * Discover clusters from feature set persisted as a parquet file on HDFS; 
+       * the configuration parameters are retrieved from the service configuration
        */
       case Sources.PARQUET => {
        
         val store = req.data(Names.REQ_URL)
-       
+        
         val rawset = new ParquetSource(sc).connect(store,req)
         model.buildParquet(req,rawset,fields)
         
       }
-      /*
-       * Retrieve sequence database persisted as an appropriate table from 
-       * a Piwik database; the configuration parameters are retrieved from 
-       * the service configuration
-       */
-      case Sources.PIWIK => {
-        
-        val rawset = new PiwikSource(sc).connect(config,req)
-        model.buildPiwik(req,rawset)
-        
-      }
-            
+      
       case _ => null
       
     }
 
   }
-  
 }

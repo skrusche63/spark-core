@@ -20,12 +20,12 @@ package de.kp.spark.core.spec
 
 import de.kp.spark.core.model._
 
-trait Fields {
+trait Fields extends Serializable {
   /**
    * Method to retrieve the metadata description
    * either from a Redis instance or a configuration
    * file
    */
-  def get(req:ServiceRequest):Map[String,(String,String)]
+  def get(req:ServiceRequest):Map[String,String]
 
 }

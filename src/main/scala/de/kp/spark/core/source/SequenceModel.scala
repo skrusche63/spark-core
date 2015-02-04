@@ -33,13 +33,13 @@ class SequenceModel(@transient sc:SparkContext) extends Serializable {
     val spec = sc.broadcast(fields.get(req))
     rawset.map(data => {
       
-      val site = data(spec.value("site")._1)
-      val timestamp = data(spec.value("timestamp")._1).toLong
+      val site = data(spec.value("site"))
+      val timestamp = data(spec.value("timestamp")).toLong
 
-      val user = data(spec.value("user")._1)      
-      val group = data(spec.value("group")._1)
+      val user = data(spec.value("user"))      
+      val group = data(spec.value("group"))
 
-      val item  = data(spec.value("item")._1)
+      val item  = data(spec.value("item"))
       
       (site,user,group,timestamp,item)
       
@@ -63,13 +63,13 @@ class SequenceModel(@transient sc:SparkContext) extends Serializable {
     val spec = sc.broadcast(fields.get(req))
     rawset.map(data => {
       
-      val site = data(spec.value("site")._1).asInstanceOf[String]
-      val timestamp = data(spec.value("timestamp")._1).asInstanceOf[Long]
+      val site = data(spec.value("site")).asInstanceOf[String]
+      val timestamp = data(spec.value("timestamp")).asInstanceOf[Long]
 
-      val user = data(spec.value("user")._1).asInstanceOf[String] 
-      val group = data(spec.value("group")._1).asInstanceOf[String]
+      val user = data(spec.value("user")).asInstanceOf[String] 
+      val group = data(spec.value("group")).asInstanceOf[String]
       
-      val item  = data(spec.value("item")._1).asInstanceOf[String]
+      val item  = data(spec.value("item")).asInstanceOf[String]
       
       (site,user,group,timestamp,item)
       
@@ -82,13 +82,13 @@ class SequenceModel(@transient sc:SparkContext) extends Serializable {
     val spec = sc.broadcast(fields.get(req))
     rawset.map(data => {
       
-      val site = data(spec.value("site")._1).asInstanceOf[String]
-      val timestamp = data(spec.value("timestamp")._1).asInstanceOf[Long]
+      val site = data(spec.value("site")).asInstanceOf[String]
+      val timestamp = data(spec.value("timestamp")).asInstanceOf[Long]
 
-      val user = data(spec.value("user")._1).asInstanceOf[String] 
-      val group = data(spec.value("group")._1).asInstanceOf[String]
+      val user = data(spec.value("user")).asInstanceOf[String] 
+      val group = data(spec.value("group")).asInstanceOf[String]
       
-      val item  = data(spec.value("item")._1).asInstanceOf[String]
+      val item  = data(spec.value("item")).asInstanceOf[String]
       
       (site,user,group,timestamp,item)
       

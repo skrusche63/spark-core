@@ -33,11 +33,11 @@ class ItemModel(@transient sc:SparkContext) extends Serializable {
     val spec = sc.broadcast(fields.get(req))
     rawset.map(data => {
       
-      val site = data(spec.value(Names.SITE_FIELD)._1)
-      val user = data(spec.value(Names.USER_FIELD)._1)      
+      val site = data(spec.value(Names.SITE_FIELD))
+      val user = data(spec.value(Names.USER_FIELD))      
 
-      val group = data(spec.value(Names.GROUP_FIELD)._1)
-      val item  = data(spec.value(Names.ITEM_FIELD)._1).toInt
+      val group = data(spec.value(Names.GROUP_FIELD))
+      val item  = data(spec.value(Names.ITEM_FIELD)).toInt
       
       (site,user,group,item)
       
@@ -61,11 +61,11 @@ class ItemModel(@transient sc:SparkContext) extends Serializable {
     val spec = sc.broadcast(fields.get(req))
     rawset.map(data => {
       
-      val site = data(spec.value(Names.SITE_FIELD)._1).asInstanceOf[String]
-      val user = data(spec.value(Names.USER_FIELD)._1).asInstanceOf[String] 
+      val site = data(spec.value(Names.SITE_FIELD)).asInstanceOf[String]
+      val user = data(spec.value(Names.USER_FIELD)).asInstanceOf[String] 
 
-      val group = data(spec.value(Names.GROUP_FIELD)._1).asInstanceOf[String]
-      val item  = data(spec.value(Names.ITEM_FIELD)._1).asInstanceOf[Int]
+      val group = data(spec.value(Names.GROUP_FIELD)).asInstanceOf[String]
+      val item  = data(spec.value(Names.ITEM_FIELD)).asInstanceOf[Int]
       
       (site,user,group,item)
       
@@ -78,11 +78,11 @@ class ItemModel(@transient sc:SparkContext) extends Serializable {
     val spec = sc.broadcast(fields.get(req))
     rawset.map(data => {
       
-      val site = data(spec.value(Names.SITE_FIELD)._1).asInstanceOf[String]
-      val user = data(spec.value(Names.USER_FIELD)._1).asInstanceOf[String] 
+      val site = data(spec.value(Names.SITE_FIELD)).asInstanceOf[String]
+      val user = data(spec.value(Names.USER_FIELD)).asInstanceOf[String] 
 
-      val group = data(spec.value(Names.GROUP_FIELD)._1).asInstanceOf[String]
-      val item  = data(spec.value(Names.ITEM_FIELD)._1).asInstanceOf[Int]
+      val group = data(spec.value(Names.GROUP_FIELD)).asInstanceOf[String]
+      val item  = data(spec.value(Names.ITEM_FIELD)).asInstanceOf[Int]
       
       (site,user,group,item)
       

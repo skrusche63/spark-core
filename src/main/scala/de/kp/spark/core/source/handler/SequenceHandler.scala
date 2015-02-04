@@ -21,40 +21,12 @@ package de.kp.spark.core.source.handler
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 
-object SPMFHandler {
+import de.kp.spark.core.model._
 
-  /**
-   * This data format handler transforms an item (or transaction)
-   * database into the SPMF format  
-   */
-  def item2SPMF(dataset:RDD[(String,String,String,Int)]):RDD[(Int,Array[Int])] = {
-  
-    val sc = dataset.sparkContext
-    /*
-     * Next we convert the dataset into the SPMF format. This requires to
-     * group the dataset by 'group', sort items in ascending order and make
-     * sure that no item appears more than once in a certain order.
-     * 
-     * Finally, we organize all items of an order into an array, repartition 
-     * them to single partition and assign a unqiue transaction identifier.
-     */
-    val ids = dataset.groupBy(_._3).map(valu => {
+object SequenceHandler {
 
-      val sorted = valu._2.map(_._4).toList.distinct.sorted    
-      sorted.toArray
+  def sequence2NumSeq(dataset:RDD[(String,String,String,Long,String)]):RDD[NumberedSequence] = {
     
-    }).coalesce(1)
-
-    val transactions = sc.parallelize(Range.Long(0,ids.count,1),ids.partitions.size)
-    ids.zip(transactions).map(valu => (valu._2.toInt,valu._1)).cache()
-   
-  }
-  /**
-   * This data format handler transforms a sequence database 
-   * into the SPMF format  
-   */
-  def sequence2SPMF(dataset:RDD[(String,String,String,Long,String)]):RDD[(Int,String)] = {
-
     val sc = dataset.sparkContext
     /*
      * Group dataset by site & user and aggregate all items of a
@@ -88,8 +60,16 @@ object SPMFHandler {
     }).coalesce(1)
 
     val ids = sc.parallelize(Range.Long(0,sequences.count,1),sequences.partitions.size)
-    sequences.zip(ids).map(valu => (valu._2.toInt,valu._1)).cache()
+    val zip = sequences.zip(ids).map(valu => (valu._2.toInt,valu._1))
+
+    zip.map(valu => {
+      
+      val (sid,seq) = valu  
+      val itemsets = seq.replace("-2", "").split(" -1 ").map(v => v.split(" ").map(_.toInt))
+      
+      new NumberedSequence(sid,itemsets)
+
+    })
     
   }
-  
 }

@@ -52,7 +52,7 @@ class StateSource (@transient sc:SparkContext,config:Configuration,fields:Fields
 
       case Sources.JDBC => {
     
-        val names = fields.get(req).map(kv => kv._2._1).toList
+        val names = fields.get(req).map(kv => kv._2).toList
         
         val rawset = new JdbcSource(sc).connect(config,req,names)
         model.buildJDBC(req,rawset,fields)
