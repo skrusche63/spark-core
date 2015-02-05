@@ -29,7 +29,7 @@ trait Configuration {
   
   /**
    * This method retrieves a Hadoop configuration
-   * th access Elasticsearch
+   * to access Elasticsearch
    */
   def elastic:HConf
   /** 
@@ -38,6 +38,12 @@ trait Configuration {
    * the HDFS 
    */ 
   def input:List[String]
+
+  /**
+   * This method retrieves a Hadoop configuration
+   * to access MongoDB
+   */
+  def mongo:HConf
    /**
     * This method retrieves the access parameter for a MySQL
     * data source, comprising url, db, user, password
