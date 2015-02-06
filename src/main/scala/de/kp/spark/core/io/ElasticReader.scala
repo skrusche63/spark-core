@@ -33,7 +33,7 @@ import org.elasticsearch.hadoop.mr.EsInputFormat
 
 import scala.collection.JavaConversions._
 
-class ElasticReader {
+class ElasticReader extends Serializable {
   /*
    * Create an Elasticsearch node by interacting with
    * the Elasticsearch server on the local machine
@@ -43,14 +43,14 @@ class ElasticReader {
   
   private val logger = Loggers.getLogger(getClass())
   
-  def readRDD(@transient sc:SparkContext,config:HadoopConfig):RDD[Map[String,String]] = {
+  def read(@transient sc:SparkContext,config:HadoopConfig):RDD[Map[String,String]] = {
 
     val source = sc.newAPIHadoopRDD(config, classOf[EsInputFormat[Text, MapWritable]], classOf[Text], classOf[MapWritable])
     source.map(hit => toMap(hit._2))
     
   }
   
-  def readRDD(@transient sc:SparkContext,config:Config,index:String,mapping:String,query:String):RDD[Map[String,String]] = {
+  def read(@transient sc:SparkContext,config:Config,index:String,mapping:String,query:String):RDD[Map[String,String]] = {
           
     val conf = config.elastic
     /*
@@ -61,7 +61,7 @@ class ElasticReader {
     conf.set(Names.ES_QUERY,query)
     conf.set(Names.ES_RESOURCE,(index + "/" + mapping))
  
-    readRDD(sc,conf)
+    read(sc,conf)
     
   }
 

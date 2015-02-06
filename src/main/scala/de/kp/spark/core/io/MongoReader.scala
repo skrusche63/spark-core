@@ -30,11 +30,12 @@ import org.apache.hadoop.conf.{Configuration => HadoopConfig}
 import scala.collection.mutable.HashMap
 import scala.collection.JavaConversions._
 
-class MongoReader {
+class MongoReader(@transient sc:SparkContext) extends Serializable {
   
-  def readRDD(@transient sc:SparkContext,config:Config):RDD[Map[String,Any]] = {
+  def read(config:Config,query:String):RDD[Map[String,Any]] = {
     
     val conf = config.mongo
+    conf.set("mongo.input.query",query)    
     
     val source = sc.newAPIHadoopRDD(conf, classOf[MongoInputFormat], classOf[Object], classOf[BSONObject])
     source.map(x => toMap(x._2))

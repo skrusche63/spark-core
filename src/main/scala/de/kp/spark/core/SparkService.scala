@@ -43,7 +43,98 @@ trait SparkService {
      * Set the Jetty port to 0 to find a random port
      */
     conf.set("spark.ui.port", "0")        
-        
+    
+    /*
+     * Connection Parameters
+     * 
+     * - spark.cassandra.connection.host	
+     * 
+     *   description: contact point to connect to the Cassandra cluster	
+     *   default: address of the Spark master host
+     *   
+     * - spark.cassandra.connection.rpc.port	
+     * 
+     *   description: Cassandra thrift port	
+     *   default: 9160
+     *   
+     * - spark.cassandra.connection.native.port	
+     * 
+     *   description: Cassandra native port	
+     *   default: 9042
+     *   
+     * - spark.cassandra.connection.conf.factory	
+     * 
+     *   description: name of a Scala module or class implementing CassandraConnectionFactory 
+     *                providing connections to the Cassandra cluster	
+     *   default: com.datastax.spark.connector.cql.DefaultConnectionFactory
+     *   
+     * - spark.cassandra.connection.keep_alive_ms	
+     * 
+     *   description: period of time to keep unused connections open	
+     *   default: 250 ms
+     * 
+     * - spark.cassandra.connection.timeout_ms	
+     * 
+     *   description: maximum period of time to attempt connecting to a node	
+     *   default: 5000 ms
+     * 
+     * - spark.cassandra.connection.reconnection_delay_ms.min	
+     * 
+     *   description: minimum period of time to wait before reconnecting to a dead node	
+     *   default: 1000 ms
+     * 
+     * - spark.cassandra.connection.reconnection_delay_ms.max	
+     * 
+     *   description: maximum period of time to wait before reconnecting to a dead node	
+     *   default: 60000 ms
+     * 
+     * - spark.cassandra.connection.local_dc	
+     * 
+     *   description: the local DC to connect to (other nodes will be ignored)	
+     *   default: None
+     * 
+     * - spark.cassandra.auth.username	
+     * 
+     *   description: login name for password authentication	
+     * 
+     * - spark.cassandra.auth.password	
+     * 
+     *   description: password for password authentication	
+     * 
+     * - spark.cassandra.auth.conf.factory	
+     * 
+     *   description: name of a Scala module or class implementing AuthConfFactory providing custom 
+     *                authentication configuration	
+     *   default com.datastax.spark.connector.cql.DefaultAuthConfFactory
+     *   
+     * - spark.cassandra.query.retry.count	
+     * 
+     *   description: number of times to retry a timed-out query	
+     *   default: 10
+     * 
+     * - spark.cassandra.read.timeout_ms	
+     * 
+     *   definition: maximum period of time to wait for a read to return	
+     *   default: 12000 ms
+     * 
+     * 
+     * Parameters that can be used to adjust read operations
+     * 
+     * - spark.cassandra.input.split.size	
+     * 
+     *   description: approx number of rows in a Spark partition	
+     *   default: 100000
+     *   
+     * - spark.cassandra.input.page.row.size	
+     * 
+     *   description: number of rows fetched per roundtrip	
+     *   default: 1000
+     *   
+     * - spark.cassandra.input.consistency.level	
+     * 
+     *   description: consistency level to use when reading	
+     *   default: LOCAL_ONE
+     */
 	new SparkContext(conf)
 		
   }

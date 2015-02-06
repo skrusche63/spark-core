@@ -28,6 +28,12 @@ trait Configuration {
   def actor:(Int,Int,Int)
   
   /**
+   * This method retrieves the settings to access
+   * a Cassandra Cluster
+   */
+  def cassandra:Map[String,String]
+  
+  /**
    * This method retrieves a Hadoop configuration
    * to access Elasticsearch
    */

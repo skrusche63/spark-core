@@ -24,25 +24,16 @@ import org.apache.spark.rdd.RDD
 import de.kp.spark.core.model._
 
 import de.kp.spark.core.{Configuration,Names}
-import de.kp.spark.core.io.ElasticReader
+import de.kp.spark.core.io.CassandraReader
 
-/**
- * ElasticSource retrieves data from an Elasticsearch index
- * through a search query; the result is returned as a Map
- */
-class ElasticSource(@transient sc:SparkContext) extends Serializable {
+class CassandraSource(@transient sc:SparkContext) extends Serializable {
  
-  def connect(config:Configuration,req:ServiceRequest):RDD[Map[String,String]] = {
-    /*
-     * Elasticsearch is used as a data source as well as a data sink;
-     * this implies that the respective indexes and mappings have to
-     * be distinguished
-     */
-    val index = req.data(Names.REQ_SOURCE_INDEX).asInstanceOf[String]
-    val mapping = req.data(Names.REQ_SOURCE_TYPE).asInstanceOf[String]
+  def connect(config:Configuration,req:ServiceRequest,columns:List[String]=List.empty[String]):RDD[Map[String,Any]] = {
     
-    val query = req.data(Names.REQ_QUERY).asInstanceOf[String]
-    new ElasticReader().read(sc,config,index,mapping,query)
+    val keyspace = req.data("keyspace")
+    val table = req.data("table")
+    
+    new CassandraReader(sc).read(config,keyspace,table,columns)
 
   }
 
