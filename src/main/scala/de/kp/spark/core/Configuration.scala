@@ -38,6 +38,13 @@ trait Configuration {
    * to access Elasticsearch
    */
   def elastic:HConf
+  
+  /**
+   * This method retrieves the settings 
+   * to access HBase
+   */
+  def hbase:Map[String,String]
+
   /** 
    * This method retrieves the path from the configuration
    * where to access a file source or a parquet file from 
