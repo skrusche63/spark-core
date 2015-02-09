@@ -28,9 +28,26 @@ import de.kp.spark.core.spec.Fields
 
 class PointModel(@transient sc:SparkContext) extends Serializable {
   
+  def buildCassandra(req:ServiceRequest,rawset:RDD[Map[String,Any]],fields:Fields):RDD[(Long,Long,String,Double)] = {
+
+    val spec = sc.broadcast(fields.mapping)
+    rawset.map(data => {
+      
+      val row = data(spec.value(Names.ROW_FIELD)).asInstanceOf[Long]
+      val col = data(spec.value(Names.COL_FIELD)).asInstanceOf[Long]
+
+      val value = data(spec.value(Names.VAL_FIELD)).asInstanceOf[Double]
+      val category = data(spec.value(Names.CAT_FIELD)).asInstanceOf[String]
+      
+      (row,col,category,value)
+      
+    })
+    
+  }
+  
   def buildElastic(req:ServiceRequest,rawset:RDD[Map[String,String]],fields:Fields):RDD[(Long,Long,String,Double)] = {
     
-    val spec = sc.broadcast(fields.get(req))
+    val spec = sc.broadcast(fields.mapping)
     rawset.map(data => {
       
       val row = data(spec.value(Names.ROW_FIELD)).toLong
@@ -56,9 +73,43 @@ class PointModel(@transient sc:SparkContext) extends Serializable {
     
   }
   
+  def buildHBase(req:ServiceRequest,rawset:RDD[Map[String,Any]],fields:Fields):RDD[(Long,Long,String,Double)] = {
+
+    val spec = sc.broadcast(fields.mapping)
+    rawset.map(data => {
+      
+      val row = data(spec.value(Names.ROW_FIELD)).asInstanceOf[Long]
+      val col = data(spec.value(Names.COL_FIELD)).asInstanceOf[Long]
+
+      val value = data(spec.value(Names.VAL_FIELD)).asInstanceOf[Double]
+      val category = data(spec.value(Names.CAT_FIELD)).asInstanceOf[String]
+      
+      (row,col,category,value)
+      
+    })
+    
+  }
+  
   def buildJDBC(req:ServiceRequest,rawset:RDD[Map[String,Any]],fields:Fields):RDD[(Long,Long,String,Double)] = {
 
-    val spec = sc.broadcast(fields.get(req))
+    val spec = sc.broadcast(fields.mapping)
+    rawset.map(data => {
+      
+      val row = data(spec.value(Names.ROW_FIELD)).asInstanceOf[Long]
+      val col = data(spec.value(Names.COL_FIELD)).asInstanceOf[Long]
+
+      val value = data(spec.value(Names.VAL_FIELD)).asInstanceOf[Double]
+      val category = data(spec.value(Names.CAT_FIELD)).asInstanceOf[String]
+      
+      (row,col,category,value)
+      
+    })
+    
+  }
+  
+  def buildMongo(req:ServiceRequest,rawset:RDD[Map[String,Any]],fields:Fields):RDD[(Long,Long,String,Double)] = {
+
+    val spec = sc.broadcast(fields.mapping)
     rawset.map(data => {
       
       val row = data(spec.value(Names.ROW_FIELD)).asInstanceOf[Long]
@@ -75,7 +126,7 @@ class PointModel(@transient sc:SparkContext) extends Serializable {
   
   def buildParquet(req:ServiceRequest,rawset:RDD[Map[String,Any]],fields:Fields):RDD[(Long,Long,String,Double)] = {
 
-    val spec = sc.broadcast(fields.get(req))
+    val spec = sc.broadcast(fields.mapping)
     rawset.map(data => {
       
       val row = data(spec.value(Names.ROW_FIELD)).asInstanceOf[Long]

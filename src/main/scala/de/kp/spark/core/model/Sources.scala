@@ -20,13 +20,29 @@ package de.kp.spark.core.model
 
 object Sources {
 
-  val FILE:String    = "FILE"
-  val ELASTIC:String = "ELASTIC" 
-  val JDBC:String    = "JDBC"    
-  val PARQUET:String = "PARQUET"    
+  val CASSANDRA:String = "CASSANDRA"
+  val ELASTIC:String   = "ELASTIC"
+    
+  val FILE:String = "FILE"
+
+  val HBASE:String = "FILE"
+  val JDBC:String  = "JDBC"
+    
+  val MONGODB:String = "MONGODB"    
+  val PARQUET:String = "PARQUET"
+    
   val PIWIK:String   = "PIWIK"    
   
-  private val sources = List(FILE,ELASTIC,JDBC,PARQUET,PIWIK)
+  private val sources = List(
+      CASSANDRA,
+      ELASTIC,
+      FILE,
+      HBASE,
+      JDBC,
+      MONGODB,
+      PARQUET,
+      PIWIK)
+      
   def isSource(source:String):Boolean = sources.contains(source)
   
 }

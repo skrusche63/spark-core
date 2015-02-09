@@ -38,23 +38,19 @@ class VectorSource (@transient sc:SparkContext,config:Configuration,fields:Field
    
     val source = req.data(Names.REQ_SOURCE)
     source match {
-      
-      /* 
-       * Discover clusters from feature set persisted as an appropriate search 
-       * index from Elasticsearch; the configuration parameters are retrieved 
-       * from the service configuration 
-       */    
-      case Sources.ELASTIC => {
+     
+      case Sources.CASSANDRA => {
+        
+        val rawset = new CassandraSource(sc).connect(config,req,fields.names)
+        model.buildCassandra(req,rawset,fields)
+        
+      }      
+       case Sources.ELASTIC => {
         
         val rawset = new ElasticSource(sc).connect(config,req)
         model.buildElastic(req,rawset,fields)
         
       }
-      /* 
-       * Discover clusters from feature set persisted as a file on the (HDFS) 
-       * file system; the configuration parameters are retrieved from the service 
-       * configuration  
-       */    
       case Sources.FILE => {
        
         val store = req.data(Names.REQ_URL)
@@ -63,23 +59,24 @@ class VectorSource (@transient sc:SparkContext,config:Configuration,fields:Field
         model.buildFile(req,rawset)
         
       }
-      /*
-       * Discover clusters from feature set persisted as an appropriate table 
-       * from a JDBC database; the configuration parameters are retrieved from 
-       * the service configuration
-       */
-      case Sources.JDBC => {
-    
-        val names = fields.get(req).map(kv => kv._2).toList  
+      case Sources.HBASE => {
         
-        val rawset = new JdbcSource(sc).connect(config,req,names)
+        val rawset = new HBaseSource(sc).connect(config,req,fields.names,fields.types)
+        model.buildHBase(req,rawset,fields)
+        
+      }
+      case Sources.JDBC => {
+        
+        val rawset = new JdbcSource(sc).connect(config,req,fields.names)
         model.buildJDBC(req,rawset,fields)
         
       }
-      /*
-       * Discover clusters from feature set persisted as a parquet file on HDFS; 
-       * the configuration parameters are retrieved from the service configuration
-       */
+      case Sources.MONGODB => {
+        
+        val rawset = new MongoSource(sc).connect(config,req)
+        model.buildMongo(req,rawset,fields)
+        
+      }
       case Sources.PARQUET => {
        
         val store = req.data(Names.REQ_URL)

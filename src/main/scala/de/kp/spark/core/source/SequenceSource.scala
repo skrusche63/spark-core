@@ -41,22 +41,18 @@ class SequenceSource (@transient sc:SparkContext,config:Configuration,fields:Fie
     val source = req.data(Names.REQ_SOURCE)
     source match {
       
-      /* 
-       * Retrieve sequence database persisted as an appropriate 
-       * search index from Elasticsearch; the configuration
-       * parameters are retrieved from the service configuration 
-       */    
+      case Sources.CASSANDRA => {
+      
+        val rawset = new CassandraSource(sc).connect(config,req,fields.names)
+        model.buildCassandra(req,rawset,fields)
+        
+      }
       case Sources.ELASTIC => {
         
         val rawset = new ElasticSource(sc).connect(config,req)
         model.buildElastic(req,rawset,fields)
         
       }
-      /* 
-       * Retrieve sequence database persisted as a file on the (HDFS) 
-       * file system; the configuration parameters are retrieved from 
-       * the service configuration  
-       */    
       case Sources.FILE => {
        
         val store = req.data(Names.REQ_URL)
@@ -65,24 +61,24 @@ class SequenceSource (@transient sc:SparkContext,config:Configuration,fields:Fie
         model.buildFile(req,rawset)
         
       }
-      /*
-       * Retrieve sequence database persisted as an appropriate table 
-       * from a JDBC database; the configuration parameters are retrieved 
-       * from the service configuration
-       */
-      case Sources.JDBC => {
-    
-        val names = fields.get(req).map(kv => kv._2).toList    
+      case Sources.HBASE => {
        
-        val rawset = new JdbcSource(sc).connect(config,req,names)
+        val rawset = new HBaseSource(sc).connect(config,req,fields.names,fields.types)
+        model.buildHBase(req,rawset,fields)
+        
+      }
+      case Sources.JDBC => {
+       
+        val rawset = new JdbcSource(sc).connect(config,req,fields.names)
         model.buildJDBC(req,rawset,fields)
         
       }
-      /*
-       * Retrieve sequence database persisted as a parquet file from HDFS; 
-       * the configuration parameters are retrieved from the service 
-       * configuration
-       */
+      case Sources.MONGODB => {
+       
+        val rawset = new MongoSource(sc).connect(config,req)
+        model.buildMongo(req,rawset,fields)
+        
+      }
       case Sources.PARQUET => {
        
         val store = req.data(Names.REQ_URL)
@@ -91,11 +87,6 @@ class SequenceSource (@transient sc:SparkContext,config:Configuration,fields:Fie
         model.buildParquet(req,rawset,fields)
         
       }
-      /*
-       * Retrieve sequence database persisted as an appropriate table from 
-       * a Piwik database; the configuration parameters are retrieved from 
-       * the service configuration
-       */
       case Sources.PIWIK => {
         
         val rawset = new PiwikSource(sc).connect(config,req)

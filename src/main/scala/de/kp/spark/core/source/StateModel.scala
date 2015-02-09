@@ -27,10 +27,27 @@ import de.kp.spark.core.model._
 import de.kp.spark.core.spec.Fields
 
 class StateModel(@transient sc:SparkContext) extends Serializable {
+
+  def buildCassandra(req:ServiceRequest,rawset:RDD[Map[String,Any]],fields:Fields):RDD[(String,String,Long,String)] = {
+  
+    val spec = sc.broadcast(fields.mapping)
+    rawset.map(data => {
+      
+      val site = data(spec.value(Names.SITE_FIELD)).asInstanceOf[String]
+      val user = data(spec.value(Names.USER_FIELD)).asInstanceOf[String] 
+
+      val timestamp = data(spec.value(Names.TIMESTAMP_FIELD)).asInstanceOf[Long]
+      val state  = data(spec.value(Names.STATE_FIELD)).asInstanceOf[String]
+      
+      (site,user,timestamp,state)
+      
+    })
+    
+  }
   
   def buildElastic(req:ServiceRequest,rawset:RDD[Map[String,String]],fields:Fields):RDD[(String,String,Long,String)] = {
     
-    val spec = sc.broadcast(fields.get(req))
+    val spec = sc.broadcast(fields.mapping)
     rawset.map(data => {
       
       val site = data(spec.value(Names.SITE_FIELD))
@@ -56,9 +73,43 @@ class StateModel(@transient sc:SparkContext) extends Serializable {
     
   }
   
+  def buildHBase(req:ServiceRequest,rawset:RDD[Map[String,Any]],fields:Fields):RDD[(String,String,Long,String)] = {
+  
+    val spec = sc.broadcast(fields.mapping)
+    rawset.map(data => {
+      
+      val site = data(spec.value(Names.SITE_FIELD)).asInstanceOf[String]
+      val user = data(spec.value(Names.USER_FIELD)).asInstanceOf[String] 
+
+      val timestamp = data(spec.value(Names.TIMESTAMP_FIELD)).asInstanceOf[Long]
+      val state  = data(spec.value(Names.STATE_FIELD)).asInstanceOf[String]
+      
+      (site,user,timestamp,state)
+      
+    })
+    
+  }
+  
   def buildJDBC(req:ServiceRequest,rawset:RDD[Map[String,Any]],fields:Fields):RDD[(String,String,Long,String)] = {
   
-    val spec = sc.broadcast(fields.get(req))
+    val spec = sc.broadcast(fields.mapping)
+    rawset.map(data => {
+      
+      val site = data(spec.value(Names.SITE_FIELD)).asInstanceOf[String]
+      val user = data(spec.value(Names.USER_FIELD)).asInstanceOf[String] 
+
+      val timestamp = data(spec.value(Names.TIMESTAMP_FIELD)).asInstanceOf[Long]
+      val state  = data(spec.value(Names.STATE_FIELD)).asInstanceOf[String]
+      
+      (site,user,timestamp,state)
+      
+    })
+    
+  }
+  
+  def buildMongo(req:ServiceRequest,rawset:RDD[Map[String,Any]],fields:Fields):RDD[(String,String,Long,String)] = {
+  
+    val spec = sc.broadcast(fields.mapping)
     rawset.map(data => {
       
       val site = data(spec.value(Names.SITE_FIELD)).asInstanceOf[String]
@@ -75,7 +126,7 @@ class StateModel(@transient sc:SparkContext) extends Serializable {
  
   def buildParquet(req:ServiceRequest,rawset:RDD[Map[String,Any]],fields:Fields):RDD[(String,String,Long,String)] = {
     
-    val spec = sc.broadcast(fields.get(req))
+    val spec = sc.broadcast(fields.mapping)
     rawset.map(data => {
       
       val site = data(spec.value(Names.SITE_FIELD)).asInstanceOf[String]

@@ -34,14 +34,19 @@ class PointSource (@transient sc:SparkContext,config:Configuration,fields:Fields
  
     val source = req.data(Names.REQ_SOURCE)
     source match {
+      
+      case Sources.CASSANDRA => {
+       
+        val rawset = new CassandraSource(sc).connect(config,req,fields.names)
+        model.buildCassandra(req,rawset,fields)
 
+      }
       case Sources.ELASTIC => {
        
        val rawset = new ElasticSource(sc).connect(config,req)
        model.buildElastic(req,rawset,fields)
        
-      }
- 
+      } 
       case Sources.FILE => {
        
         val store = req.data(Names.REQ_URL)
@@ -50,16 +55,24 @@ class PointSource (@transient sc:SparkContext,config:Configuration,fields:Fields
         model.buildFile(req,rawset)
         
       }
-
-      case Sources.JDBC => {
-    
-        val names = fields.get(req).map(kv => kv._2).toList  
+      case Sources.HBASE => {
         
-        val rawset = new JdbcSource(sc).connect(config,req,names)
+        val rawset = new HBaseSource(sc).connect(config,req,fields.names,fields.types)
+        model.buildHBase(req,rawset,fields)
+
+      }
+      case Sources.JDBC => {
+       
+        val rawset = new JdbcSource(sc).connect(config,req,fields.names)
         model.buildJDBC(req,rawset,fields)
 
       }
+      case Sources.MONGODB => {
+       
+        val rawset = new MongoSource(sc).connect(config,req)
+        model.buildMongo(req,rawset,fields)
 
+      }
       case Sources.PARQUET => {
        
         val store = req.data(Names.REQ_URL)

@@ -28,9 +28,26 @@ import de.kp.spark.core.spec.Fields
 
 class VectorModel(@transient sc:SparkContext) extends Serializable {
   
+  def buildCassandra(req:ServiceRequest,rawset:RDD[Map[String,Any]],fields:Fields):RDD[(Long,Long,String,Double)] = {
+    
+    val spec = sc.broadcast(fields.mapping)
+    rawset.map(data => {
+      
+      val row = data(spec.value(Names.ROW_FIELD)).asInstanceOf[Long]
+      val col = data(spec.value(Names.COL_FIELD)).asInstanceOf[Long]
+
+      val label = data(spec.value(Names.LBL_FIELD)).asInstanceOf[String] 
+      val value = data(spec.value(Names.VAL_FIELD)).asInstanceOf[Double] 
+      
+      (row,col,label,value)
+       
+    })
+    
+  }
+  
   def buildElastic(req:ServiceRequest,rawset:RDD[Map[String,String]], fields:Fields):RDD[(Long,Long,String,Double)] = {
    
-    val spec = sc.broadcast(fields.get(req))
+    val spec = sc.broadcast(fields.mapping)
     rawset.map(data => {
       
       val row = data(spec.value(Names.ROW_FIELD)).toLong
@@ -56,26 +73,9 @@ class VectorModel(@transient sc:SparkContext) extends Serializable {
     
   }
   
-  def buildParquet(req:ServiceRequest,rawset:RDD[Map[String,Any]],fields:Fields):RDD[(Long,Long,String,Double)] = {
+  def buildHBase(req:ServiceRequest,rawset:RDD[Map[String,Any]],fields:Fields):RDD[(Long,Long,String,Double)] = {
     
-    val spec = sc.broadcast(fields.get(req))
-    rawset.map(data => {
-      
-      val row = data(spec.value(Names.ROW_FIELD)).asInstanceOf[Long]
-      val col = data(spec.value(Names.COL_FIELD)).asInstanceOf[Long]
-
-      val label = data(spec.value(Names.LBL_FIELD)).asInstanceOf[String] 
-      val value = data(spec.value(Names.VAL_FIELD)).asInstanceOf[Double] 
-      
-      (row,col,label,value)
-      
-    })
-    
-  }
-  
-  def buildJDBC(req:ServiceRequest,rawset:RDD[Map[String,Any]],fields:Fields):RDD[(Long,Long,String,Double)] = {
-    
-    val spec = sc.broadcast(fields.get(req))
+    val spec = sc.broadcast(fields.mapping)
     rawset.map(data => {
       
       val row = data(spec.value(Names.ROW_FIELD)).asInstanceOf[Long]
@@ -86,6 +86,57 @@ class VectorModel(@transient sc:SparkContext) extends Serializable {
       
       (row,col,label,value)
        
+    })
+    
+  }
+  
+  def buildJDBC(req:ServiceRequest,rawset:RDD[Map[String,Any]],fields:Fields):RDD[(Long,Long,String,Double)] = {
+    
+    val spec = sc.broadcast(fields.mapping)
+    rawset.map(data => {
+      
+      val row = data(spec.value(Names.ROW_FIELD)).asInstanceOf[Long]
+      val col = data(spec.value(Names.COL_FIELD)).asInstanceOf[Long]
+
+      val label = data(spec.value(Names.LBL_FIELD)).asInstanceOf[String] 
+      val value = data(spec.value(Names.VAL_FIELD)).asInstanceOf[Double] 
+      
+      (row,col,label,value)
+       
+    })
+    
+  }
+  
+  def buildMongo(req:ServiceRequest,rawset:RDD[Map[String,Any]],fields:Fields):RDD[(Long,Long,String,Double)] = {
+    
+    val spec = sc.broadcast(fields.mapping)
+    rawset.map(data => {
+      
+      val row = data(spec.value(Names.ROW_FIELD)).asInstanceOf[Long]
+      val col = data(spec.value(Names.COL_FIELD)).asInstanceOf[Long]
+
+      val label = data(spec.value(Names.LBL_FIELD)).asInstanceOf[String] 
+      val value = data(spec.value(Names.VAL_FIELD)).asInstanceOf[Double] 
+      
+      (row,col,label,value)
+       
+    })
+    
+  }
+  
+  def buildParquet(req:ServiceRequest,rawset:RDD[Map[String,Any]],fields:Fields):RDD[(Long,Long,String,Double)] = {
+    
+    val spec = sc.broadcast(fields.mapping)
+    rawset.map(data => {
+      
+      val row = data(spec.value(Names.ROW_FIELD)).asInstanceOf[Long]
+      val col = data(spec.value(Names.COL_FIELD)).asInstanceOf[Long]
+
+      val label = data(spec.value(Names.LBL_FIELD)).asInstanceOf[String] 
+      val value = data(spec.value(Names.VAL_FIELD)).asInstanceOf[Double] 
+      
+      (row,col,label,value)
+      
     })
     
   }

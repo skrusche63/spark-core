@@ -95,71 +95,36 @@ class BaseTracker(config:Configuration) extends RootActor(config) {
        case "event" => {
          
          val source = prepareEvent(req)
-         /*
-          * Writing this source to the respective index throws an
-          * exception in case of an error; note, that the writer is
-          * automatically closed 
-          */
          writer.write(index, mapping, source)        
         
        }       
        case "feature" => {
       
          val source = prepareFeature(req)
-         /*
-          * Writing this source to the respective index throws an
-          * exception in case of an error; note, that the writer is
-          * automatically closed 
-          */
          writer.write(index, mapping, source)
          
        }
        case "item" => {
-         /*
-          * Writing these sources to the respective index throws an
-          * exception in case of an error; note, that the writer is
-          * automatically closed 
-          */
          writer.writeBulkJSON(index, mapping, prepareItemJSON(req))
          
        }      
-       case "product" => {
+       case "point" => {
       
-         val source = prepareProduct(req)
-         /*
-          * Writing this source to the respective index throws an
-          * exception in case of an error; note, that the writer is
-          * automatically closed 
-          */
-         writer.write(index, mapping, source)
+         val source = preparePoint(req)
+         writer.writeJSON(index, mapping, source)
          
        }
        case "sequence" => {
       
          val source = prepareSequence(req)
-         /*
-          * Writing this source to the respective index throws an
-          * exception in case of an error; note, that the writer is
-          * automatically closed 
-          */
          writer.write(index, mapping, source)
          
        }
        case "state" => {     
-         /*
-          * Writing this source to the respective index throws an
-          * exception in case of an error; note, that the writer is
-          * automatically closed 
-          */
          writer.write(index, mapping, prepareState(req))
          
        }
        case "vector" => {
-         /*
-          * Writing this source to the respective index throws an
-          * exception in case of an error; note, that the writer is
-          * automatically closed 
-          */
          writer.writeJSON(index, mapping, prepareVector(req))
          
        }
@@ -212,8 +177,8 @@ class BaseTracker(config:Configuration) extends RootActor(config) {
     new ElasticItemBuilder().createSourceJSON(req.data)
   }
   
-  protected def prepareProduct(req:ServiceRequest):java.util.Map[String,Object] = {
-    new ElasticProductBuilder().createSource(req.data)    
+  protected def preparePoint(req:ServiceRequest):XContentBuilder = {
+    new ElasticPointBuilder().createSourceJSON(req.data)    
   }
   
   protected def prepareSequence(req:ServiceRequest):java.util.Map[String,Object] = {
