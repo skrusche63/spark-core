@@ -56,6 +56,13 @@
 	  <artifactId>spark-core_2.10</artifactId>
 	  <version>${spark.version}</version>
     </dependency>
+
+    <!-- spark mllib -->
+    <dependency>
+	  <groupId>org.apache.spark</groupId>
+	  <artifactId>spark-mllib_2.10</artifactId>
+	  <version>${spark.version}</version>
+    </dependency>
    
     <!--  spark sql -->
     <dependency>

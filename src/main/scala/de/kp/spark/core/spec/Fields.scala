@@ -20,7 +20,7 @@ package de.kp.spark.core.spec
 
 import de.kp.spark.core.model._
 
-abstract class Fields(req:ServiceRequest) extends Serializable {
+abstract class Fields extends Serializable {
   
   def mapping:Map[String,String]
   
