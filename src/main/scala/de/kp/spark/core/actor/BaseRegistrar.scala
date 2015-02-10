@@ -51,89 +51,19 @@ class BaseRegistrar(config:Configuration) extends RootActor(config) {
     val uid = req.data(Names.REQ_UID)
     val topic = req.task.split(":")(1)
     
-    topic match {
-       
-      case "event" => {
-        
-        val fields = new FieldBuilder().build(req,topic)
-        cache.addFields(req, fields.toList)
-        
-        new ServiceResponse(req.service,req.task,Map(Names.REQ_UID-> uid),status.SUCCESS)
+    val topics = List("event","item","point","sequence","state","vector")
+    if (topics.contains(topic) == false) {
       
-      }
-      case "feature" => {
-        /*
-         * ********************************************
-         *  Example:
-         *  
-         *  "names" -> "target,feature,feature,feature"
-         *  "types" -> "string,double,double,string"
-         *
-         * ********************************************
-         * 
-         * It is important to have the names specified in the order
-         * they are used (later) to retrieve the respective data
-         */
-        val names = req.data(Names.REQ_NAMES).split(",")
-        val types = req.data(Names.REQ_TYPES).split(",")
-        
-        val fields = buildFields(names,types)
-        cache.addFields(req, fields)    
-
-        new ServiceResponse(req.service,req.task,Map(Names.REQ_UID-> uid),status.SUCCESS)
-        
-      }
-      case "item" => {
-        
-        val fields = new FieldBuilder().build(req,topic)
-        cache.addFields(req, fields.toList)
-        
-        new ServiceResponse(req.service,req.task,Map(Names.REQ_UID-> uid),status.SUCCESS)
-                
-      }        
-      case "product" => {
-        
-        val fields = new FieldBuilder().build(req,topic)
-        cache.addFields(req, fields)
-        
-        new ServiceResponse(req.service,req.task,Map(Names.REQ_UID-> uid),status.SUCCESS)
-          
-      }
-      case "sequence" => {
-        
-        val fields = new FieldBuilder().build(req,topic)
-        cache.addFields(req, fields)
-        
-        new ServiceResponse(req.service,req.task,Map(Names.REQ_UID-> uid),status.SUCCESS)
-          
-      }
-      case "state" => {
-        
-        val fields = new FieldBuilder().build(req,topic)
-        cache.addFields(req, fields)
-        
-        new ServiceResponse(req.service,req.task,Map(Names.REQ_UID-> uid),status.SUCCESS)
-          
-      }
-      case "vector" => {
-        
-        val fields = new FieldBuilder().build(req,topic)
-        cache.addFields(req, fields)
-        
-        new ServiceResponse(req.service,req.task,Map(Names.REQ_UID-> uid),status.SUCCESS)
-          
-      }
-      case _ => {
-          
-         val msg = messages.TASK_IS_UNKNOWN(uid,req.task)
-         throw new Exception(msg)
-          
-       }
-
+      val msg = messages.TASK_IS_UNKNOWN(uid,req.task)
+      throw new Exception(msg)
+      
     }
+        
+    val fields = new FieldBuilder().build(req,topic)
+    cache.addFields(req, fields.toList)
+        
+    new ServiceResponse(req.service,req.task,Map(Names.REQ_UID-> uid),status.SUCCESS)
     
   }
-  
-  protected def buildFields(names:Array[String],types:Array[String]):List[Field] = List.empty[Field]
   
 }

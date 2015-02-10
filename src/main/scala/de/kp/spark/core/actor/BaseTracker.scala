@@ -98,12 +98,6 @@ class BaseTracker(config:Configuration) extends RootActor(config) {
          writer.write(index, mapping, source)        
         
        }       
-       case "feature" => {
-      
-         val source = prepareFeature(req)
-         writer.write(index, mapping, source)
-         
-       }
        case "item" => {
          writer.writeBulkJSON(index, mapping, prepareItemJSON(req))
          
@@ -153,27 +147,8 @@ class BaseTracker(config:Configuration) extends RootActor(config) {
   protected def prepareEvent(req:ServiceRequest):java.util.Map[String,Object] = {
     new ElasticEventBuilder().createSource(req.data)
   }
-    
-  protected def prepareFeature(req:ServiceRequest):java.util.Map[String,Object] = {
-    new ElasticFeatureBuilder().createSource(req.data)
-  }
 
   protected def prepareItemJSON(req:ServiceRequest):List[XContentBuilder] = {
-   /*
-    * Example request data:
-    * 
-    * "uid": "123456"
-    * 
-    * "index": "orders"
-    * "type" : "products"
-    * 
-    * "site"    : "site-1"
-    * "user"    : "user-1"
-    * "timestamp: "1234567890"
-    * "group"   : "group-1"
-    * "item"    : "1,2,3,4,5,6,7"
-    * 
-    */   
     new ElasticItemBuilder().createSourceJSON(req.data)
   }
   

@@ -27,7 +27,7 @@ import org.apache.spark.mllib.regression.LabeledPoint
  * The LabeledPointHandler transforms the internal Point format
  * into Apache Spark's LabeledPoint
  */
-class LabeledPointHandler {
+object LabeledPointHandler {
   
   def format(dataset:RDD[(Long,Long,String,Double)]):RDD[LabeledPoint] = {
     

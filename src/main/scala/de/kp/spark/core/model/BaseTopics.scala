@@ -20,18 +20,18 @@ package de.kp.spark.core.model
 
 class BaseTopics {
 
-  val AMOUNT:String   = "amount"
-  val EVENT:String    = "event"
+  val EVENT:String = "event"
+  val ITEM:String  = "item"
 
-  val ITEM:String     = "item"
-  val FEATURE:String  = "feature"
-
-  val PRODUCT:String  = "product"
-  val RULE:String     = "rule"
-
-  val SEQUENCE:String = "rule"
+  val POINT:String = "point"
     
-  private val topics = List(AMOUNT,EVENT,ITEM,FEATURE,PRODUCT,RULE,SEQUENCE)
+  val RULE:String = "rule"
+  val SEQUENCE:String = "sequence"
+    
+  val STATE:String = "state"
+  val VECTOR:String = "vector"
+    
+  private val topics = List(EVENT,ITEM,POINT,RULE,SEQUENCE,STATE,VECTOR)
   
   def get(topic:String):String = {
     

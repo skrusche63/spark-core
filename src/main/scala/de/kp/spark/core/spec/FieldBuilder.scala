@@ -38,23 +38,6 @@ class FieldBuilder {
     
     topic match {
       
-      case "amount" => {
-
-        val names = List(TIMESTAMP_FIELD,USER_FIELD,AMOUNT_FIELD)
-        val types = List("long","string","float")
-        
-        names.zip(types).foreach(entry => {
-          
-          val (name,datatype) = entry
-          val value = if (data.contains(name)) data(name) else name
-          
-          fields += new Field(name,datatype,value)
-          
-        })
-
-        fields.toList
-        
-      }
       case "event" => {
 
         val names = List(TIMESTAMP_FIELD,USER_FIELD,EVENT_FIELD,ITEM_FIELD,SCORE_FIELD)
@@ -90,10 +73,10 @@ class FieldBuilder {
         fields.toList
         
       }
-      case "product" => {
+      case "point" => {
 
-        val names = List(TIMESTAMP_FIELD,USER_FIELD,GROUP_FIELD,ITEM_FIELD,PRICE_FIELD)
-        val types = List("long","string","string","integer","float")
+        val names = List(ROW_FIELD,COL_FIELD,CAT_FIELD,VAL_FIELD)
+        val types = List("long","long","string","string")
         
         names.zip(types).foreach(entry => {
           
