@@ -131,6 +131,19 @@ case class NumberedSequence(sid:Int,data:Array[Array[Int]])
 case class Pattern(support:Int,itemsets:List[List[Int]])
 case class Patterns(items:List[Pattern])
 
+/********* SIMILARITY SUPPORT */
+
+case class ClusteredPoint(
+  cluster:Int,distance:Double,point:LabeledPoint
+)
+
+case class ClusteredPoints(items:List[ClusteredPoint])
+
+case class ClusteredSequence(
+  cluster:Int,similarity:Double,sequence:NumberedSequence
+)
+
+case class ClusteredSequences(items:List[ClusteredSequence])
 
 /********* REQUEST / RESPONSE SUPPORT */
 

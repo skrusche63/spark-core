@@ -203,7 +203,78 @@ class RedisDB(host:String,port:Int) extends Serializable {
     client.rpush(k,v)
 
   }
+  
+  def addPoints(req:ServiceRequest,points:ClusteredPoints) {
+   
+    val now = new java.util.Date()
+    val timestamp = now.getTime()
+    
+    val k = pointKey(req) 
+    val v = "" + timestamp + ":" + serializer.serializeClusteredPoints(points)
+    
+    client.zadd(k,timestamp,v)
+    
+  }
+   
+  def pointsExist(req:ServiceRequest):Boolean = {
 
+    val k = pointKey(req)
+    client.exists(k)
+    
+  }
+
+  def points(req:ServiceRequest):String = {
+
+    val k = pointKey(req) 
+    val points = client.zrange(k, 0, -1)
+
+    if (points.size() == 0) {
+      null
+    
+    } else {
+      
+      val last = points.toList.last
+      last.split(":")(1)
+      
+    }
+  
+  }
+
+  def addSequences(req:ServiceRequest,sequences:ClusteredSequences) {
+   
+    val now = new java.util.Date()
+    val timestamp = now.getTime()
+    
+    val k = sequenceKey(req) 
+    val v = "" + timestamp + ":" + serializer.serializeClusteredSequences(sequences)
+    
+    client.zadd(k,timestamp,v)
+    
+  }
+   
+  def sequencesExist(req:ServiceRequest):Boolean = {
+
+    val k = sequenceKey(req)
+    client.exists(k)
+    
+  }
+
+  def sequences(req:ServiceRequest):String = {
+
+    val k = sequenceKey(req) 
+    val sequences = client.zrange(k, 0, -1)
+
+    if (sequences.size() == 0) {
+      null
+    
+    } else {
+      
+      val last = sequences.toList.last
+      last.split(":")(1)
+      
+    }
+  
+  }
   def addRules(req:ServiceRequest, rules:Rules) {
    
     val now = new java.util.Date()
@@ -293,14 +364,26 @@ class RedisDB(host:String,port:Int) extends Serializable {
 
   } 
   
+  private def pathKey(req:ServiceRequest):String = {
+    "path:" + req.data(Names.REQ_SITE) + ":" + req.data(Names.REQ_UID) + ":" + req.data(Names.REQ_NAME) 
+  }
+  
   private def patternKey(req:ServiceRequest):String = {
     "pattern:" + req.data(Names.REQ_SITE) + ":" + req.data(Names.REQ_UID) + ":" + req.data(Names.REQ_NAME) 
+  }
+
+  private def pointKey(req:ServiceRequest):String = {
+    "point:" + req.data(Names.REQ_SITE) + ":" + req.data(Names.REQ_UID) + ":" + req.data(Names.REQ_NAME) 
   }
 
   private def ruleKey(req:ServiceRequest):String = {
     "rule:" + req.data(Names.REQ_SITE) + ":" + req.data(Names.REQ_UID) + ":" + req.data(Names.REQ_NAME) 
   }
-  
+ 
+  private def sequenceKey(req:ServiceRequest):String = {
+    "sequence:" + req.data(Names.REQ_SITE) + ":" + req.data(Names.REQ_UID) + ":" + req.data(Names.REQ_NAME) 
+  }
+
   private def isLazyEqual(itemset1:List[Int],itemset2:List[Int]):Boolean = {
     
     val intersect = itemset1.intersect(itemset2)
@@ -327,7 +410,7 @@ class RedisDB(host:String,port:Int) extends Serializable {
     val k = patternKey(req)
     val v = "" + timestamp + ":" + serializer.serializePatterns(patterns)
     
-    getClient.zadd(k,timestamp,v)
+    client.zadd(k,timestamp,v)
     
   }
  
@@ -349,6 +432,42 @@ class RedisDB(host:String,port:Int) extends Serializable {
     } else {
       
       val last = patterns.toList.last
+      last.split(":")(1)
+      
+    }
+  
+  }
+
+  def addPath(req:ServiceRequest,path:String) {
+   
+    val now = new java.util.Date()
+    val timestamp = now.getTime()
+
+    val k = pathKey(req) 
+    val v = "" + timestamp + ":" + path
+    
+    client.zadd(k,timestamp,v)
+    
+  }
+   
+  def pathExists(req:ServiceRequest):Boolean = {
+
+    val k = pathKey(req) 
+    client.exists(k)
+    
+  }
+  
+  def path(req:ServiceRequest):String = {
+
+    val k = pathKey(req)
+    val paths = client.zrange(k, 0, -1)
+
+    if (paths.size() == 0) {
+      null
+    
+    } else {
+      
+      val last = paths.toList.last
       last.split(":")(1)
       
     }

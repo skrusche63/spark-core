@@ -34,6 +34,17 @@ class BaseSerializer {
   def serializeBehaviors(behaviors:Behaviors):String = write(behaviors)
   def deserializeBehavior(behaviors:String):Behaviors = read[Behaviors](behaviors)
   /*
+   * Serialization and de-serialization of clustered points and 
+   * sequences is used to support model persistence in Similarity 
+   * Analysis 
+   */
+  def serializeClusteredPoints(points:ClusteredPoints):String = write(points)
+  def deserializeClusteredPoints(points:String):ClusteredPoints = read[ClusteredPoints](points)
+
+  def serializeClusteredSequences(sequences:ClusteredSequences):String = write(sequences)
+  def deserializeClusteredSequences(sequences:String):ClusteredSequences = read[ClusteredSequences](sequences)
+  
+  /*
    * Serialization and de-serialization of field or metadata
    * specification that describe the mapping from external
    * data source fields to internal pre-defined variables
