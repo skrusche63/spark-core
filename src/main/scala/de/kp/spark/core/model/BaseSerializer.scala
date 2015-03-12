@@ -64,7 +64,7 @@ class BaseSerializer {
    * this data structure is used by Outlier Detection
    */
   def serializeOutliers(outliers:Outliers):String = write(outliers)
-  def deserializeBOutliers(outliers:String):Outliers = read[Outliers](outliers)
+  def deserializeOutliers(outliers:String):Outliers = read[Outliers](outliers)
 
   /*
    * Serialization and de-serialization of model parameters
