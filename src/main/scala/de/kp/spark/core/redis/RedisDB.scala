@@ -204,6 +204,42 @@ class RedisDB(host:String,port:Int) extends Serializable {
 
   }
   
+  def addOutliers(req:ServiceRequest,outliers:Outliers) {
+   
+    val now = new java.util.Date()
+    val timestamp = now.getTime()
+    
+    val k = outlierKey(req)
+    val v = "" + timestamp + ":" + serializer.serializeOutliers(outliers)
+    
+    client.zadd(k,timestamp,v)
+    
+  }
+  
+  def outliersExists(req:ServiceRequest):Boolean = {
+
+    val k = outlierKey(req)
+    client.exists(k)
+    
+  }
+  
+  def outliers(req:ServiceRequest):String = {
+
+    val k = outlierKey(req) 
+    val behavior = client.zrange(k, 0, -1)
+
+    if (behavior.size() == 0) {
+      serializer.serializeOutliers(new Outliers(List.empty[Outlier]))
+    
+    } else {
+      
+      val last = behavior.toList.last
+      last.split(":")(1)
+
+    }
+  
+  }
+  
   def addPoints(req:ServiceRequest,points:ClusteredPoints) {
    
     val now = new java.util.Date()
@@ -363,6 +399,10 @@ class RedisDB(host:String,port:Int) extends Serializable {
     serializer.serializeRules(new Rules(items))
 
   } 
+
+  private def outlierKey(req:ServiceRequest):String = {
+    "outlier:" + req.data(Names.REQ_SITE) + ":" + req.data(Names.REQ_UID) + ":" + req.data(Names.REQ_NAME) 
+  }
   
   private def pathKey(req:ServiceRequest):String = {
     "path:" + req.data(Names.REQ_SITE) + ":" + req.data(Names.REQ_UID) + ":" + req.data(Names.REQ_NAME) 

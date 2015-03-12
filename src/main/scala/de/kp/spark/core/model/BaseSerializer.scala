@@ -60,6 +60,13 @@ class BaseSerializer {
   def serializeMarkovRules(rules:MarkovRules):String = write(rules) 
   def deserializeMarkovRules(rules:String):MarkovRules = read[MarkovRules](rules)
   /*
+   * Serialization and de-serialization of Markov outliers;
+   * this data structure is used by Outlier Detection
+   */
+  def serializeOutliers(outliers:Outliers):String = write(outliers)
+  def deserializeBOutliers(outliers:String):Outliers = read[Outliers](outliers)
+
+  /*
    * Serialization and de-serialization of model parameters
    * used to build or train a specific model; these parameters
    * refer to a certain task (uid) and model name (name)

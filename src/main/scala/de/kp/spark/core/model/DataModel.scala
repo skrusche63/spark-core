@@ -33,21 +33,17 @@ case class AliveMessage()
  * building task has been reached.
  */
 case class StatusEvent(uid:String,service:String,task:String,value:String)
-
-case class Field(
-  name:String,datatype:String,value:String
-)
+/**
+ * Field describes the data structure that specifies the mapping
+ * between external and internal field parameters; 
+ */
+case class Field(name:String,datatype:String,value:String)
 case class Fields(items:List[Field])
-
-/********* TRAINING SUPPORT */
-
 /**
  * Param & Params are used to register the model parameters
  * used for a certain data mining or model building task
  */
-case class Param(
-  name:String,datatype:String,value:String
-)
+case class Param(name:String,datatype:String,value:String)
 case class Params(items:List[Param])
 
 /********* LISTENER SUPPORT */
@@ -125,6 +121,13 @@ case class MarkovRule(antecedent:String,consequent:List[MarkovState])
 case class MarkovRules(items:List[MarkovRule])
 
 case class NumberedSequence(sid:Int,data:Array[Array[Int]])
+
+/********* OUTLIER SUPPORT */
+  
+case class Outlier(
+  site:String,user:String,states:List[String],metric:Double,flag:String)
+
+case class Outliers(items:List[Outlier])
 
 /********* SERIES SUPPORT */
 
