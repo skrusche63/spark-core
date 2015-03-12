@@ -126,6 +126,12 @@ case class MarkovRules(items:List[MarkovRule])
 
 case class NumberedSequence(sid:Int,data:Array[Array[Int]])
 
+/********* SERIES SUPPORT */
+
+case class Pattern(support:Int,itemsets:List[List[Int]])
+case class Patterns(items:List[Pattern])
+
+
 /********* REQUEST / RESPONSE SUPPORT */
 
 /**

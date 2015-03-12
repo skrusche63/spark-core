@@ -22,7 +22,6 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 
 import com.datastax.spark.connector._
-
 import de.kp.spark.core.Configuration
 
 class CassandraReader(@transient sc:SparkContext) extends Serializable {

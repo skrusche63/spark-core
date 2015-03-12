@@ -48,7 +48,7 @@ abstract class BaseMaster(config:Configuration) extends RootActor(config) {
      * the respective responses MUST be serialized
      */
     case msg:String => {
-
+      
 	  val origin = sender
 
 	  val req = serializer.deserializeRequest(msg)
@@ -58,7 +58,9 @@ abstract class BaseMaster(config:Configuration) extends RootActor(config) {
         case result => origin ! serialize(result)
       }
       response.onFailure {
-        case result => origin ! serialize(failure(req,messages.GENERAL_ERROR(req.data(Names.REQ_UID))))	      
+        case result => origin ! {
+          serialize(failure(req,messages.GENERAL_ERROR(req.data(Names.REQ_UID))))	      
+        }
 	  }
       
     }
@@ -92,7 +94,7 @@ abstract class BaseMaster(config:Configuration) extends RootActor(config) {
   protected def execute(req:ServiceRequest):Future[ServiceResponse] = {
 	
     try {
-      
+     
       val Array(task,topic) = req.task.split(":")
       ask(actor(task),req).mapTo[ServiceResponse]
     

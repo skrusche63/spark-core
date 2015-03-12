@@ -55,6 +55,12 @@ class BaseSerializer {
    */
   def serializeParams(params:Params):String = write(params) 
   def deserializeParams(params:String):Params = read[Params](params)
+    
+  /*
+   * Support for serialization and deserialization of patterns
+   */
+  def serializePatterns(patterns:Patterns):String = write(patterns)  
+  def deserializePatterns(patterns:String):Patterns = read[Patterns](patterns)
 
   def deserializeResponse(response:String):ServiceResponse = read[ServiceResponse](response)
   def serializeResponse(response:ServiceResponse):String = write(response)

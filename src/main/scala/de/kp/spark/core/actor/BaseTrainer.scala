@@ -48,7 +48,9 @@ abstract class BaseTrainer(config:Configuration) extends RootActor(config) {
         }
         
       } catch {
-        case e:Exception => Future {failure(req,e.getMessage)}
+        case e:Exception => {
+          Future {failure(req,e.getMessage)}
+        }
       }
       
       response.onSuccess {

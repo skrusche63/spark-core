@@ -194,7 +194,7 @@ class RedisDB(host:String,port:Int) extends Serializable {
     items
     
   }
- 
+  
   def addRating(req:ServiceRequest,rating:String) {
     
     val k = "rating:" + req.data(Names.REQ_UID) + ":" + req.data(Names.REQ_NAME)
@@ -292,6 +292,10 @@ class RedisDB(host:String,port:Int) extends Serializable {
     serializer.serializeRules(new Rules(items))
 
   } 
+  
+  private def patternKey(req:ServiceRequest):String = {
+    "pattern:" + req.data(Names.REQ_SITE) + ":" + req.data(Names.REQ_UID) + ":" + req.data(Names.REQ_NAME) 
+  }
 
   private def ruleKey(req:ServiceRequest):String = {
     "rule:" + req.data(Names.REQ_SITE) + ":" + req.data(Names.REQ_UID) + ":" + req.data(Names.REQ_NAME) 
@@ -313,6 +317,42 @@ class RedisDB(host:String,port:Int) extends Serializable {
     val max = itemset1.zip(itemset2).map(x => Math.abs(x._1 -x._2)).max
     (max == 0)
     
+  }
+  
+  def addPatterns(req:ServiceRequest, patterns:Patterns) {
+   
+    val now = new java.util.Date()
+    val timestamp = now.getTime()
+    
+    val k = patternKey(req)
+    val v = "" + timestamp + ":" + serializer.serializePatterns(patterns)
+    
+    getClient.zadd(k,timestamp,v)
+    
+  }
+ 
+  def patternsExist(req:ServiceRequest):Boolean = {
+
+    val k = patternKey(req)
+    exists(k)
+    
+  }
+  
+  def patterns(req:ServiceRequest):String = {
+
+    val k = patternKey(req)
+    val patterns = getClient.zrange(k, 0, -1)
+
+    if (patterns.size() == 0) {
+      serializer.serializePatterns(new Patterns(List.empty[Pattern]))
+    
+    } else {
+      
+      val last = patterns.toList.last
+      last.split(":")(1)
+      
+    }
+  
   }
 
 }
